@@ -12,11 +12,11 @@ auto constexpr bkd_color = rgba(35, 35, 37, 255);
 auto background = box(bkd_color);
 
 using slider_ptr = std::shared_ptr<basic_slider_base>;
-slider_ptr hsliders[3];
+//slider_ptr hsliders[3];
 slider_ptr vsliders[3];
 
 using dial_ptr = std::shared_ptr<dial_base>;
-dial_ptr dials[3];
+dial_ptr dials[6];
 
 template <bool is_vertical>
 auto make_markers()
@@ -25,12 +25,12 @@ auto make_markers()
     return slider_labels<10>(
         slider_marks<40>(track),         // Track with marks
         0.8,                             // Label font size (relative size)
-        "0", "1", "2", "3", "4",         // Labels
-        "5", "6", "7", "8", "9", "10"
+        "-5", "-4", "-3", "-2", "-1",         // Labels
+        "0", "1", "2", "3", "4", "5"
     );
 }
 
-auto make_hslider(int index)
+/*auto make_hslider(int index)
 {
     hsliders[index] = share(slider(
         basic_thumb<25>(),
@@ -49,7 +49,7 @@ auto make_hsliders()
                          make_hslider(2)
                      )
     );
-}
+}*/
 
 auto make_vslider(int index)
 {
@@ -88,18 +88,25 @@ auto make_dial(int index)
         "5", "6", "7", "8", "9", "10"
     );
 
-    return align_center_middle(markers);
+    return align_center_middle(hmargin({20,20},markers));
 }
 
 auto make_dials()
 {
     return hmargin(20,
-                   vtile(
-                       make_dial(0),
-                       make_dial(1),
-                       make_dial(2)
+                   htile(
+                       vtile(
+                           make_dial(0),
+                           make_dial(1),
+                           make_dial(2)
+                       ),
+                       vtile(
+                            make_dial(3),
+                            make_dial(4),
+                            make_dial(5)
+                       )
                    )
-    );
+           );
 }
 
 auto make_controls()
@@ -108,14 +115,14 @@ auto make_controls()
         margin({ 20, 10, 20, 10 },
                vmin_size(400,
                          htile(
-                             margin({ 20, 20, 20, 20 }, pane("Vertical Sliders", make_vsliders(), 0.8f)),
-                             margin({ 20, 20, 20, 20 }, pane("Horizontal Sliders", make_hsliders(), 0.8f)),
-                             hstretch(0.5, margin({ 20, 20, 20, 20 }, pane("Knobs", make_dials(), 0.8f)))
+                             margin({ 20, 20, 20, 20 }, pane("Controllers", make_vsliders(), 0.8f)),
+                             //margin({ 20, 20, 20, 20 }, pane("Horizontal Sliders", make_hsliders(), 0.8f)),
+                             hstretch(0.5, margin({ 20, 20, 20, 20 }, pane("Features", make_dials(), 0.8f)))
                          )
                )
         );
 }
-
+/*
 void link_control(int index, view& view_)
 {
     vsliders[index]->on_change =
@@ -151,7 +158,7 @@ void link_controls(view& view_)
     link_control(0, view_);
     link_control(1, view_);
     link_control(2, view_);
-}
+}*/
 
 int main(int argc, char* argv[])
 {
@@ -166,7 +173,7 @@ int main(int argc, char* argv[])
         background
     );
 
-    link_controls(view_);
+    //link_controls(view_);
     _app.run();
     return 0;
 }
