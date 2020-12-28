@@ -4,6 +4,7 @@
    Distributed under the MIT License (https://opensource.org/licenses/MIT)
 =============================================================================*/
 #include <elements.hpp>
+#include <sstream>
 
 using namespace cycfi::elements;
 
@@ -51,6 +52,10 @@ auto make_hsliders()
     );
 }*/
 
+auto make_label(std::string label_name){
+    return vmargin({20,20},label(label_name));
+}
+
 auto make_vslider(int index)
 {
     vsliders[index] = share(slider(
@@ -58,17 +63,26 @@ auto make_vslider(int index)
         make_markers<true>(),
         (index + 1) * 0.25
     ));
-    return align_center(vmargin({ 20, 20 }, hold(vsliders[index])));
+    return align_center(margin({ 20, 20, 20, 20 }, hold(vsliders[index])));
 }
 
 auto make_vsliders()
 {
     return hmin_size(300,
-                     htile(
-                         make_vslider(0),
-                         make_vslider(1),
-                         make_vslider(2)
-                     )
+                         htile(
+                             vtile(
+                                make_vslider(0),
+                                make_label("Valence")
+                             ),
+                             vtile(
+                                make_vslider(1),
+                                make_label("Arousal")
+                             ),
+                             vtile(
+                                 make_vslider(2),
+                                 make_label("Originality")
+                             )
+                         )
     );
 }
 
@@ -97,13 +111,19 @@ auto make_dials()
                    htile(
                        vtile(
                            make_dial(0),
+                           make_label("Tempo"),
                            make_dial(1),
-                           make_dial(2)
+                           make_label("Dynamics"),
+                           make_dial(2),
+                           make_label("Pitch")
                        ),
                        vtile(
                             make_dial(3),
+                            make_label("Rhythm"),
                             make_dial(4),
-                            make_dial(5)
+                            make_label("Label"),
+                            make_dial(5),
+                            make_label("Label")
                        )
                    )
            );
