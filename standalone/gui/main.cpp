@@ -31,27 +31,6 @@ auto make_markers()
     );
 }
 
-/*auto make_hslider(int index)
-{
-    hsliders[index] = share(slider(
-        basic_thumb<25>(),
-        make_markers<false>(),
-        (index + 1) * 0.25
-    ));
-    return align_middle(hmargin({ 20, 20 }, hold(hsliders[index])));
-}
-
-auto make_hsliders()
-{
-    return hmin_size(300,
-                     vtile(
-                         make_hslider(0),
-                         make_hslider(1),
-                         make_hslider(2)
-                     )
-    );
-}*/
-
 auto make_label(std::string label_name){
     return vmargin({20,20},label(label_name));
 }
@@ -136,7 +115,6 @@ auto make_controls()
                vmin_size(400,
                          htile(
                              margin({ 20, 20, 20, 20 }, pane("Controllers", make_vsliders(), 0.8f)),
-                             //margin({ 20, 20, 20, 20 }, pane("Horizontal Sliders", make_hsliders(), 0.8f)),
                              hstretch(0.5, margin({ 20, 20, 20, 20 }, pane("Features", make_dials(), 0.8f)))
                          )
                )
@@ -148,8 +126,6 @@ void link_control(int index, view& view_)
     vsliders[index]->on_change =
         [index, &view_](double val)
         {
-          //hsliders[index]->slider_base::value(val);
-          //view_.refresh(*hsliders[index]);
 
           if(index == 0){
               dials[1]->dial_base::value(val);
@@ -181,15 +157,6 @@ void link_control(int index, view& view_)
 
         };
 
-    /*hsliders[index]->on_change =
-        [index, &view_](double val)
-        {
-          vsliders[index]->slider_base::value(val);
-          dials[index]->dial_base::value(val);
-          view_.refresh(*vsliders[index]);
-          view_.refresh(*dials[index]);
-        };*/
-
     dials[index]->on_change =
         [index, &view_](double val)
         {
@@ -205,9 +172,6 @@ void link_control(int index, view& view_)
                 vsliders[1]->slider_base::value(val);
                 view_.refresh(*vsliders[1]);
             }
-
-          //hsliders[index]->slider_base::value(val);
-          //view_.refresh(*hsliders[index]);
         };
 }
 
@@ -220,7 +184,7 @@ void link_controls(view& view_)
 
 int main(int argc, char* argv[])
 {
-    app _app(argc, argv, "Basic Sliders And Knobs", "com.cycfi.basic-sliders-and-knobs");
+    app _app(argc, argv, "Composer", "com.cycfi.basic-sliders-and-knobs");
     window _win(_app.name());
     _win.on_close = [&_app]() { _app.stop(); };
 
