@@ -58,15 +58,15 @@ jobs:
           name=CC::gcc-10
           name=CXX::g++-10
       - name: Update Clang
-          if: matrix.config.os == 'macos-11.0'
-          run: |
-            curl --output clang.tar.xz -L https://github.com/llvm/llvm-project/releases/download/llvmorg-11.0.0/clang+llvm-11.0.0-x86_64-apple-darwin.tar.xz
-            mkdir clang
-            tar -xvJf clang.tar.xz -C clang
-            cd clang/clang+llvm-11.0.0-x86_64-apple-darwin
-            sudo cp -R * /usr/local/
-            export CC=/usr/local/bin/clang
-            export CXX=/usr/local/bin/clang++
+        if: matrix.config.os == 'macos-11.0'
+        run: |
+          curl --output clang.tar.xz -L https://github.com/llvm/llvm-project/releases/download/llvmorg-11.0.0/clang+llvm-11.0.0-x86_64-apple-darwin.tar.xz
+          mkdir clang
+          tar -xvJf clang.tar.xz -C clang
+          cd clang/clang+llvm-11.0.0-x86_64-apple-darwin
+          sudo cp -R * /usr/local/
+          export CC=/usr/local/bin/clang
+          export CXX=/usr/local/bin/clang++
       - name: Install elements dependencies
         id: cmake_and_ninja
         shell: cmake -P {0}
