@@ -119,9 +119,9 @@ auto make_dials()
                        ),
                        vtile(
                             make_dial(3),
-                            make_label("Rhythm"),
+                            make_label("Timbre"),
                             make_dial(4),
-                            make_label("Label"),
+                            make_label("Rhythm"),
                             make_dial(5),
                             make_label("Label")
                        )
@@ -142,34 +142,72 @@ auto make_controls()
                )
         );
 }
-/*
+
 void link_control(int index, view& view_)
 {
     vsliders[index]->on_change =
         [index, &view_](double val)
         {
-          hsliders[index]->slider_base::value(val);
-          dials[index]->dial_base::value(val);
-          view_.refresh(*hsliders[index]);
-          view_.refresh(*dials[index]);
+          //hsliders[index]->slider_base::value(val);
+          //view_.refresh(*hsliders[index]);
+
+          if(index == 0){
+              dials[1]->dial_base::value(val);
+              view_.refresh(*dials[1]);
+
+              dials[3]->dial_base::value(val);
+              view_.refresh(*dials[3]);
+
+              dials[4]->dial_base::value(val);
+              view_.refresh(*dials[4]);
+
+              dials[5]->dial_base::value(val);
+              view_.refresh(*dials[5]);
+          }
+
+          if(index == 1){
+              dials[0]->dial_base::value(val);
+              view_.refresh(*dials[0]);
+
+              dials[2]->dial_base::value(val);
+              view_.refresh(*dials[2]);
+
+              dials[3]->dial_base::value(val);
+              view_.refresh(*dials[3]);
+
+              dials[4]->dial_base::value(val);
+              view_.refresh(*dials[4]);
+          }
+
         };
 
-    hsliders[index]->on_change =
+    /*hsliders[index]->on_change =
         [index, &view_](double val)
         {
           vsliders[index]->slider_base::value(val);
           dials[index]->dial_base::value(val);
           view_.refresh(*vsliders[index]);
           view_.refresh(*dials[index]);
-        };
+        };*/
 
     dials[index]->on_change =
         [index, &view_](double val)
         {
-          vsliders[index]->slider_base::value(val);
-          hsliders[index]->slider_base::value(val);
-          view_.refresh(*vsliders[index]);
-          view_.refresh(*hsliders[index]);
+            if(index == 0){
+                vsliders[1]->slider_base::value(val);
+                view_.refresh(*vsliders[1]);
+            }
+            if(index == 1){
+                vsliders[0]->slider_base::value(val);
+                view_.refresh(*vsliders[0]);
+            }
+            if(index == 2){
+                vsliders[1]->slider_base::value(val);
+                view_.refresh(*vsliders[1]);
+            }
+
+          //hsliders[index]->slider_base::value(val);
+          //view_.refresh(*hsliders[index]);
         };
 }
 
@@ -178,7 +216,7 @@ void link_controls(view& view_)
     link_control(0, view_);
     link_control(1, view_);
     link_control(2, view_);
-}*/
+}
 
 int main(int argc, char* argv[])
 {
@@ -193,7 +231,7 @@ int main(int argc, char* argv[])
         background
     );
 
-    //link_controls(view_);
+    link_controls(view_);
     _app.run();
     return 0;
 }
