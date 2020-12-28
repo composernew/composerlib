@@ -5,7 +5,7 @@ CPMAddPackage(
         NAME elements
         GITHUB_REPOSITORY cycfi/elements
         VERSION 0.0.1
-        GIT_TAG 5c0dfb80430b1af8f2ecba3604821795e00d20a8
+        GIT_TAG 3d0e59d437b8ac6efd17beb2fbd92adc4dbbc8c3
         OPTIONS
         "ELEMENTS_BUILD_EXAMPLES OFF"
         DOWNLOAD_ONLY TRUE
