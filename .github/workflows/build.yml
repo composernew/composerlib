@@ -49,6 +49,16 @@ jobs:
             artifact_name: "MacOSX",
             cores: 4,
           }
+          - {
+            name: "Windows / MSVC 19",
+            os: windows-2019,
+            config: Release,
+            cxx_standard: 20,
+            cmake_extra_args: -G "Visual Studio 16 2019" -DCMAKE_CXX_FLAGS="/O2" -DCMAKE_CXX_FLAGS="/std:c++latest",
+            sudocmd: "",
+            artifact_name: "Windows",
+            cores: 2,
+          }
     steps:
       - uses: actions/checkout@v2
       - name: Update GCC
