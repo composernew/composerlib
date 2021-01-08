@@ -35,7 +35,6 @@ endif ()
 if (MSVC)
     add_compile_options(/EHsc)
     add_compile_options("/std:c++latest")
-    add_compile_options("/Zc:char8_t-")
 endif()
 
 # Hack to check for min in Windows.h

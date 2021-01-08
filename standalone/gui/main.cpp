@@ -13,7 +13,6 @@ auto constexpr bkd_color = rgba(35, 35, 37, 255);
 auto background = box(bkd_color);
 
 using slider_ptr = std::shared_ptr<basic_slider_base>;
-//slider_ptr hsliders[3];
 slider_ptr vsliders[3];
 
 using dial_ptr = std::shared_ptr<dial_base>;
@@ -108,16 +107,42 @@ auto make_dials()
            );
 }
 
+
+
+
 auto make_controls()
 {
+    auto mbutton         = button("Compose");
+
+
+    auto  icon_buttons =
+        group("Player",
+              margin({ 10, 10, 20, 10 },
+                     vtile(
+                         top_margin(35,
+                                    htile(
+                                        align_center(icon_button(icons::pause, 1.2)),
+                                        align_center(icon_button(icons::play, 1.2)),
+                                        align_center(icon_button(icons::stop, 1.2)),
+                                        align_center(mbutton)
+                                    )
+                         )
+                     )
+              )
+        );
+
     return
         margin({ 20, 10, 20, 10 },
                vmin_size(400,
-                         htile(
-                             margin({ 20, 20, 20, 20 }, pane("Controllers", make_vsliders(), 0.8f)),
-                             hstretch(0.5, margin({ 20, 20, 20, 20 }, pane("Features", make_dials(), 0.8f)))
+                         vtile(
+                             htile(
+                                 margin({ 20, 20, 20, 20 }, pane("Controllers", make_vsliders(), 0.8f)),
+                                 hstretch(0.5, margin({ 20, 20, 20, 20 }, pane("Features", make_dials(), 0.8f)))
+                             ),
+                             hmin_size(250, margin({ 20, 20, 20, 20 }, icon_buttons))
                          )
                )
+
         );
 }
 
