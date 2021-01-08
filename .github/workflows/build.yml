@@ -54,7 +54,7 @@ jobs:
             os: windows-2019,
             config: Release,
             cxx_standard: 20,
-            cmake_extra_args: -G "Visual Studio 16 2019" -DCMAKE_CXX_FLAGS="/O2" -DCMAKE_CXX_FLAGS="/std:c++latest",
+            cmake_extra_args: -G "Visual Studio 16 2019" -DCMAKE_CXX_FLAGS="/O2",
             sudocmd: "",
             artifact_name: "Windows",
             cores: 2,
