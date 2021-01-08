@@ -18,6 +18,14 @@ slider_ptr vsliders[3];
 using dial_ptr = std::shared_ptr<dial_base>;
 dial_ptr dials[6];
 
+template <typename E>
+auto decorate(E&& e)
+{
+    return hsize(170, align_center(margin({ 25, 5, 25, 5 },
+                                          std::forward<E>(e)
+    )));
+}
+
 template <bool is_vertical>
 auto make_markers()
 {
@@ -32,6 +40,37 @@ auto make_markers()
 
 auto make_label(std::string label_name){
     return vmargin({20,20},label(label_name));
+}
+
+auto make_text(std::string text = "")
+{
+    return decorate(heading(text)
+                        .font_color(get_theme().indicator_hilite_color)
+                        .font_size(24)
+    );
+};
+
+auto make_thumbwheel(char const* unit, float offset, float scale, int precision)
+{
+    auto label = make_text();
+
+    auto&& as_string =
+        [=](double val)
+        {
+          std::ostringstream out;
+          out.precision(precision);
+          out << std::fixed << ((val * scale) + offset) << unit;
+          return out.str();
+        };
+
+    auto tw = share(thumbwheel(as_label<double>(as_string, label)));
+
+    return top_margin(20,
+                      layer(
+                          hold(tw),
+                          frame{}
+                      )
+    );
 }
 
 auto make_vslider(int index)
@@ -50,15 +89,18 @@ auto make_vsliders()
                          htile(
                              vtile(
                                 make_vslider(0),
-                                make_label("Valence")
+                                make_label("Valence"),
+                                make_thumbwheel(" ", 0, 10, 1)
                              ),
                              vtile(
                                 make_vslider(1),
-                                make_label("Arousal")
+                                make_label("Arousal"),
+                                make_thumbwheel(" ", 0, 10, 1)
                              ),
                              vtile(
                                  make_vslider(2),
-                                 make_label("Originality")
+                                 make_label("Originality"),
+                                 make_thumbwheel(" ", 0, 10, 1)
                              )
                          )
     );
@@ -90,30 +132,32 @@ auto make_dials()
                        vtile(
                            make_dial(0),
                            make_label("Tempo"),
+                           make_thumbwheel(" ", 0, 10, 1),
                            make_dial(1),
                            make_label("Dynamics"),
+                           make_thumbwheel(" ", 0, 10, 1),
                            make_dial(2),
-                           make_label("Pitch")
+                           make_label("Pitch"),
+                           make_thumbwheel(" ", 0, 10, 1)
                        ),
                        vtile(
                             make_dial(3),
                             make_label("Timbre"),
+                            make_thumbwheel(" ", 0, 10, 1),
                             make_dial(4),
                             make_label("Rhythm"),
+                            make_thumbwheel(" ", 0, 10, 1),
                             make_dial(5),
-                            make_label("Label")
+                            make_label("Label"),
+                            make_thumbwheel(" ", 0, 10, 1)
                        )
                    )
            );
 }
 
-
-
-
 auto make_controls()
 {
-    auto mbutton         = button("Compose");
-
+    auto mbutton = button("Compose");
 
     auto  icon_buttons =
         group("Player",
@@ -142,7 +186,6 @@ auto make_controls()
                              hmin_size(250, margin({ 20, 20, 20, 20 }, icon_buttons))
                          )
                )
-
         );
 }
 
