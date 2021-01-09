@@ -21,7 +21,7 @@ dial_ptr dials[6];
 template <typename E>
 auto decorate(E&& e)
 {
-    return hsize(170, align_center(margin({ 25, 5, 25, 5 },
+    return hsize(90, align_center(margin({ 20, 5, 20, 5 },
                   std::forward<E>(e)
     )));
 }
@@ -46,7 +46,7 @@ auto make_text(std::string text = "")
 {
     return decorate(heading(text)
                         .font_color(get_theme().indicator_hilite_color)
-                        .font_size(24)
+                        .font_size(16)
     );
 };
 
@@ -157,17 +157,17 @@ auto make_dials()
 
 auto make_buttons(){
 
-    auto mbutton = button("Compose", 1.5);
+    auto mbutton = button("Compose", 1.2);
 
     return
          vtile(
-             margin({20, 0, 40, 20},
+             margin({20, 0, 20, 20},
                         htile(
-                            icon_button(icons::pause, 1.5),
-                            icon_button(icons::play, 1.5),
-                            right_margin(20, icon_button(icons::stop, 1.5)),
+                            icon_button(icons::pause, 1.2),
+                            icon_button(icons::play, 1.2),
+                            right_margin(20, icon_button(icons::stop, 1.2)),
                             fixed_size(
-                                {250,20},
+                                {140,20},
                                 mbutton
                             )
                         )
