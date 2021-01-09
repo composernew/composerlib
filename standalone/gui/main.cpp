@@ -22,7 +22,7 @@ template <typename E>
 auto decorate(E&& e)
 {
     return hsize(170, align_center(margin({ 25, 5, 25, 5 },
-                                          std::forward<E>(e)
+                  std::forward<E>(e)
     )));
 }
 
@@ -80,29 +80,29 @@ auto make_vslider(int index)
         make_markers<true>(),
         (index + 1) * 0.25
     ));
-    return align_center(margin({ 20, 20, 20, 20 }, hold(vsliders[index])));
+    return align_center(hold(vsliders[index]));
 }
 
 auto make_vsliders()
 {
-    return hmin_size(300,
-                         htile(
+    return margin({20,0,20,20},
+                        htile(
                              vtile(
-                                make_vslider(0),
-                                make_label("Valence"),
-                                make_thumbwheel(" ", 0, 10, 1)
+                                 make_label("Valence"),
+                                 make_vslider(0),
+                                 hmargin(20, make_thumbwheel(" ", -5, 10, 1))
                              ),
                              vtile(
-                                make_vslider(1),
-                                make_label("Arousal"),
-                                make_thumbwheel(" ", 0, 10, 1)
+                                 make_label("Arousal"),
+                                 make_vslider(1),
+                                 hmargin(20, make_thumbwheel(" ", -5, 10, 1))
                              ),
                              vtile(
-                                 make_vslider(2),
                                  make_label("Originality"),
-                                 make_thumbwheel(" ", 0, 10, 1)
+                                 make_vslider(2),
+                                 hmargin(20, make_thumbwheel(" ", -5, 10, 1))
                              )
-                         )
+                        )
     );
 }
 
@@ -127,64 +127,66 @@ auto make_dial(int index)
 
 auto make_dials()
 {
-    return hmargin(20,
+    return margin({20,0,20,20},
                    htile(
                        vtile(
-                           make_dial(0),
-                           make_label("Tempo"),
-                           make_thumbwheel(" ", 0, 10, 1),
-                           make_dial(1),
-                           make_label("Dynamics"),
-                           make_thumbwheel(" ", 0, 10, 1),
-                           make_dial(2),
-                           make_label("Pitch"),
-                           make_thumbwheel(" ", 0, 10, 1)
+                            make_label("Tempo"),
+                            make_dial(0),
+                            hmargin(20, make_thumbwheel(" ", 0, 10, 1)),
+                            make_label("Dynamics"),
+                            make_dial(1),
+                            hmargin(20, make_thumbwheel(" ", 0, 10, 1)),
+                            make_label("Pitch"),
+                            make_dial(2),
+                            hmargin(20, make_thumbwheel(" ", 0, 10, 1))
                        ),
                        vtile(
-                            make_dial(3),
                             make_label("Timbre"),
-                            make_thumbwheel(" ", 0, 10, 1),
-                            make_dial(4),
+                            make_dial(3),
+                            hmargin(20, make_thumbwheel(" ", 0, 10, 1)),
                             make_label("Rhythm"),
-                            make_thumbwheel(" ", 0, 10, 1),
-                            make_dial(5),
+                            make_dial(4),
+                            hmargin(20, make_thumbwheel(" ", 0, 10, 1)),
                             make_label("Label"),
-                            make_thumbwheel(" ", 0, 10, 1)
+                            make_dial(5),
+                            hmargin(20, make_thumbwheel(" ", 0, 10, 1))
                        )
                    )
            );
 }
 
+auto make_buttons(){
+
+    auto mbutton = button("Compose", 1.5);
+
+    return
+         vtile(
+             margin({20, 0, 40, 20},
+                        htile(
+                            icon_button(icons::pause, 1.5),
+                            icon_button(icons::play, 1.5),
+                            right_margin(20, icon_button(icons::stop, 1.5)),
+                            fixed_size(
+                                {250,20},
+                                mbutton
+                            )
+                        )
+             )
+        );
+}
+
 auto make_controls()
 {
-    auto mbutton = button("Compose");
-
-    auto  icon_buttons =
-        group("Player",
-              margin({ 10, 10, 20, 10 },
-                     vtile(
-                         top_margin(35,
-                                    htile(
-                                        align_center(icon_button(icons::pause, 1.2)),
-                                        align_center(icon_button(icons::play, 1.2)),
-                                        align_center(icon_button(icons::stop, 1.2)),
-                                        align_center(mbutton)
-                                    )
-                         )
-                     )
-              )
-        );
-
     return
         margin({ 20, 10, 20, 10 },
                vmin_size(400,
-                         vtile(
                              htile(
-                                 margin({ 20, 20, 20, 20 }, pane("Controllers", make_vsliders(), 0.8f)),
-                                 hstretch(0.5, margin({ 20, 20, 20, 20 }, pane("Features", make_dials(), 0.8f)))
-                             ),
-                             hmin_size(250, margin({ 20, 20, 20, 20 }, icon_buttons))
-                         )
+                                 vstretch(0.5, margin({ 10, 10, 10, 10 }, pane("Controllers", make_vsliders(), 1.0f))),
+                                 vtile(
+                                     hstretch(0.5, margin({ 10, 10, 10, 10 }, pane("Features", make_dials(), 1.0f))),
+                                     margin({ 10, 10, 10, 10 }, pane("", make_buttons()))
+                                 )
+                             )
                )
         );
 }
@@ -261,6 +263,7 @@ int main(int argc, char* argv[])
     view_.content(
         make_controls(),
         background
+
     );
 
     link_controls(view_);
