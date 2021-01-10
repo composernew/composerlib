@@ -5,6 +5,7 @@
 =============================================================================*/
 #include <elements.hpp>
 #include <sstream>
+#include <iostream>
 
 using namespace cycfi::elements;
 
@@ -17,6 +18,12 @@ slider_ptr vsliders[3];
 
 using dial_ptr = std::shared_ptr<dial_base>;
 dial_ptr dials[6];
+
+using thumbwheel_ptr = std::shared_ptr<thumbwheel_base>;
+thumbwheel_ptr thumbwheels[9];
+
+using label_ptr = decltype(share(label("")));
+label_ptr labels[9];
 
 template <typename E>
 auto decorate(E&& e)
@@ -42,34 +49,13 @@ auto make_label(std::string label_name){
     return vmargin({20,20},label(label_name));
 }
 
-auto make_text(std::string text = "")
-{
-    return decorate(heading(text)
-                        .font_color(get_theme().indicator_hilite_color)
-                        .font_size(16)
-    );
-};
+auto make_text(int index, std::string default_value){
 
-auto make_thumbwheel(char const* unit, float offset, float scale, int precision)
-{
-    auto label = make_text();
+    labels[index] = share(label(default_value));
 
-    auto&& as_string =
-        [=](double val)
-        {
-          std::ostringstream out;
-          out.precision(precision);
-          out << std::fixed << ((val * scale) + offset) << unit;
-          return out.str();
-        };
-
-    auto tw = share(thumbwheel(as_label<double>(as_string, label)));
-
-    return top_margin(20,
-                      layer(
-                          hold(tw),
-                          frame{}
-                      )
+    return layer(
+                decorate(hold(labels[index])),
+                frame{}
     );
 }
 
@@ -90,17 +76,17 @@ auto make_vsliders()
                              vtile(
                                  make_label("Valence"),
                                  make_vslider(0),
-                                 hmargin(20, make_thumbwheel(" ", -5, 10, 1))
+                                 margin({20,20,20,0}, make_text(0, "-5.0"))
                              ),
                              vtile(
                                  make_label("Arousal"),
                                  make_vslider(1),
-                                 hmargin(20, make_thumbwheel(" ", -5, 10, 1))
+                                 margin({20,20,20,0}, make_text(1, "-5.0"))
                              ),
                              vtile(
                                  make_label("Originality"),
                                  make_vslider(2),
-                                 hmargin(20, make_thumbwheel(" ", -5, 10, 1))
+                                 margin({20,20,20,0}, make_text(2, "-5.0"))
                              )
                         )
     );
@@ -132,24 +118,24 @@ auto make_dials()
                        vtile(
                             make_label("Tempo"),
                             make_dial(0),
-                            hmargin(20, make_thumbwheel(" ", 0, 10, 1)),
+                            margin({20,20,20,0}, make_text(3, "0")),
                             make_label("Dynamics"),
                             make_dial(1),
-                            hmargin(20, make_thumbwheel(" ", 0, 10, 1)),
+                            margin({20,20,20,0}, make_text(4, "0")),
                             make_label("Pitch"),
                             make_dial(2),
-                            hmargin(20, make_thumbwheel(" ", 0, 10, 1))
+                            margin({20,20,20,0}, make_text(5, "0"))
                        ),
                        vtile(
                             make_label("Timbre"),
                             make_dial(3),
-                            hmargin(20, make_thumbwheel(" ", 0, 10, 1)),
+                            margin({20,20,20,0}, make_text(6, "0")),
                             make_label("Rhythm"),
                             make_dial(4),
-                            hmargin(20, make_thumbwheel(" ", 0, 10, 1)),
+                            margin({20,20,20,0}, make_text(7, "0")),
                             make_label("Label"),
                             make_dial(5),
-                            hmargin(20, make_thumbwheel(" ", 0, 10, 1))
+                            margin({20,20,20,0}, make_text(8, "0"))
                        )
                    )
            );
@@ -193,7 +179,7 @@ auto make_controls()
 
 void link_control(int index, view& view_)
 {
-    vsliders[index]->on_change =
+    /*vsliders[index]->on_change =
         [index, &view_](double val)
         {
 
@@ -242,7 +228,7 @@ void link_control(int index, view& view_)
                 vsliders[1]->slider_base::value(val);
                 view_.refresh(*vsliders[1]);
             }
-        };
+        };*/
 }
 
 void link_controls(view& view_)
