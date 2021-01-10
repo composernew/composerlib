@@ -19,9 +19,6 @@ slider_ptr vsliders[3];
 using dial_ptr = std::shared_ptr<dial_base>;
 dial_ptr dials[6];
 
-using thumbwheel_ptr = std::shared_ptr<thumbwheel_base>;
-thumbwheel_ptr thumbwheels[9];
-
 using label_ptr = decltype(share(label("")));
 label_ptr labels[9];
 
@@ -170,65 +167,79 @@ auto make_controls()
                                  vstretch(0.5, margin({ 10, 10, 10, 10 }, pane("Controllers", make_vsliders(), 1.0f))),
                                  vtile(
                                      hstretch(0.5, margin({ 10, 10, 10, 10 }, pane("Features", make_dials(), 1.0f))),
-                                     margin({ 10, 10, 10, 10 }, pane("", make_buttons()))
+                                     margin({ 10, 10, 10, 10 }, pane("Player", make_buttons()))
                                  )
                              )
                )
         );
 }
 
+void dial_value(int dial_index, double val, view &view_){
+
+    dials[dial_index]->dial_base::value(val);
+    view_.refresh(*dials[dial_index]);
+
+    labels[(dial_index+3)]->set_text(std::to_string(val));
+    view_.refresh(*labels[(dial_index+3)]);
+}
+
+void slider_value(int slider_index, double val, view &view_){
+
+    vsliders[slider_index]->slider_base::value(val);
+    view_.refresh(*vsliders[slider_index]);
+
+    labels[slider_index]->set_text(std::to_string(val));
+    view_.refresh(*labels[slider_index]);
+}
+
 void link_control(int index, view& view_)
 {
-    /*vsliders[index]->on_change =
-        [index, &view_](double val)
-        {
+    if(index <= 2){
 
-          if(index == 0){
-              dials[1]->dial_base::value(val);
-              view_.refresh(*dials[1]);
+        vsliders[index]->on_change =
+            [index, &view_](double val){
 
-              dials[3]->dial_base::value(val);
-              view_.refresh(*dials[3]);
+                labels[index]->set_text(std::to_string(val));
+                view_.refresh(*labels[index]);
 
-              dials[4]->dial_base::value(val);
-              view_.refresh(*dials[4]);
+                if(index == 0){
+                    dial_value(1, val, view_);
+                    dial_value(3, val, view_);
+                    dial_value(4, val, view_);
+                }
 
-              dials[5]->dial_base::value(val);
-              view_.refresh(*dials[5]);
-          }
+                if(index == 1){
+                    dial_value(0, val, view_);
+                    dial_value(2, val, view_);
+                    dial_value(3, val, view_);
+                    dial_value(4, val, view_);
+                    dial_value(5, val, view_);
+                }
+            };
+    }
 
-          if(index == 1){
-              dials[0]->dial_base::value(val);
-              view_.refresh(*dials[0]);
-
-              dials[2]->dial_base::value(val);
-              view_.refresh(*dials[2]);
-
-              dials[3]->dial_base::value(val);
-              view_.refresh(*dials[3]);
-
-              dials[4]->dial_base::value(val);
-              view_.refresh(*dials[4]);
-          }
-
-        };
+    int dials_index = index + 3;
 
     dials[index]->on_change =
-        [index, &view_](double val)
-        {
-            if(index == 0){
-                vsliders[1]->slider_base::value(val);
-                view_.refresh(*vsliders[1]);
+        [index, dials_index, &view_](double val){
+
+            labels[dials_index]->set_text(std::to_string(val));
+            view_.refresh(*labels[dials_index]);
+
+            if(index == 0 || index == 2 || index == 3 || index == 4 || index == 5){
+                slider_value(1, val,view_);
+                dial_value(2, val, view_);
+                dial_value(3, val, view_);
+                dial_value(4, val, view_);
+                dial_value(5, val, view_);
             }
-            if(index == 1){
-                vsliders[0]->slider_base::value(val);
-                view_.refresh(*vsliders[0]);
+
+            if(index == 1 || index == 3 || index == 4){
+                slider_value(0, val,view_);
+                dial_value(3, val, view_);
+                dial_value(4, val, view_);
             }
-            if(index == 2){
-                vsliders[1]->slider_base::value(val);
-                view_.refresh(*vsliders[1]);
-            }
-        };*/
+        };
 }
 
 void link_controls(view& view_)
@@ -236,6 +247,9 @@ void link_controls(view& view_)
     link_control(0, view_);
     link_control(1, view_);
     link_control(2, view_);
+    link_control(3, view_);
+    link_control(4, view_);
+    link_control(5, view_);
 }
 
 int main(int argc, char* argv[])
