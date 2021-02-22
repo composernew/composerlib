@@ -2,7 +2,7 @@
 // Created by Carla on 03/02/2021.
 //
 
-#include <notes/notes.h>
+#include <audio/synthesizer.h>
 
 void sin_synth::process(const out_channels &out) {
     auto left = out[0];

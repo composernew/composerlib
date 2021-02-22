@@ -21,13 +21,13 @@ add_subdirectory(${Q_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/q EXCLUDE_FROM_ALL)
 ### Library                                         ###
 #######################################################
 
-add_library(noteslib
-        notes/notes.h
-        notes/notes.cpp
+add_library(audiolib
+        audio/synthesizer.h
+        audio/synthesizer.cpp
 )
 
-target_include_directories(noteslib
+target_include_directories(audiolib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_link_libraries(noteslib PUBLIC libq libqio cycfi::infra)
+target_link_libraries(audiolib PUBLIC libq libqio cycfi::infra)

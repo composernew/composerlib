@@ -1,17 +1,15 @@
-//
-// Created by Carla on 03/02/2021.
-//
+/*=============================================================================
+   Copyright (c) 2014-2020 Joel de Guzman. All rights reserved.
 
-#ifndef COMPOSER_NOTES_H
-#define COMPOSER_NOTES_H
+   Distributed under the MIT License [ https://opensource.org/licenses/MIT ]
+=============================================================================*/
+
+#ifndef COMPOSER_SYNTHESIZER_H
+#define COMPOSER_SYNTHESIZER_H
 
 #include <q/support/literals.hpp>
 #include <q/synth/sin.hpp>
 #include <q_io/audio_stream.hpp>
-
-///////////////////////////////////////////////////////////////////////////////
-// Synthesize a 440 Hz sine wave.
-///////////////////////////////////////////////////////////////////////////////
 
 namespace q = cycfi::q;
 using namespace q::literals;
@@ -28,4 +26,4 @@ struct sin_synth : q::port_audio_stream
     q::phase_iterator phase;   // The phase iterator
 };
 
-#endif // COMPOSER_NOTES_H
+#endif // COMPOSER_SYNTHESIZER_H
