@@ -1,6 +1,8 @@
-//
-// Created by Carla on 03/02/2021.
-//
+/*=============================================================================
+   Copyright (c) 2014-2020 Joel de Guzman. All rights reserved.
+
+   Distributed under the MIT License [ https://opensource.org/licenses/MIT ]
+=============================================================================*/
 
 #include <audio/synthesizer.h>
 
