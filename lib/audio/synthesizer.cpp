@@ -11,7 +11,19 @@ void sin_synth::process(const out_channels &out) {
     auto right = out[1];
     for (auto frame : out.frames())
     {
+        // Generate the ADSR envelope
+        auto env_ = env();
+
+        // Set the filter frequency
+        filter.cutoff(env_);
+
         // Synthesize the sin wave
-        right[frame] = left[frame] = q::sin(phase++);
+        auto val = q::sin(phase++);
+
+        // Apply the envelope (amplifier and filter) with soft clip
+        val = clip(filter(val) * env_);
+
+        //Output
+        right[frame] = left[frame] = val;
     }
 }
