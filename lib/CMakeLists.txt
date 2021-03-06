@@ -24,9 +24,7 @@ add_subdirectory(${Q_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/q EXCLUDE_FROM_ALL)
 add_library(audiolib
         audio/synthesizer.h
         audio/synthesizer.cpp
-        audio/midi_processor.cpp
-        audio/midi_processor.h
-        audio/devices.h)
+        )
 
 target_include_directories(audiolib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
