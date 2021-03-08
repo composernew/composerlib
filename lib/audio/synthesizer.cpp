@@ -16,6 +16,7 @@ void sin_synth::process(const out_channels &out) {
     }
 }
 
-void sin_synth::set(q::frequency freq) {
+void sin_synth::set(q::frequency freq, q::duration dur) {
     phase.set(freq, this->sampling_rate());
+    q::sleep(dur);
 }

@@ -7,7 +7,6 @@ using namespace q::notes;
 int main(){
 
     const int num_notes = 6;
-    auto time = q::duration(2);
 
     // 6 string guitar frequencies:
     constexpr auto low_e   = E[2];
@@ -18,13 +17,13 @@ int main(){
     constexpr auto high_e  = E[4];
 
     std::array<q::frequency,num_notes> notes = {low_e, a, d, g, b, high_e};
+    std::array<q::duration,num_notes> times = {1,2,3,2,1,4};
 
     sin_synth synth{notes[0]};
     synth.start();
 
-    for(const q::frequency &note : notes){
-        synth.set(note);
-        q::sleep(time);
+    for(int i = 0; i < notes.size(); ++i){
+        synth.set(notes[i],times[i]);
     }
 
     synth.stop();

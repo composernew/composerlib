@@ -23,9 +23,10 @@ struct sin_synth : q::port_audio_stream
 
     void process(out_channels const& out);
 
-    void set(q::frequency freq);
+    void set(q::frequency freq, q::duration dur);
 
-    q::phase_iterator phase;   // The phase iterator
+    q::phase_iterator   phase;       // The phase iterator
+    q::duration         duration();  // Note duration
 };
 
 #endif // COMPOSER_SYNTHESIZER_H
