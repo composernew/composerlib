@@ -6,6 +6,7 @@
 #include <elements.hpp>
 #include <sstream>
 #include <iostream>
+#include <array>
 
 using namespace cycfi::elements;
 
@@ -14,13 +15,13 @@ auto constexpr bkd_color = rgba(35, 35, 37, 255);
 auto background = box(bkd_color);
 
 using slider_ptr = std::shared_ptr<basic_slider_base>;
-slider_ptr vsliders[3];
+std::array<slider_ptr,3> vertical_sliders;
 
 using dial_ptr = std::shared_ptr<dial_base>;
-dial_ptr dials[6];
+std::array<dial_ptr,6> dials;
 
 using label_ptr = decltype(share(label("")));
-label_ptr labels[9];
+std::array<label_ptr,9> labels;
 
 template <typename E>
 auto decorate(E&& e)
@@ -58,12 +59,12 @@ auto make_text(int index, std::string default_value){
 
 auto make_vslider(int index)
 {
-    vsliders[index] = share(slider(
+    vertical_sliders[index] = share(slider(
         basic_thumb<25>(),
         make_markers<true>(),
         (index + 1) * 0.25
     ));
-    return align_center(hold(vsliders[index]));
+    return align_center(hold(vertical_sliders[index]));
 }
 
 auto make_vsliders()
@@ -185,8 +186,8 @@ void dial_value(int dial_index, double val, view &view_){
 
 void slider_value(int slider_index, double val, view &view_){
 
-    vsliders[slider_index]->slider_base::value(val);
-    view_.refresh(*vsliders[slider_index]);
+    vertical_sliders[slider_index]->slider_base::value(val);
+    view_.refresh(*vertical_sliders[slider_index]);
 
     labels[slider_index]->set_text(std::to_string(val));
     view_.refresh(*labels[slider_index]);
@@ -196,7 +197,7 @@ void link_control(int index, view& view_)
 {
     if(index <= 2){
 
-        vsliders[index]->on_change =
+        vertical_sliders[index]->on_change =
             [index, &view_](double val){
 
                 labels[index]->set_text(std::to_string(val));
