@@ -4,7 +4,7 @@
 
 # Project information
 cmake_minimum_required(VERSION 3.17)
-project(Composer)
+project(composer)
 set(CMAKE_CXX_STANDARD 20)
 
 include(cmake/functions.cmake)
@@ -65,18 +65,13 @@ if(BUILD_TESTS)
 endif()
 
 #######################################################
-### Standalone                                      ###
-#######################################################
-add_subdirectory(standalone)
-
-#######################################################
-### Notes                                           ###
-#######################################################
-add_subdirectory(lib)
-
-#######################################################
 ### Examples                                        ###
 #######################################################
 if (BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
+
+#######################################################
+### Standalone                                      ###
+#######################################################
+add_subdirectory(standalone)

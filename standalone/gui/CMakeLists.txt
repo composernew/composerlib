@@ -42,7 +42,7 @@ set(ELEMENTS_RESOURCES
 file(COPY ${ELEMENTS_RESOURCES} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/resources")
 
 if (APPLE)
-    add_executable(composer MACOSX_BUNDLE main.cpp ${ELEMENTS_RESOURCES})
+    add_executable(composer MACOSX_BUNDLE main.cpp application.cpp ${ELEMENTS_RESOURCES})
     target_link_options(composer PRIVATE -framework AppKit)
     set(MACOSX_BUNDLE_BUNDLE_NAME ${ELEMENTS_APP_TITLE})
     set(MACOSX_BUNDLE_COPYRIGHT ${ELEMENTS_APP_COPYRIGHT})
@@ -60,9 +60,9 @@ if (APPLE)
             MACOSX_BUNDLE_INFO_PLIST ${ELEMENTS_ROOT}/resources/macos/plist.in
     )
 elseif (UNIX AND NOT APPLE)
-    add_executable(composer main.cpp ${ELEMENTS_RESOURCES})
+    add_executable(composer main.cpp application.cpp ${ELEMENTS_RESOURCES})
 elseif (WIN32)
-    add_executable(composer WIN32 main.cpp ${ELEMENTS_RESOURCES})
+    add_executable(composer WIN32 main.cpp application.cpp ${ELEMENTS_RESOURCES})
     if (MSVC)
         target_link_options(composer PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup shcore.lib)
         if (CMAKE_SIZEOF_VOID_P EQUAL 8) # 64 bits?
