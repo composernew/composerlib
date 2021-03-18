@@ -10,8 +10,8 @@ FetchContent_Declare(
         GIT_TAG 3e246461b40ded09b34a51192a3c0e7184290655
 )
 
-set(Q_BUILD_EXAMPLES OFF)
-set(Q_BUILD_TEST OFF)
+option(Q_BUILD_EXAMPLES OFF)
+option(Q_BUILD_TEST OFF)
 
 FetchContent_GetProperties(Q)
 if(NOT q_POPULATED)
