@@ -9,21 +9,26 @@
 #include <q_io/audio_stream.hpp>
 #include <vector>
 
-struct synth : cycfi::q::port_audio_stream
+// Based on Q 'sin_synth' example - https://github.com/cycfi/q/blob/master/example/sin_synth.cpp
+
+class synth : public cycfi::q::port_audio_stream
 {
-    synth(int timbre = 0)
+    void process(out_channels const& out) override;
+
+    void set(cycfi::q::frequency const &freq, int const &dur);
+
+    cycfi::q::phase_iterator   phase;   // The phase iterator
+
+  public:
+
+    explicit synth(int timbre = 0)
         : port_audio_stream( 0, 2)
         , _timbre(timbre)
     {}
 
-    void process(out_channels const& out);
-
-    void set(cycfi::q::frequency const &freq, int const &dur);
-
     void play(std::vector<std::pair<int,cycfi::q::frequency>> &notes);
 
-    cycfi::q::phase_iterator   phase;   // The phase iterator
-    int                        _timbre;
+    int _timbre; // sine, triangle, square or saw
 };
 
 #endif // COMPOSER_SYNTH_H
