@@ -1,5 +1,5 @@
-#ifndef COMPOSER_SYNTHESIZER_H
-#define COMPOSER_SYNTHESIZER_H
+#ifndef COMPOSER_SYNTH_H
+#define COMPOSER_SYNTH_H
 
 #include <q/synth/sin.hpp>
 #include <q/synth/square.hpp>
@@ -26,4 +26,4 @@ struct synth : cycfi::q::port_audio_stream
     int                        _timbre;
 };
 
-#endif // COMPOSER_SYNTHESIZER_H
+#endif // COMPOSER_SYNTH_H

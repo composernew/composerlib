@@ -6,5 +6,5 @@ if (Matplot++_FOUND)
     target_exception_options(example_melody)
 endif()
 
-add_executable(example_audio synth.cpp)
+add_executable(example_audio audio.cpp)
 target_link_libraries(example_audio PRIVATE audiolib)

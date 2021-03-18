@@ -1,4 +1,4 @@
-#include <audio/synthesizer.h>
+#include <audio/synth.h>
 #include <q/support/notes.hpp>
 
 namespace q = cycfi::q;

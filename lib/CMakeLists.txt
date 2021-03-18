@@ -26,8 +26,8 @@ endif()
 #######################################################
 
 add_library(audiolib
-        audio/synthesizer.h
-        audio/synthesizer.cpp
+        audio/synth.h
+        audio/synth.cpp
         )
 
 target_include_directories(audiolib
