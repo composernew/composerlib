@@ -230,9 +230,9 @@ void application::link_controls(view &view_) {
 
 // Initialize the application
 // The application will stop when the window is closed
-void application::init_application(cycfi::elements::app &_app) {
+void application::initialize_application() {
 
-    _window.on_close = [&_app]() { _app.stop(); };
+    _window.on_close = [this]() { _app.stop(); };
 
     _view.content(
         make_application(),
@@ -240,6 +240,9 @@ void application::init_application(cycfi::elements::app &_app) {
     );
 
     link_controls(_view);
+}
+
+void application::run() {
 
     _app.run();
 }

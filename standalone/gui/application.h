@@ -44,17 +44,22 @@ class application {
     using slider_ptr = std::shared_ptr<cycfi::elements::basic_slider_base>;
     std::array<slider_ptr,3> vertical_sliders;
 
+    cycfi::elements::app _app;
+
   public:
 
-    application(const auto &background_color, cycfi::elements::app &_app) :
+    application(const auto &background_color, int argc, char* argv[]) :
         _background(background_color),
         _window(_app.name()),
-        _view(_window)
-    {init_application(_app);}
+        _view(_window),
+        _app(argc, argv, "Composer", "com.composer.composer")
+    {initialize_application();}
 
     auto make_application();
 
-    void init_application(cycfi::elements::app &_app); //initialize the application
+    void initialize_application(); //initialize the application
+
+    void run();
 
     cycfi::elements::box_element    _background;
     cycfi::elements::window         _window;
