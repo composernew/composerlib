@@ -1,20 +1,23 @@
 #######################################################
 ### Elements                                        ###
 #######################################################
-CPMAddPackage(
-        NAME elements
-        GITHUB_REPOSITORY cycfi/elements
-        VERSION 0.0.1
+FetchContent_Declare(
+        elements
+        GIT_REPOSITORY https://github.com/cycfi/elements.git
         GIT_TAG 3d0e59d437b8ac6efd17beb2fbd92adc4dbbc8c3
-        OPTIONS
-        "ELEMENTS_BUILD_EXAMPLES OFF"
-        DOWNLOAD_ONLY TRUE
 )
-set(ELEMENTS_ROOT ${elements_SOURCE_DIR})
-get_filename_component(ELEMENTS_ROOT "${ELEMENTS_ROOT}" ABSOLUTE)
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${ELEMENTS_ROOT}/cmake")
-include(ElementsConfigCommon)
-add_subdirectory(${ELEMENTS_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/elements EXCLUDE_FROM_ALL)
+
+option(ELEMENTS_BUILD_EXAMPLES OFF)
+
+FetchContent_GetProperties(elements)
+if(NOT elements_POPULATED)
+    FetchContent_Populate(elements)
+    set(ELEMENTS_ROOT ${elements_SOURCE_DIR})
+    get_filename_component(ELEMENTS_ROOT "${ELEMENTS_ROOT}" ABSOLUTE)
+    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${ELEMENTS_ROOT}/cmake")
+    include(ElementsConfigCommon)
+    add_subdirectory(${ELEMENTS_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/elements EXCLUDE_FROM_ALL)
+endif()
 
 #######################################################
 ### Composer                                        ###
