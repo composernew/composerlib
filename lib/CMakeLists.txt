@@ -1,8 +1,17 @@
 #######################################################
-### Q                                               ###
+### Infra                                           ###
 #######################################################
 
-include(FetchContent)
+FetchContent_Declare(
+        infra
+        GIT_REPOSITORY https://github.com/cycfi/infra.git
+        GIT_TAG f3e33fe0340d77f9ce4ace1fc6f1a569e033e173
+)
+FetchContent_MakeAvailable(infra)
+
+#######################################################
+### Q                                               ###
+#######################################################
 
 FetchContent_Declare(
         Q
