@@ -9,10 +9,7 @@
 #include <q_io/audio_stream.hpp>
 #include <vector>
 
-namespace q = cycfi::q;
-using namespace q::literals;
-
-struct synth : q::port_audio_stream
+struct synth : cycfi::q::port_audio_stream
 {
     synth(int timbre = 0)
         : port_audio_stream( 0, 2)
@@ -21,12 +18,12 @@ struct synth : q::port_audio_stream
 
     void process(out_channels const& out);
 
-    void set(q::frequency const &freq, int const &dur);
+    void set(cycfi::q::frequency const &freq, int const &dur);
 
-    void play(std::vector<std::pair<int,q::frequency>> &notes);
+    void play(std::vector<std::pair<int,cycfi::q::frequency>> &notes);
 
-    q::phase_iterator   phase;   // The phase iterator
-    int                 _timbre;
+    cycfi::q::phase_iterator   phase;   // The phase iterator
+    int                        _timbre;
 };
 
 #endif // COMPOSER_SYNTHESIZER_H

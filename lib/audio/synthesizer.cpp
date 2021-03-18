@@ -1,5 +1,7 @@
 #include <audio/synthesizer.h>
 
+namespace q = cycfi::q;
+
 void synth::process(const out_channels &out) {
 
     auto left = out[0];

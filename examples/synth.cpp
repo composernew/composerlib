@@ -1,6 +1,7 @@
 #include <audio/synthesizer.h>
 #include <q/support/notes.hpp>
 
+namespace q = cycfi::q;
 using namespace q::notes;
 
 int main(){
