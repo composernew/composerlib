@@ -1,9 +1,6 @@
 #include <audio/synth.h>
 #include <q/support/notes.hpp>
 
-namespace q = cycfi::q;
-using namespace q::notes;
-
 int main(){
 
     constexpr int triangle = 1;
@@ -11,14 +8,14 @@ int main(){
     constexpr int saw      = 3;
 
     // 6 string guitar frequencies:
-    constexpr auto low_e   = E[2];
-    constexpr auto a       = A[2];
-    constexpr auto d       = D[3];
-    constexpr auto g       = G[3];
-    constexpr auto b       = B[3];
-    constexpr auto high_e  = E[4];
+    constexpr auto low_e   = cycfi::q::notes::E[2];
+    constexpr auto a       = cycfi::q::notes::A[2];
+    constexpr auto d       = cycfi::q::notes::D[3];
+    constexpr auto g       = cycfi::q::notes::G[3];
+    constexpr auto b       = cycfi::q::notes::B[3];
+    constexpr auto high_e  = cycfi::q::notes::E[4];
 
-    std::vector<std::pair<int,q::frequency>> notes = {{10, low_e},{8, a},{6, d},
+    std::vector<std::pair<int,cycfi::q::frequency>> notes = {{10, low_e},{8, a},{6, d},
                                                       {4, g},{2, b},{0, high_e}};
 
     //default sine wave

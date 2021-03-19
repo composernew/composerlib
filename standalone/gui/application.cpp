@@ -4,8 +4,6 @@
 
 #include "application.h"
 
-using namespace cycfi::elements;
-
 template <typename E>
 auto application::decorate(E&& e)
 {
@@ -17,7 +15,7 @@ auto application::decorate(E&& e)
 template <bool is_vertical>
 auto application::make_markers()
 {
-    auto track = basic_track<5, is_vertical>();
+    auto track = cycfi::elements::basic_track<5, is_vertical>();
     return slider_labels<10>(
         slider_marks<40>(track),         // Track with marks
         0.8,                             // Label font size (relative size)
@@ -27,16 +25,16 @@ auto application::make_markers()
 }
 
 auto application::make_label(std::string const &label_name){
-    return vmargin({20.,20.},label(label_name));
+    return vmargin({20.,20.},cycfi::elements::label(label_name));
 }
 
 auto application::make_text(int index, std::string const &default_value){
 
-    labels[index] = share(label(default_value));
+    labels[index] = share(cycfi::elements::label(default_value));
 
     return layer(
         decorate(hold(labels[index])),
-        frame{}
+        cycfi::elements::frame{}
     );
 }
 
@@ -44,7 +42,7 @@ auto application::make_dial(int index)
 {
     dials[index] = share(
         dial(
-            radial_marks<20>(basic_knob<50>()),
+            radial_marks<20>(cycfi::elements::basic_knob<50>()),
             (index + 1.) * 0.25
         )
     );
@@ -62,7 +60,7 @@ auto application::make_dial(int index)
 auto application::make_vertical_slider(int index)
 {
     vertical_sliders[index] = share(slider(
-        basic_thumb<25>(),
+        cycfi::elements::basic_thumb<25>(),
         make_markers<true>(),
         (index + 1.0) * 0.25
     ));
@@ -74,20 +72,20 @@ auto application::make_control(const std::string &label_name, int slider_index, 
         vtile(
             make_label(label_name),
             make_vertical_slider(slider_index),
-            margin({20.,20.,20.,0.}, make_text(text_index, "-5.0"))
+            cycfi::elements::margin({20.,20.,20.,0.}, make_text(text_index, "-5.0"))
         );
 }
 
 auto application::make_player() {
-    auto mbutton = button("Compose", 1.2);
+    auto mbutton = cycfi::elements::button("Compose", 1.2);
 
     return
         vtile(
             margin({20., 0., 20., 20.},
                    htile(
-                       icon_button(icons::pause, 1.2),
-                       icon_button(icons::play, 1.2),
-                       right_margin(20.0, icon_button(icons::stop, 1.2)),
+                       cycfi::elements::icon_button(cycfi::elements::icons::pause, 1.2),
+                       cycfi::elements::icon_button(cycfi::elements::icons::play, 1.2),
+                       right_margin(20.0, cycfi::elements::icon_button(cycfi::elements::icons::stop, 1.2)),
                        fixed_size(
                            {140.0,20.0},
                            mbutton
@@ -103,24 +101,24 @@ auto application::make_features() {
                       vtile(
                           make_label("Tempo"),
                           make_dial(0),
-                          margin({20.,20.,20.,0.}, make_text(3, "0")),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(3, "0")),
                           make_label("Dynamics"),
                           make_dial(1),
-                          margin({20.,20.,20.,0.}, make_text(4, "0")),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(4, "0")),
                           make_label("Pitch"),
                           make_dial(2),
-                          margin({20.,20.,20.,0.}, make_text(5, "0"))
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(5, "0"))
                       ),
                       vtile(
                           make_label("Timbre"),
                           make_dial(3),
-                          margin({20.,20.,20.,0.}, make_text(6, "0")),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(6, "0")),
                           make_label("Rhythm"),
                           make_dial(4),
-                          margin({20.,20.,20.,0.}, make_text(7, "0")),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(7, "0")),
                           make_label("Label"),
                           make_dial(5),
-                          margin({20.,20.,20.,0.}, make_text(8, "0"))
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(8, "0"))
                       )
                   )
     );
@@ -129,7 +127,7 @@ auto application::make_features() {
 auto application::make_controllers() {
 
     return margin({20.,0.,20.,20.},
-                  htile(
+                  cycfi::elements::htile(
                       make_control("Valence",0,0),
                       make_control("Arousal",1,1),
                       make_control("Originality",2,2)
@@ -145,15 +143,15 @@ auto application::make_application() {
                          htile(
                              vstretch(0.5, margin({ 10., 10., 10., 10. }, pane("Controllers", make_controllers(), 1.0F))),
                              vtile(
-                                 hstretch(0.5, margin({ 10., 10., 10., 10. }, pane("Features", make_features(), 1.0F))),
-                                 margin({ 10., 10., 10., 10. }, pane("Player", make_player()))
+                                 hstretch(0.5, margin({ 10., 10., 10., 10. }, cycfi::elements::pane("Features", make_features(), 1.0F))),
+                                 margin({ 10., 10., 10., 10. }, cycfi::elements::pane("Player", make_player()))
                              )
                          )
                )
         );
 }
 
-void application::dial_value(int dial_index, double val, view &view_) {
+void application::dial_value(int dial_index, double val, cycfi::elements::view &view_) {
 
     dials[dial_index]->dial_base::value(val);
     view_.refresh(*dials[dial_index]);
@@ -162,7 +160,7 @@ void application::dial_value(int dial_index, double val, view &view_) {
     view_.refresh(*labels[(dial_index+3)]);
 }
 
-void application::slider_value(int slider_index, double val, view &view_) {
+void application::slider_value(int slider_index, double val, cycfi::elements::view &view_) {
 
     vertical_sliders[slider_index]->slider_base::value(val);
     view_.refresh(*vertical_sliders[slider_index]);
@@ -171,7 +169,7 @@ void application::slider_value(int slider_index, double val, view &view_) {
     view_.refresh(*labels[slider_index]);
 }
 
-void application::link_control(int index, view &view_) {
+void application::link_control(int index, cycfi::elements::view &view_) {
     if(index <= 2){
 
         vertical_sliders[index]->on_change =
@@ -219,7 +217,7 @@ void application::link_control(int index, view &view_) {
           }
         };
 }
-void application::link_controls(view &view_) {
+void application::link_controls(cycfi::elements::view &view_) {
     link_control(0, view_);
     link_control(1, view_);
     link_control(2, view_);

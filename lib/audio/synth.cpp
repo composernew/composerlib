@@ -1,7 +1,5 @@
 #include <audio/synth.h>
 
-namespace q = cycfi::q;
-
 void synth::process(const out_channels &out) {
 
     auto left = out[0];
@@ -10,26 +8,26 @@ void synth::process(const out_channels &out) {
     {
         switch (_timbre) {
             case 1:
-                right[frame] = left[frame] = q::triangle(phase++);
+                right[frame] = left[frame] = cycfi::q::triangle(phase++);
                 break;
             case 2:
-                right[frame] = left[frame] = q::square(phase++);
+                right[frame] = left[frame] = cycfi::q::square(phase++);
                 break;
             case 3:
-                right[frame] = left[frame] = q::saw(phase++);
+                right[frame] = left[frame] = cycfi::q::saw(phase++);
                 break;
             default:
-                right[frame] = left[frame] = q::sin(phase++);
+                right[frame] = left[frame] = cycfi::q::sin(phase++);
         }
     }
 }
 
-void synth::set(const q::frequency &freq, const int &dur) {
+void synth::set(const cycfi::q::frequency &freq, const int &dur) {
     phase.set(freq, this->sampling_rate());
-    q::sleep(dur);
+    cycfi::q::sleep(dur);
 }
 
-void synth::play(std::vector<std::pair<int, q::frequency>> &notes){
+void synth::play(std::vector<std::pair<int, cycfi::q::frequency>> &notes){
 
     std::sort(notes.begin(),notes.end());
 
