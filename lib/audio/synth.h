@@ -18,17 +18,18 @@ class synth : public cycfi::q::port_audio_stream
     void set(cycfi::q::frequency const &freq, int const &dur);
 
     cycfi::q::phase_iterator   phase;   // The phase iterator
+    int                        timbre_; // sine, triangle, square or saw
 
   public:
 
-    explicit synth(int timbre = 0)
+    explicit synth(auto timbre)
         : port_audio_stream( 0, 2)
-        , _timbre(timbre)
+        , timbre_(static_cast<int>(timbre))
     {}
 
     void play(std::vector<std::pair<int,cycfi::q::frequency>> &notes);
 
-    int _timbre; // sine, triangle, square or saw
+    void set_timbre(int timbre);
 };
 
 #endif // COMPOSER_SYNTH_H

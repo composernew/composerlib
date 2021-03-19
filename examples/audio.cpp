@@ -3,9 +3,7 @@
 
 int main(){
 
-    constexpr int triangle = 1;
-    constexpr int square   = 2;
-    constexpr int saw      = 3;
+    enum class timbre : int {sine = 0, triangle, square, saw};
 
     // 6 string guitar frequencies:
     constexpr auto low_e   = cycfi::q::notes::E[2];
@@ -18,29 +16,28 @@ int main(){
     std::vector<std::pair<int,cycfi::q::frequency>> notes = {{10, low_e},{8, a},{6, d},
                                                       {4, g},{2, b},{0, high_e}};
 
-    //default sine wave
-    synth sine_synth{};
-    sine_synth.start();
-    sine_synth.play(notes);
-    sine_synth.stop();
+    synth _synth{timbre::sine};
+    _synth.start();
+    _synth.play(notes);
+    _synth.stop();
 
     //triangle
-    synth triangle_synth{triangle};
-    triangle_synth.start();
-    triangle_synth.play(notes);
-    triangle_synth.stop();
+    _synth.set_timbre(static_cast<int>(timbre::triangle));
+    _synth.start();
+    _synth.play(notes);
+    _synth.stop();
 
     //square
-    synth square_synth{square};
-    square_synth.start();
-    square_synth.play(notes);
-    square_synth.stop();
+    _synth.set_timbre(static_cast<int>(timbre::square));
+    _synth.start();
+    _synth.play(notes);
+    _synth.stop();
 
     //saw
-    synth saw_synth{saw};
-    saw_synth.start();
-    saw_synth.play(notes);
-    saw_synth.stop();
+    _synth.set_timbre(static_cast<int>(timbre::saw));
+    _synth.start();
+    _synth.play(notes);
+    _synth.stop();
 
     return 0;
 }
