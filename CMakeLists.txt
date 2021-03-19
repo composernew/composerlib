@@ -15,6 +15,8 @@ set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${ELEMENTS_ROOT}/cmake")
 option(CPM_USE_LOCAL_PACKAGES "Try `find_package` before downloading dependencies" ON)
 include(cmake/CPM.cmake)
 
+include(FetchContent)
+
 #######################################################
 ### Options                                         ###
 #######################################################
@@ -44,6 +46,11 @@ endif ()
 ### Libraries                                       ###
 #######################################################
 add_subdirectory(source)
+
+#######################################################
+### Audio                                           ###
+#######################################################
+add_subdirectory(lib)
 
 #######################################################
 ### Tests                                           ###
