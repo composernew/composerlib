@@ -16,8 +16,8 @@ template <bool is_vertical>
 auto application::make_markers()
 {
     auto track = cycfi::elements::basic_track<5, is_vertical>();
-    return slider_labels<10>(
-        slider_marks<40>(track),         // Track with marks
+    return cycfi::elements::slider_labels<10>(
+        cycfi::elements::slider_marks<40>(track),         // Track with marks
         0.8,                             // Label font size (relative size)
         "-5", "-4", "-3", "-2", "-1",    // Labels
         "0", "1", "2", "3", "4", "5"
@@ -59,7 +59,7 @@ auto application::make_dial(int index)
 
 auto application::make_vertical_slider(int index)
 {
-    vertical_sliders[index] = share(slider(
+    vertical_sliders[index] = cycfi::elements::share(slider(
         cycfi::elements::basic_thumb<25>(),
         make_markers<true>(),
         (index + 1.0) * 0.25
