@@ -7,13 +7,13 @@ void synth::process(const out_channels &out) {
     for (auto frame : out.frames())
     {
         switch (timbre_) {
-            case 1:
+            case timbre::triangle:
                 right[frame] = left[frame] = cycfi::q::triangle(phase++);
                 break;
-            case 2:
+            case timbre::square:
                 right[frame] = left[frame] = cycfi::q::square(phase++);
                 break;
-            case 3:
+            case timbre::saw:
                 right[frame] = left[frame] = cycfi::q::saw(phase++);
                 break;
             default:
@@ -44,6 +44,6 @@ void synth::play(std::vector<std::pair<int, cycfi::q::frequency>> &notes){
     set(notes.back().second,duration);
 }
 
-void synth::set_timbre(int timbre) {
+void synth::set_timbre(timbre timbre) {
     timbre_ = timbre;
 }
