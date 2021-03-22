@@ -11,8 +11,8 @@ int main(){
     constexpr auto b       = cycfi::q::notes::B[3];
     constexpr auto high_e  = cycfi::q::notes::E[4];
 
-    std::vector<std::pair<int,cycfi::q::frequency>> notes = {{10, low_e},{8, a},{6, d},
-                                                      {4, g},{2, b},{0, high_e}};
+    std::vector<std::tuple<int,cycfi::q::frequency,cycfi::q::duration>> notes = {{10, low_e, 2},{8, a, 2},{6, d, 2},
+                                                      {4, g, 2},{2, b, 2},{0, high_e, 2}};
 
     // Synthesizer timbres
 

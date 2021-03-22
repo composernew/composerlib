@@ -22,26 +22,20 @@ void synth::process(const out_channels &out) {
     }
 }
 
-void synth::set(const cycfi::q::frequency &freq, const int &dur) {
+void synth::set(const cycfi::q::frequency &freq, const cycfi::q::duration &dur) {
     phase.set(freq, this->sampling_rate());
     cycfi::q::sleep(dur);
 }
 
-void synth::play(std::vector<std::pair<int, cycfi::q::frequency>> &notes){
+void synth::play(std::vector<std::tuple<int, cycfi::q::frequency,cycfi::q::duration>> &notes){
 
     std::sort(notes.begin(),notes.end());
 
-    int duration;
+    for(size_t i = 1; i <= notes.size(); ++i){
 
-    for(int i = 1; i < notes.size(); ++i){
-
-        duration = notes[i].first - notes[i-1].first;
-
-        set(notes[i-1].second,duration);
+        // plays the frequency with specified duration
+        set(std::get<1>(notes[i-1]), std::get<2>(notes[i-1]));
     }
-
-    duration = 3;
-    set(notes.back().second,duration);
 }
 
 void synth::set_timbre(timbre timbre) {
