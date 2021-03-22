@@ -34,6 +34,11 @@ if (BUILD_WITH_UTF8 AND MSVC)
     set(CMAKE_CXX_FLAGS "/utf-8")
 endif ()
 
+if(MSVC)
+    add_compile_options(/EHsc)
+    add_compile_options("/std:c++latest")
+endif()
+
 # Hack to check for min in Windows.h
 # http://www.suodenjoki.dk/us/archive/2010/min-max.htm
 include(CheckSymbolExists)
