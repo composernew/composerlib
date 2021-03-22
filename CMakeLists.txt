@@ -7,7 +7,7 @@ project(composer)
 set(CMAKE_CXX_STANDARD 20)
 
 include(cmake/functions.cmake)
-set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${ELEMENTS_ROOT}/cmake")
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Include CPM to find or download packages
 # Note that CPM will try to find the packages locally before downloading them
