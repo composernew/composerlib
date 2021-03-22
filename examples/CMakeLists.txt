@@ -5,3 +5,6 @@ if (Matplot++_FOUND)
     target_link_libraries(example_melody PRIVATE composerlib Matplot++::matplot)
     target_exception_options(example_melody)
 endif()
+
+add_executable(example_audio audio.cpp)
+target_link_libraries(example_audio PRIVATE audiolib)
