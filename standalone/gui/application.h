@@ -32,11 +32,14 @@ class application {
     auto make_features();
     static auto make_player();
 
-    void dial_value(int dial_index, double val, cycfi::elements::view &view_);
-    void slider_value(int slider_index, double val, cycfi::elements::view &view_);
+    void dial_value(int dial_index, double value, cycfi::elements::view &view_);
+    void slider_value(int slider_index, double value, cycfi::elements::view &view_);
     void toggle_button_value(size_t index, bool status, cycfi::elements::view &view_);
+    void toggle_button_values(size_t index, double value, cycfi::elements::view &view_);
 
-    void link_control(int index, cycfi::elements::view &view_);
+    void link_sliders(int index, cycfi::elements::view &view_);
+    void link_dials(int index, cycfi::elements::view &view_);
+    void link_buttons(int index, cycfi::elements::view &view_);
     void link_controls(cycfi::elements::view& view_);
 
     using dial_ptr = std::shared_ptr<cycfi::elements::dial_base>;
