@@ -57,9 +57,13 @@ auto application::make_dial(int index)
     return align_center_middle(hmargin({20.,20.},markers));
 }
 
-auto application::make_toggle_button(std::string const &label_name, auto color) {
+auto application::make_toggle_button(size_t index, std::string const &label_name, auto color) {
+
+    toggle_buttons[index] = cycfi::elements::share(
+        toggle_button(label_name, 1.0, color)
+    );
     
-    return toggle_button(label_name, 1.0, color);
+    return hold(toggle_buttons[index]);
 }
 
 auto application::make_toggle_buttons() {
@@ -67,23 +71,23 @@ auto application::make_toggle_buttons() {
 
     return
         vtile(
-            margin({10.,60.,10.,0.}, make_toggle_button("Alert", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Excited", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Enthusiastic", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Elated", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Happy", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Contented", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Serene", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Relaxed", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Calm", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Bored", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Sluggish", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Depressed", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Sad", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Upset", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Stressed", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button("Nervous", bred)),
-            margin({10.,10.,10.,20.}, make_toggle_button("Tense", bred))
+            margin({10.,60.,10.,0.}, make_toggle_button(0, "Alert", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(1, "Excited", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(2, "Enthusiastic", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(3, "Elated", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(4, "Happy", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(5, "Contented", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(6, "Serene", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(7, "Relaxed", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(8, "Calm", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button(9, "Bored", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button(10, "Sluggish", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button(11, "Depressed", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button(12, "Sad", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button(13, "Upset", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button(14, "Stressed", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button(15, "Nervous", bred)),
+            margin({10.,10.,10.,20.}, make_toggle_button(16, "Tense", bred))
         );
 }
 
@@ -201,6 +205,16 @@ void application::slider_value(int slider_index, double val, cycfi::elements::vi
     view_.refresh(*labels[slider_index]);
 }
 
+void application::toggle_button_on(size_t index, cycfi::elements::view &view_) {
+        toggle_buttons[index]->value(true);
+        view_.refresh(*toggle_buttons[index]);
+}
+
+void application::toggle_button_off(size_t index, cycfi::elements::view &view_) {
+    toggle_buttons[index]->value(false);
+    view_.refresh(*toggle_buttons[index]);
+}
+
 void application::link_control(int index, cycfi::elements::view &view_) {
     if(index <= 2){
 
@@ -214,6 +228,20 @@ void application::link_control(int index, cycfi::elements::view &view_) {
                   dial_value(1, val, view_);
                   dial_value(3, val, view_);
                   dial_value(4, val, view_);
+
+                  if(val > 0.5){
+
+                      toggle_button_on(0,view_);
+                      toggle_button_on(2,view_);
+                      toggle_button_off(9,view_);
+                      toggle_button_off(11,view_);
+                  }
+                  else{
+                      toggle_button_off(0,view_);
+                      toggle_button_off(2,view_);
+                      toggle_button_on(9,view_);
+                      toggle_button_on(11,view_);
+                  }
               }
 
               if(index == 1){
@@ -222,6 +250,20 @@ void application::link_control(int index, cycfi::elements::view &view_) {
                   dial_value(3, val, view_);
                   dial_value(4, val, view_);
                   dial_value(5, val, view_);
+
+                  if(val > 0.5){
+
+                      toggle_button_on(1,view_);
+                      toggle_button_on(3,view_);
+                      toggle_button_off(10,view_);
+                      toggle_button_off(12,view_);
+                  }
+                  else{
+                      toggle_button_off(1,view_);
+                      toggle_button_off(3,view_);
+                      toggle_button_on(10,view_);
+                      toggle_button_on(12,view_);
+                  }
               }
             };
     }

@@ -22,7 +22,7 @@ class application {
     auto make_text(int index, std::string const &default_value);
     auto make_dial(int index);
 
-    auto make_toggle_button(std::string const &label_name, auto color);
+    auto make_toggle_button(size_t index, std::string const &label_name, auto color);
     auto make_toggle_buttons();
     auto make_vertical_slider(int index);
 
@@ -34,8 +34,10 @@ class application {
 
     void dial_value(int dial_index, double val, cycfi::elements::view &view_);
     void slider_value(int slider_index, double val, cycfi::elements::view &view_);
-    void link_control(int index, cycfi::elements::view &view_);
+    void toggle_button_on(size_t index, cycfi::elements::view &view_);
+    void toggle_button_off(size_t index, cycfi::elements::view &view_);
 
+    void link_control(int index, cycfi::elements::view &view_);
     void link_controls(cycfi::elements::view& view_);
 
     using dial_ptr = std::shared_ptr<cycfi::elements::dial_base>;
@@ -47,8 +49,8 @@ class application {
     using slider_ptr = std::shared_ptr<cycfi::elements::basic_slider_base>;
     std::array<slider_ptr,3> vertical_sliders;
 
-    using button_ptr = std::shared_ptr<cycfi::elements::basic_button_body>;
-    std::array<button_ptr,20> toggle_buttons;
+    using button_ptr = std::shared_ptr<cycfi::elements::basic_toggle_button<>>;
+    std::array<button_ptr,17> toggle_buttons;
 
     // Colors
     static constexpr auto bgreen = cycfi::elements::colors::green.level(0.7).opacity(0.4);
