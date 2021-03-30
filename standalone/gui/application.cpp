@@ -63,31 +63,34 @@ auto application::make_toggle_button(size_t index, std::string const &label_name
         toggle_button(label_name, 1.0, color)
     );
     
-    return hold(toggle_buttons[index]);
+    return margin({10.,10.,10.,0.},hold(toggle_buttons[index]));
 }
 
 auto application::make_toggle_buttons() {
 
 
     return
-        vtile(
-            margin({10.,60.,10.,0.}, make_toggle_button(0, "Alert", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(1, "Excited", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(2, "Enthusiastic", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(3, "Elated", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(4, "Happy", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(5, "Contented", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(6, "Serene", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(7, "Relaxed", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(8, "Calm", bgreen)),
-            margin({10.,10.,10.,0.}, make_toggle_button(9, "Bored", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button(10, "Sluggish", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button(11, "Depressed", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button(12, "Sad", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button(13, "Upset", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button(14, "Stressed", bred)),
-            margin({10.,10.,10.,0.}, make_toggle_button(15, "Nervous", bred)),
-            margin({10.,10.,10.,20.}, make_toggle_button(16, "Tense", bred))
+        vmargin(
+            {60.,20.},
+            vtile(
+                 make_toggle_button(0, "Alert", bgreen),
+                 make_toggle_button(1, "Excited", bgreen),
+                 make_toggle_button(2, "Enthusiastic", bgreen),
+                 make_toggle_button(3, "Elated", bgreen),
+                 make_toggle_button(4, "Happy", bgreen),
+                 make_toggle_button(5, "Contented", bgreen),
+                 make_toggle_button(6, "Serene", bgreen),
+                 make_toggle_button(7, "Relaxed", bgreen),
+                 make_toggle_button(8, "Calm", bgreen),
+                 make_toggle_button(9, "Bored", bred),
+                 make_toggle_button(10, "Sluggish", bred),
+                 make_toggle_button(11, "Depressed", bred),
+                 make_toggle_button(12, "Sad", bred),
+                 make_toggle_button(13, "Upset", bred),
+                 make_toggle_button(14, "Stressed", bred),
+                 make_toggle_button(15, "Nervous", bred),
+                 make_toggle_button(16, "Tense", bred)
+            )
         );
 }
 
