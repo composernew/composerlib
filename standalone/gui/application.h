@@ -61,9 +61,9 @@ class application {
 
     application(const auto &background_color, int argc, char* argv[]) :
         _background(background_color),
-        _window(_app.name()),
         _view(_window),
-        _app(argc, argv, "Composer", "com.composer.composer")
+        _app(argc, argv, "Composer", "com.composer.composer"),
+        _window(_app.name())
     {initialize_application();}
 
     auto make_application();
