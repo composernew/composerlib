@@ -21,6 +21,9 @@ class application {
     static auto make_label(std::string const &label_name);
     auto make_text(int index, std::string const &default_value);
     auto make_dial(int index);
+
+    auto make_toggle_button(std::string const &label_name, auto color);
+    auto make_toggle_buttons();
     auto make_vertical_slider(int index);
 
     auto make_control(std::string const &label_name, int slider_index, int text_index);
@@ -43,6 +46,13 @@ class application {
 
     using slider_ptr = std::shared_ptr<cycfi::elements::basic_slider_base>;
     std::array<slider_ptr,3> vertical_sliders;
+
+    using button_ptr = std::shared_ptr<cycfi::elements::basic_button_body>;
+    std::array<button_ptr,20> toggle_buttons;
+
+    // Colors
+    static constexpr auto bgreen = cycfi::elements::colors::green.level(0.7).opacity(0.4);
+    static constexpr auto bred   = cycfi::elements::colors::red.opacity(0.4);
 
     cycfi::elements::app _app;
 

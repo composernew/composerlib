@@ -57,6 +57,36 @@ auto application::make_dial(int index)
     return align_center_middle(hmargin({20.,20.},markers));
 }
 
+auto application::make_toggle_button(std::string const &label_name, auto color) {
+    
+    return toggle_button(label_name, 1.0, color);
+}
+
+auto application::make_toggle_buttons() {
+
+
+    return
+        vtile(
+            margin({10.,60.,10.,0.}, make_toggle_button("Alert", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Excited", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Enthusiastic", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Elated", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Happy", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Contented", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Serene", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Relaxed", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Calm", bgreen)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Bored", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Sluggish", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Depressed", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Sad", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Upset", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Stressed", bred)),
+            margin({10.,10.,10.,0.}, make_toggle_button("Nervous", bred)),
+            margin({10.,10.,10.,20.}, make_toggle_button("Tense", bred))
+        );
+}
+
 auto application::make_vertical_slider(int index)
 {
     vertical_sliders[index] = cycfi::elements::share(slider(
@@ -141,6 +171,8 @@ auto application::make_application() {
         margin({ 20., 10., 20., 10. },
                vmin_size(400.,
                          htile(
+                             valign(0.5, margin({ 10., 10., 10., 10. }, pane("Emotions",
+                                                make_toggle_buttons(), 1.0F))),
                              vstretch(0.5, margin({ 10., 10., 10., 10. }, pane("Controllers", make_controllers(), 1.0F))),
                              vtile(
                                  hstretch(0.5, margin({ 10., 10., 10., 10. }, cycfi::elements::pane("Features", make_features(), 1.0F))),
@@ -217,6 +249,7 @@ void application::link_control(int index, cycfi::elements::view &view_) {
           }
         };
 }
+
 void application::link_controls(cycfi::elements::view &view_) {
     link_control(0, view_);
     link_control(1, view_);
