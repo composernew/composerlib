@@ -34,8 +34,7 @@ class application {
 
     void dial_value(int dial_index, double val, cycfi::elements::view &view_);
     void slider_value(int slider_index, double val, cycfi::elements::view &view_);
-    void toggle_button_on(size_t index, cycfi::elements::view &view_);
-    void toggle_button_off(size_t index, cycfi::elements::view &view_);
+    void toggle_button_value(size_t index, bool status, cycfi::elements::view &view_);
 
     void link_control(int index, cycfi::elements::view &view_);
     void link_controls(cycfi::elements::view& view_);

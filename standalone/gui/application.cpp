@@ -205,14 +205,9 @@ void application::slider_value(int slider_index, double val, cycfi::elements::vi
     view_.refresh(*labels[slider_index]);
 }
 
-void application::toggle_button_on(size_t index, cycfi::elements::view &view_) {
-        toggle_buttons[index]->value(true);
+void application::toggle_button_value(size_t index, bool status, cycfi::elements::view &view_) {
+        toggle_buttons[index]->value(status);
         view_.refresh(*toggle_buttons[index]);
-}
-
-void application::toggle_button_off(size_t index, cycfi::elements::view &view_) {
-    toggle_buttons[index]->value(false);
-    view_.refresh(*toggle_buttons[index]);
 }
 
 void application::link_control(int index, cycfi::elements::view &view_) {
@@ -231,16 +226,16 @@ void application::link_control(int index, cycfi::elements::view &view_) {
 
                   if(val > 0.5){
 
-                      toggle_button_on(0,view_);
-                      toggle_button_on(2,view_);
-                      toggle_button_off(9,view_);
-                      toggle_button_off(11,view_);
+                      toggle_button_value(0, true, view_);
+                      toggle_button_value(2, true, view_);
+                      toggle_button_value(9, false, view_);
+                      toggle_button_value(11, false, view_);
                   }
                   else{
-                      toggle_button_off(0,view_);
-                      toggle_button_off(2,view_);
-                      toggle_button_on(9,view_);
-                      toggle_button_on(11,view_);
+                      toggle_button_value(0, false, view_);
+                      toggle_button_value(2, false, view_);
+                      toggle_button_value(9, true, view_);
+                      toggle_button_value(11,true, view_);
                   }
               }
 
@@ -253,16 +248,16 @@ void application::link_control(int index, cycfi::elements::view &view_) {
 
                   if(val > 0.5){
 
-                      toggle_button_on(1,view_);
-                      toggle_button_on(3,view_);
-                      toggle_button_off(10,view_);
-                      toggle_button_off(12,view_);
+                      toggle_button_value(1, true, view_);
+                      toggle_button_value(3, true, view_);
+                      toggle_button_value(10, false, view_);
+                      toggle_button_value(12, false, view_);
                   }
                   else{
-                      toggle_button_off(1,view_);
-                      toggle_button_off(3,view_);
-                      toggle_button_on(10,view_);
-                      toggle_button_on(12,view_);
+                      toggle_button_value(1, false, view_);
+                      toggle_button_value(3, false, view_);
+                      toggle_button_value(10, true, view_);
+                      toggle_button_value(12, true, view_);
                   }
               }
             };
