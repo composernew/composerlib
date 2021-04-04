@@ -57,7 +57,7 @@ auto application::make_dial()
     return align_center_middle(hmargin({20.,20.},markers));
 }
 
-auto application::make_toggle_button(std::string const &label_name, auto color) {
+auto application::make_toggle_button(std::string const &label_name, cycfi::elements::color color) {
 
     toggle_buttons.emplace_back(cycfi::elements::share(toggle_button(label_name, 1.0, color)));
     
@@ -65,7 +65,6 @@ auto application::make_toggle_button(std::string const &label_name, auto color) 
 }
 
 auto application::make_toggle_buttons() {
-
 
     return
         vmargin(

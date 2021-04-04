@@ -21,7 +21,7 @@ class application {
     static auto make_label(std::string const &label_name);
     auto make_text(std::string const &default_value);
     auto make_dial();
-    auto make_toggle_button(std::string const &label_name, auto color);
+    auto make_toggle_button(std::string const &label_name, cycfi::elements::color color);
     auto make_toggle_buttons();
     auto make_vertical_slider();
     auto make_control(std::string const &label_name);
