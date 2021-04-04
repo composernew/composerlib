@@ -25,6 +25,7 @@ class application {
     auto make_toggle_buttons();
     auto make_vertical_slider();
     auto make_control(std::string const &label_name);
+    auto make_feature(std::string const &name);
 
     auto make_controllers();
     auto make_features();

@@ -130,30 +130,25 @@ auto application::make_player() {
         );
 }
 
+auto application::make_feature(std::string const  &name) {
+
+    return vtile(make_label(name),
+    make_dial(),
+    cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")));
+}
+
 auto application::make_features() {
     return margin({20.,0.,20.,20.},
                   htile(
                       vtile(
-                          make_label("Tempo"),
-                          make_dial(),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")),
-                          make_label("Dynamics"),
-                          make_dial(),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")),
-                          make_label("Pitch"),
-                          make_dial(),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0"))
+                          make_feature("Tempo"),
+                          make_feature("Dynamics"),
+                          make_feature("Pitch")
                       ),
                       vtile(
-                          make_label("Timbre"),
-                          make_dial(),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")),
-                          make_label("Rhythm"),
-                          make_dial(),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")),
-                          make_label("Label"),
-                          make_dial(),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0"))
+                          make_feature("Timbre"),
+                          make_feature("Rhythm"),
+                          make_feature("Label")
                       )
                   )
     );
