@@ -28,27 +28,27 @@ auto application::make_label(std::string const &label_name){
     return vmargin({20.,20.},cycfi::elements::label(label_name));
 }
 
-auto application::make_text(int index, std::string const &default_value){
+auto application::make_text(std::string const &default_value){
 
-    labels[index] = share(cycfi::elements::label(default_value));
+    labels.emplace_back(cycfi::elements::share(cycfi::elements::label(default_value)));
 
     return layer(
-        decorate(hold(labels[index])),
+        hold(labels.back()),
         cycfi::elements::frame{}
     );
 }
 
-auto application::make_dial(int index)
+auto application::make_dial()
 {
-    dials[index] = share(
+    dials.emplace_back(share(
         dial(
             radial_marks<20>(cycfi::elements::basic_knob<50>()),
-            (index + 1.) * 0.25
-        )
+            0.5
+        ))
     );
 
     auto markers = radial_labels<15>(
-        hold(dials[index]),
+        hold(dials.back()),
         0.7,                                   // Label font size (relative size)
         "0", "1", "2", "3", "4",               // Labels
         "5", "6", "7", "8", "9", "10"
@@ -57,13 +57,11 @@ auto application::make_dial(int index)
     return align_center_middle(hmargin({20.,20.},markers));
 }
 
-auto application::make_toggle_button(size_t index, std::string const &label_name, auto color) {
+auto application::make_toggle_button(std::string const &label_name, auto color) {
 
-    toggle_buttons[index] = cycfi::elements::share(
-        toggle_button(label_name, 1.0, color)
-    );
+    toggle_buttons.emplace_back(cycfi::elements::share(toggle_button(label_name, 1.0, color)));
     
-    return margin({10.,10.,10.,0.},hold(toggle_buttons[index]));
+    return margin({10.,10.,10.,0.},hold(toggle_buttons.back()));
 }
 
 auto application::make_toggle_buttons() {
@@ -73,43 +71,43 @@ auto application::make_toggle_buttons() {
         vmargin(
             {60.,20.},
             vtile(
-                 make_toggle_button(0, "Alert", bgreen),
-                 make_toggle_button(1, "Excited", bgreen),
-                 make_toggle_button(2, "Enthusiastic", bgreen),
-                 make_toggle_button(3, "Elated", bgreen),
-                 make_toggle_button(4, "Happy", bgreen),
-                 make_toggle_button(5, "Contented", bgreen),
-                 make_toggle_button(6, "Serene", bgreen),
-                 make_toggle_button(7, "Relaxed", bgreen),
-                 make_toggle_button(8, "Calm", bgreen),
-                 make_toggle_button(9, "Bored", bred),
-                 make_toggle_button(10, "Sluggish", bred),
-                 make_toggle_button(11, "Depressed", bred),
-                 make_toggle_button(12, "Sad", bred),
-                 make_toggle_button(13, "Upset", bred),
-                 make_toggle_button(14, "Stressed", bred),
-                 make_toggle_button(15, "Nervous", bred),
-                 make_toggle_button(16, "Tense", bred)
+                 make_toggle_button("Alert", bgreen),
+                 make_toggle_button("Excited", bgreen),
+                 make_toggle_button("Enthusiastic", bgreen),
+                 make_toggle_button("Elated", bgreen),
+                 make_toggle_button("Happy", bgreen),
+                 make_toggle_button("Contented", bgreen),
+                 make_toggle_button("Serene", bgreen),
+                 make_toggle_button("Relaxed", bgreen),
+                 make_toggle_button("Calm", bgreen),
+                 make_toggle_button("Bored", bred),
+                 make_toggle_button("Sluggish", bred),
+                 make_toggle_button("Depressed", bred),
+                 make_toggle_button("Sad", bred),
+                 make_toggle_button("Upset", bred),
+                 make_toggle_button("Stressed", bred),
+                 make_toggle_button("Nervous", bred),
+                 make_toggle_button("Tense", bred)
             )
         );
 }
 
-auto application::make_vertical_slider(int index)
-{
-    vertical_sliders[index] = cycfi::elements::share(slider(
+auto application::make_vertical_slider() {
+    vertical_sliders.emplace_back(cycfi::elements::share(slider(
         cycfi::elements::basic_thumb<25>(),
         make_markers<true>(),
-        (index + 1.0) * 0.25
-    ));
-    return align_center(hold(vertical_sliders[index]));
+        0.5
+    )));
+
+    return align_center(hold(vertical_sliders.back()));
 }
 
-auto application::make_control(const std::string &label_name, int slider_index, int text_index) {
+auto application::make_control(const std::string &label_name) {
     return
         vtile(
             make_label(label_name),
-            make_vertical_slider(slider_index),
-            cycfi::elements::margin({20.,20.,20.,0.}, make_text(text_index, "-5.0"))
+            make_vertical_slider(),
+            cycfi::elements::margin({20.,20.,20.,0.}, make_text("-5.0"))
         );
 }
 
@@ -137,25 +135,25 @@ auto application::make_features() {
                   htile(
                       vtile(
                           make_label("Tempo"),
-                          make_dial(0),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(3, "0")),
+                          make_dial(),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")),
                           make_label("Dynamics"),
-                          make_dial(1),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(4, "0")),
+                          make_dial(),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")),
                           make_label("Pitch"),
-                          make_dial(2),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(5, "0"))
+                          make_dial(),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0"))
                       ),
                       vtile(
                           make_label("Timbre"),
-                          make_dial(3),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(6, "0")),
+                          make_dial(),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")),
                           make_label("Rhythm"),
-                          make_dial(4),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(7, "0")),
+                          make_dial(),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")),
                           make_label("Label"),
-                          make_dial(5),
-                          cycfi::elements::margin({20.,20.,20.,0.}, make_text(8, "0"))
+                          make_dial(),
+                          cycfi::elements::margin({20.,20.,20.,0.}, make_text("0"))
                       )
                   )
     );
@@ -165,9 +163,9 @@ auto application::make_controllers() {
 
     return margin({20.,0.,20.,20.},
                   cycfi::elements::htile(
-                      make_control("Valence",0,0),
-                      make_control("Arousal",1,1),
-                      make_control("Originality",2,2)
+                      make_control("Valence"),
+                      make_control("Arousal"),
+                      make_control("Originality")
                   )
     );
 }
