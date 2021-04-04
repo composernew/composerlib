@@ -31,15 +31,15 @@ class application {
     auto make_features();
     static auto make_player();
 
-    void dial_value(int dial_index, double value, cycfi::elements::view &view_);
-    void slider_value(int slider_index, double value, cycfi::elements::view &view_);
-    void toggle_button_value(size_t index, bool status, cycfi::elements::view &view_);
-    void toggle_button_values(size_t index, double value, cycfi::elements::view &view_);
+    void dial_value(int dial_index, double value);
+    void slider_value(int slider_index, double value);
+    void toggle_button_value(size_t index, bool status);
+    void toggle_button_values(size_t index, double value);
 
-    void link_sliders(int index, cycfi::elements::view &view_);
-    void link_dials(int index, cycfi::elements::view &view_);
-    void link_buttons(int index, cycfi::elements::view &view_);
-    void link_controls(cycfi::elements::view& view_);
+    void link_sliders(int index);
+    void link_dials(int index);
+    void link_buttons(int index);
+    void link_controls();
 
     using dial_ptr = std::shared_ptr<cycfi::elements::dial_base>;
     std::vector<dial_ptr> dials;
@@ -57,15 +57,14 @@ class application {
     static constexpr auto bgreen = cycfi::elements::colors::green.level(0.7).opacity(0.4);
     static constexpr auto bred   = cycfi::elements::colors::red.opacity(0.4);
 
-    cycfi::elements::app _app;
+    cycfi::elements::app app_;
 
   public:
 
     application(const auto &background_color, int argc, char* argv[]) :
-        _background(background_color),
-        _view(_window),
-        _app(argc, argv, "Composer", "com.composer.composer"),
-        _window(_app.name())
+        background_(background_color), view_(window_),
+        app_(argc, argv, "Composer", "com.composer.composer"),
+        window_(app_.name())
     {initialize_application();}
 
     auto make_application();
@@ -74,9 +73,9 @@ class application {
 
     void run();
 
-    cycfi::elements::box_element    _background;
-    cycfi::elements::window         _window;
-    cycfi::elements::view           _view;
+    cycfi::elements::box_element    background_;
+    cycfi::elements::window         window_;
+    cycfi::elements::view           view_;
 };
 
 #endif // COMPOSER_APPLICATION_H

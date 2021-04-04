@@ -182,7 +182,7 @@ auto application::make_application() {
         );
 }
 
-void application::dial_value(int dial_index, double value, cycfi::elements::view &view_) {
+void application::dial_value(int dial_index, double value) {
 
     dials[dial_index]->dial_base::value(value);
     view_.refresh(*dials[dial_index]);
@@ -191,7 +191,7 @@ void application::dial_value(int dial_index, double value, cycfi::elements::view
     view_.refresh(*labels[(dial_index+3)]);
 }
 
-void application::slider_value(int slider_index, double value, cycfi::elements::view &view_) {
+void application::slider_value(int slider_index, double value) {
 
     vertical_sliders[slider_index]->slider_base::value(value);
     view_.refresh(*vertical_sliders[slider_index]);
@@ -200,139 +200,139 @@ void application::slider_value(int slider_index, double value, cycfi::elements::
     view_.refresh(*labels[slider_index]);
 }
 
-void application::toggle_button_value(size_t index, bool status, cycfi::elements::view &view_) {
+void application::toggle_button_value(size_t index, bool status) {
         toggle_buttons[index]->value(status);
         view_.refresh(*toggle_buttons[index]);
 }
 
-void application::toggle_button_values(size_t index, double value, cycfi::elements::view &view_) {
+void application::toggle_button_values(size_t index, double value) {
 
     if(index == 0){
         if(value > 0.5){
 
-            toggle_button_value(0, true, view_);
-            toggle_button_value(2, true, view_);
-            toggle_button_value(9, false, view_);
-            toggle_button_value(11, false, view_);
+            toggle_button_value(0, true);
+            toggle_button_value(2, true);
+            toggle_button_value(9, false);
+            toggle_button_value(11, false);
         }
         else{
-            toggle_button_value(0, false, view_);
-            toggle_button_value(2, false, view_);
-            toggle_button_value(9, true, view_);
-            toggle_button_value(11,true, view_);
+            toggle_button_value(0, false);
+            toggle_button_value(2, false);
+            toggle_button_value(9, true);
+            toggle_button_value(11,true);
         }
     }
 
     if(index == 1){
         if(value > 0.5){
 
-            toggle_button_value(1, true, view_);
-            toggle_button_value(3, true, view_);
-            toggle_button_value(10, false, view_);
-            toggle_button_value(12, false, view_);
+            toggle_button_value(1, true);
+            toggle_button_value(3, true);
+            toggle_button_value(10, false);
+            toggle_button_value(12, false);
         }
         else{
-            toggle_button_value(1, false, view_);
-            toggle_button_value(3, false, view_);
-            toggle_button_value(10, true, view_);
-            toggle_button_value(12, true, view_);
+            toggle_button_value(1, false);
+            toggle_button_value(3, false);
+            toggle_button_value(10, true);
+            toggle_button_value(12, true);
         }
     }
 }
 
-void application::link_sliders(int index, cycfi::elements::view &view_) {
+void application::link_sliders(int index) {
 
     vertical_sliders[index]->on_change =
-        [index, &view_, this](double val){
+        [index, this](double val){
 
           labels[index]->set_text(std::to_string(val));
           view_.refresh(*labels[index]);
 
           if(index == 0){
-              dial_value(1, val, view_);
-              dial_value(3, val, view_);
-              dial_value(4, val, view_);
-              toggle_button_values(index, val, view_);
+              dial_value(1, val);
+              dial_value(3, val);
+              dial_value(4, val);
+              toggle_button_values(index, val);
           }
 
           if(index == 1){
-              dial_value(0, val, view_);
-              dial_value(2, val, view_);
-              dial_value(3, val, view_);
-              dial_value(4, val, view_);
-              dial_value(5, val, view_);
-              toggle_button_values(index, val, view_);
+              dial_value(0, val);
+              dial_value(2, val);
+              dial_value(3, val);
+              dial_value(4, val);
+              dial_value(5, val);
+              toggle_button_values(index, val);
           }
         };
 }
 
-void application::link_dials(int index, cycfi::elements::view &view_) {
+void application::link_dials(int index) {
     int dials_index = index + 3;
 
     dials[index]->on_change =
-        [index, dials_index, &view_, this](double val){
+        [index, dials_index, this](double val){
 
           labels[dials_index]->set_text(std::to_string(val));
           view_.refresh(*labels[dials_index]);
 
           if(index == 0 || index == 2 || index == 3 || index == 4 || index == 5){
-              slider_value(1, val,view_);
-              dial_value(2, val, view_);
-              dial_value(3, val, view_);
-              dial_value(4, val, view_);
-              dial_value(5, val, view_);
-              toggle_button_values(1, val, view_);
+              slider_value(1, val);
+              dial_value(2, val);
+              dial_value(3, val);
+              dial_value(4, val);
+              dial_value(5, val);
+              toggle_button_values(1, val);
           }
 
           if(index == 1 || index == 3 || index == 4){
-              slider_value(0, val,view_);
-              dial_value(3, val, view_);
-              dial_value(4, val, view_);
-              toggle_button_values(0, val, view_);
+              slider_value(0, val);
+              dial_value(3, val);
+              dial_value(4, val);
+              toggle_button_values(0, val);
           }
         };
 }
 
-void application::link_buttons(int index, cycfi::elements::view &view_) {
+void application::link_buttons(int index) {
 
     double size          = toggle_buttons.size();
     double value         = (size - index)*(1.0/size);
     double value_arousal = index*(1.0/size);
 
     toggle_buttons[index]->on_click =
-        [index, value, value_arousal, &view_, this](double status) {
+        [index, value, value_arousal, this](double status) {
 
-              slider_value(0, value, view_);
-              dial_value(0,value,view_);
-              dial_value(1,value,view_);
-              dial_value(2,value,view_);
-              dial_value(3,value_arousal,view_);
-              dial_value(4,value_arousal,view_);
-              dial_value(5,value_arousal,view_);
+              slider_value(0, value);
+              dial_value(0,value);
+              dial_value(1,value);
+              dial_value(2,value);
+              dial_value(3,value_arousal);
+              dial_value(4,value_arousal);
+              dial_value(5,value_arousal);
 
               if(index <= toggle_buttons.size()/2){
-                  slider_value(1, value, view_);
+                  slider_value(1, value);
               }
               else{
-                  slider_value(1, value_arousal, view_);
+                  slider_value(1, value_arousal);
               }
         };
 }
 
-void application::link_controls(cycfi::elements::view &view_) {
+void application::link_controls() {
 
-    link_sliders(0, view_);
-    link_sliders(1, view_);
-    link_sliders(2, view_);
-    link_dials(0, view_);
-    link_dials(1, view_);
-    link_dials(2, view_);
-    link_dials(3, view_);
-    link_dials(4, view_);
-    link_dials(5, view_);
+    link_sliders(0);
+    link_sliders(1);
+    link_sliders(2);
+    link_dials(0);
+    link_dials(1);
+    link_dials(2);
+    link_dials(3);
+    link_dials(4);
+    link_dials(5);
 
     for(size_t i = 0; i < toggle_buttons.size(); ++i){
-        link_buttons(i,view_);
+        link_buttons(i);
     }
 }
 
@@ -340,17 +340,13 @@ void application::link_controls(cycfi::elements::view &view_) {
 // The application will stop when the window is closed
 void application::initialize_application() {
 
-    _window.on_close = [this]() { _app.stop(); };
+    window_.on_close = [this]() { app_.stop(); };
 
-    _view.content(
-        make_application(),
-        _background
-    );
+    view_.content(
+        make_application(), background_);
 
-    link_controls(_view);
+    link_controls();
 }
 
-void application::run() {
-
-    _app.run();
+void application::run() { app_.run();
 }
