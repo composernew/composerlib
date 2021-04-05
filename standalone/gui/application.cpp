@@ -24,22 +24,22 @@ auto application::make_markers()
     );
 }
 
-auto application::make_label(std::string const &label_name){
+auto application::make_title_label(std::string const &label_name) {
     return vmargin({20.,20.},cycfi::elements::label(label_name));
 }
 
-auto application::make_text(std::string const &default_value){
+auto application::push_value_label(std::string const &default_value) {
 
-    labels.emplace_back(cycfi::elements::share(cycfi::elements::label(default_value)));
+    labels.emplace_back(share(cycfi::elements::label(default_value)));
 
-    return layer(
+    return decorate(layer(
         hold(labels.back()),
         cycfi::elements::frame{}
-    );
+    ));
 }
 
-auto application::make_dial()
-{
+auto application::push_dial() {
+
     dials.emplace_back(share(
         dial(
             radial_marks<20>(cycfi::elements::basic_knob<50>()),
@@ -57,42 +57,42 @@ auto application::make_dial()
     return align_center_middle(hmargin({20.,20.},markers));
 }
 
-auto application::make_toggle_button(std::string const &label_name, cycfi::elements::color color) {
+auto application::push_mood_button(std::string const &label_name, cycfi::elements::color color) {
 
-    toggle_buttons.emplace_back(cycfi::elements::share(toggle_button(label_name, 1.0, color)));
-    
-    return margin({10.,10.,10.,0.},hold(toggle_buttons.back()));
+    mood_buttons.emplace_back(share(toggle_button(label_name, 1.0, color)));
+
+    return margin({10.,10.,10.,0.},hold(mood_buttons.back()));
 }
 
-auto application::make_toggle_buttons() {
+auto application::make_mood_buttons() {
 
     return
         vmargin(
             {60.,20.},
             vtile(
-                 make_toggle_button("Alert", bgreen),
-                 make_toggle_button("Excited", bgreen),
-                 make_toggle_button("Enthusiastic", bgreen),
-                 make_toggle_button("Elated", bgreen),
-                 make_toggle_button("Happy", bgreen),
-                 make_toggle_button("Contented", bgreen),
-                 make_toggle_button("Serene", bgreen),
-                 make_toggle_button("Relaxed", bgreen),
-                 make_toggle_button("Calm", bgreen),
-                 make_toggle_button("Bored", bred),
-                 make_toggle_button("Sluggish", bred),
-                 make_toggle_button("Depressed", bred),
-                 make_toggle_button("Sad", bred),
-                 make_toggle_button("Upset", bred),
-                 make_toggle_button("Stressed", bred),
-                 make_toggle_button("Nervous", bred),
-                 make_toggle_button("Tense", bred)
+                push_mood_button("Alert", green),
+                push_mood_button("Excited", green),
+                push_mood_button("Enthusiastic", green),
+                push_mood_button("Elated", green),
+                push_mood_button("Happy", green),
+                push_mood_button("Contented", green),
+                push_mood_button("Serene", green),
+                push_mood_button("Relaxed", green),
+                push_mood_button("Calm", green),
+                push_mood_button("Bored", red),
+                push_mood_button("Sluggish", red),
+                push_mood_button("Depressed", red),
+                push_mood_button("Sad", red),
+                push_mood_button("Upset", red),
+                push_mood_button("Stressed", red),
+                push_mood_button("Nervous", red),
+                push_mood_button("Tense", red)
             )
         );
 }
 
-auto application::make_vertical_slider() {
-    vertical_sliders.emplace_back(cycfi::elements::share(slider(
+auto application::push_vertical_slider() {
+    vertical_sliders.emplace_back(share(slider(
         cycfi::elements::basic_thumb<25>(),
         make_markers<true>(),
         0.5
@@ -101,17 +101,17 @@ auto application::make_vertical_slider() {
     return align_center(hold(vertical_sliders.back()));
 }
 
-auto application::make_control(const std::string &label_name) {
+auto application::make_composition_control(const std::string &label_name) {
     return
         vtile(
-            make_label(label_name),
-            make_vertical_slider(),
-            cycfi::elements::margin({20.,20.,20.,0.}, make_text("-5.0"))
+            make_title_label(label_name),
+            push_vertical_slider(),
+            cycfi::elements::margin({20.,20.,20.,0.}, push_value_label("-5.0"))
         );
 }
 
 auto application::make_player() {
-    auto mbutton = cycfi::elements::button("Compose", 1.2);
+    auto compose_button = cycfi::elements::button("Compose", 1.2);
 
     return
         vtile(
@@ -122,7 +122,7 @@ auto application::make_player() {
                        right_margin(20.0, cycfi::elements::icon_button(cycfi::elements::icons::stop, 1.2)),
                        fixed_size(
                            {140.0,20.0},
-                           mbutton
+                           compose_button
                        )
                    )
             )
@@ -130,10 +130,12 @@ auto application::make_player() {
 }
 
 auto application::make_feature(std::string const  &name) {
-
-    return vtile(make_label(name),
-    make_dial(),
-    cycfi::elements::margin({20.,20.,20.,0.}, make_text("0")));
+    return
+        vtile(
+            make_title_label(name),
+            push_dial(),
+            cycfi::elements::margin({20.,20.,20.,0.}, push_value_label("0"))
+        );
 }
 
 auto application::make_features() {
@@ -153,15 +155,15 @@ auto application::make_features() {
     );
 }
 
-auto application::make_controllers() {
-
-    return margin({20.,0.,20.,20.},
+auto application::make_composition_controls() {
+    return
+        margin({20.,0.,20.,20.},
                   cycfi::elements::htile(
-                      make_control("Valence"),
-                      make_control("Arousal"),
-                      make_control("Originality")
+                      make_composition_control("Valence"),
+                      make_composition_control("Arousal"),
+                      make_composition_control("Originality")
                   )
-    );
+        );
 }
 
 auto application::make_application() {
@@ -170,9 +172,9 @@ auto application::make_application() {
         margin({ 20., 10., 20., 10. },
                vmin_size(400.,
                          htile(
-                             valign(0.5, margin({ 10., 10., 10., 10. }, pane("Emotions",
-                                                make_toggle_buttons(), 1.0F))),
-                             vstretch(0.5, margin({ 10., 10., 10., 10. }, pane("Controllers", make_controllers(), 1.0F))),
+                             valign(0.5, margin({ 10., 10., 10., 10. }, pane("Emotions", make_mood_buttons(), 1.0F))),
+                             vstretch(0.5, margin({ 10., 10., 10., 10. }, pane("Controllers",
+                                          make_composition_controls(), 1.0F))),
                              vtile(
                                  hstretch(0.5, margin({ 10., 10., 10., 10. }, cycfi::elements::pane("Features", make_features(), 1.0F))),
                                  margin({ 10., 10., 10., 10. }, cycfi::elements::pane("Player", make_player()))
@@ -182,7 +184,7 @@ auto application::make_application() {
         );
 }
 
-void application::dial_value(int dial_index, double value) {
+void application::feature_value(int dial_index, double value) {
 
     dials[dial_index]->dial_base::value(value);
     view_.refresh(*dials[dial_index]);
@@ -191,7 +193,7 @@ void application::dial_value(int dial_index, double value) {
     view_.refresh(*labels[(dial_index+3)]);
 }
 
-void application::slider_value(int slider_index, double value) {
+void application::control_value(int slider_index, double value) {
 
     vertical_sliders[slider_index]->slider_base::value(value);
     view_.refresh(*vertical_sliders[slider_index]);
@@ -200,42 +202,42 @@ void application::slider_value(int slider_index, double value) {
     view_.refresh(*labels[slider_index]);
 }
 
-void application::toggle_button_value(size_t index, bool status) {
-        toggle_buttons[index]->value(status);
-        view_.refresh(*toggle_buttons[index]);
+void application::mood_button_value(size_t index, bool status) {
+    mood_buttons[index]->value(status);
+        view_.refresh(*mood_buttons[index]);
 }
 
-void application::toggle_button_values(size_t index, double value) {
+void application::mood_button_values(size_t index, double value) {
 
     if(index == 0){
         if(value > 0.5){
 
-            toggle_button_value(0, true);
-            toggle_button_value(2, true);
-            toggle_button_value(9, false);
-            toggle_button_value(11, false);
+            mood_button_value(0, true);
+            mood_button_value(2, true);
+            mood_button_value(9, false);
+            mood_button_value(11, false);
         }
         else{
-            toggle_button_value(0, false);
-            toggle_button_value(2, false);
-            toggle_button_value(9, true);
-            toggle_button_value(11,true);
+            mood_button_value(0, false);
+            mood_button_value(2, false);
+            mood_button_value(9, true);
+            mood_button_value(11, true);
         }
     }
 
     if(index == 1){
         if(value > 0.5){
 
-            toggle_button_value(1, true);
-            toggle_button_value(3, true);
-            toggle_button_value(10, false);
-            toggle_button_value(12, false);
+            mood_button_value(1, true);
+            mood_button_value(3, true);
+            mood_button_value(10, false);
+            mood_button_value(12, false);
         }
         else{
-            toggle_button_value(1, false);
-            toggle_button_value(3, false);
-            toggle_button_value(10, true);
-            toggle_button_value(12, true);
+            mood_button_value(1, false);
+            mood_button_value(3, false);
+            mood_button_value(10, true);
+            mood_button_value(12, true);
         }
     }
 }
@@ -249,24 +251,24 @@ void application::link_sliders(int index) {
           view_.refresh(*labels[index]);
 
           if(index == 0){
-              dial_value(1, val);
-              dial_value(3, val);
-              dial_value(4, val);
-              toggle_button_values(index, val);
+              feature_value(1, val);
+              feature_value(3, val);
+              feature_value(4, val);
+              mood_button_values(index, val);
           }
 
           if(index == 1){
-              dial_value(0, val);
-              dial_value(2, val);
-              dial_value(3, val);
-              dial_value(4, val);
-              dial_value(5, val);
-              toggle_button_values(index, val);
+              feature_value(0, val);
+              feature_value(2, val);
+              feature_value(3, val);
+              feature_value(4, val);
+              feature_value(5, val);
+              mood_button_values(index, val);
           }
         };
 }
 
-void application::link_dials(int index) {
+void application::link_features(int index) {
     int dials_index = index + 3;
 
     dials[index]->on_change =
@@ -276,63 +278,61 @@ void application::link_dials(int index) {
           view_.refresh(*labels[dials_index]);
 
           if(index == 0 || index == 2 || index == 3 || index == 4 || index == 5){
-              slider_value(1, val);
-              dial_value(2, val);
-              dial_value(3, val);
-              dial_value(4, val);
-              dial_value(5, val);
-              toggle_button_values(1, val);
+              control_value(1, val);
+              feature_value(2, val);
+              feature_value(3, val);
+              feature_value(4, val);
+              feature_value(5, val);
+              mood_button_values(1, val);
           }
 
           if(index == 1 || index == 3 || index == 4){
-              slider_value(0, val);
-              dial_value(3, val);
-              dial_value(4, val);
-              toggle_button_values(0, val);
+              control_value(0, val);
+              feature_value(3, val);
+              feature_value(4, val);
+              mood_button_values(0, val);
           }
         };
 }
 
-void application::link_buttons(int index) {
+void application::link_mood_buttons(int index) {
 
-    double size          = toggle_buttons.size();
+    double size          = mood_buttons.size();
     double value         = (size - index)*(1.0/size);
     double value_arousal = index*(1.0/size);
 
-    toggle_buttons[index]->on_click =
+    mood_buttons[index]->on_click =
         [index, value, value_arousal, this](double status) {
 
-              slider_value(0, value);
-              dial_value(0,value);
-              dial_value(1,value);
-              dial_value(2,value);
-              dial_value(3,value_arousal);
-              dial_value(4,value_arousal);
-              dial_value(5,value_arousal);
+              control_value(0, value);
+              feature_value(0, value);
+              feature_value(1, value);
+              feature_value(2, value);
+              feature_value(3, value_arousal);
+              feature_value(4, value_arousal);
+              feature_value(5, value_arousal);
 
-              if(index <= toggle_buttons.size()/2){
-                  slider_value(1, value);
+              if(index <= mood_buttons.size()/2){
+                  control_value(1, value);
               }
               else{
-                  slider_value(1, value_arousal);
+                  control_value(1, value_arousal);
               }
         };
 }
 
 void application::link_controls() {
 
-    link_sliders(0);
-    link_sliders(1);
-    link_sliders(2);
-    link_dials(0);
-    link_dials(1);
-    link_dials(2);
-    link_dials(3);
-    link_dials(4);
-    link_dials(5);
+    for(size_t i = 0; i < vertical_sliders.size(); ++i){
+        link_sliders(i);
+    }
 
-    for(size_t i = 0; i < toggle_buttons.size(); ++i){
-        link_buttons(i);
+    for(size_t i = 0; i < dials.size(); ++i){
+        link_features(i);
+    }
+
+    for(size_t i = 0; i < mood_buttons.size(); ++i){
+        link_mood_buttons(i);
     }
 }
 
@@ -348,5 +348,6 @@ void application::initialize_application() {
     link_controls();
 }
 
-void application::run() { app_.run();
+void application::run() {
+    app_.run();
 }
