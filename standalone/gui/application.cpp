@@ -5,11 +5,8 @@
 #include "application.h"
 
 template <typename E>
-auto application::decorate(E&& e)
-{
-    return hsize(90, align_center(margin({ 20, 5, 20, 5 },
-                                         std::forward<E>(e)
-    )));
+auto application::decorate(E&& e) {
+    return hsize(100, align_center(vmargin({5, 5}, std::forward<E>(e))));
 }
 
 template <bool is_vertical>
@@ -25,16 +22,17 @@ auto application::make_markers()
 }
 
 auto application::make_title_label(std::string const &label_name) {
-    return vmargin({20.,20.},cycfi::elements::label(label_name));
+    return bottom_margin({10.},cycfi::elements::label(label_name));
 }
 
 auto application::push_value_label(std::string const &default_value) {
 
     labels.emplace_back(share(cycfi::elements::label(default_value)));
 
-    return decorate(layer(
-        hold(labels.back()),
-        cycfi::elements::frame{}
+    return margin({10., 10., 10., 10.},
+           layer(
+           decorate(hold(labels.back())),
+           cycfi::elements::frame{}
     ));
 }
 
@@ -54,21 +52,21 @@ auto application::push_dial() {
         "5", "6", "7", "8", "9", "10"
     );
 
-    return align_center_middle(hmargin({20.,20.},markers));
+    return align_center_middle(markers);
 }
 
 auto application::push_mood_button(std::string const &label_name, cycfi::elements::color color) {
 
     mood_buttons.emplace_back(share(toggle_button(label_name, 1.0, color)));
 
-    return margin({10.,10.,10.,0.},hold(mood_buttons.back()));
+    return margin({10.,0.,10.,10.},hold(mood_buttons.back()));
 }
 
 auto application::make_mood_buttons() {
 
     return
         vmargin(
-            {60.,20.},
+            {10.,10.},
             vtile(
                 push_mood_button("Alert", green),
                 push_mood_button("Excited", green),
@@ -106,7 +104,7 @@ auto application::make_composition_control(const std::string &label_name) {
         vtile(
             make_title_label(label_name),
             push_vertical_slider(),
-            cycfi::elements::margin({20.,20.,20.,0.}, push_value_label("-5.0"))
+            push_value_label("-5.0")
         );
 }
 
@@ -131,53 +129,63 @@ auto application::make_player() {
 
 auto application::make_feature(std::string const  &name) {
     return
-        vtile(
-            make_title_label(name),
-            push_dial(),
-            cycfi::elements::margin({20.,20.,20.,0.}, push_value_label("0"))
+        margin({10., 10., 10., 10.},
+            vtile(
+                make_title_label(name),
+                push_dial(),
+                push_value_label("0")
+            )
         );
 }
 
 auto application::make_features() {
-    return margin({20.,0.,20.,20.},
-                  htile(
-                      vtile(
-                          make_feature("Tempo"),
-                          make_feature("Dynamics"),
-                          make_feature("Pitch")
-                      ),
-                      vtile(
-                          make_feature("Timbre"),
-                          make_feature("Rhythm"),
-                          make_feature("Label")
-                      )
+    return
+          htile(
+              vtile(
+                  make_feature("Tempo"),
+                  make_feature("Dynamics"),
+                  make_feature("Pitch")
+              ),
+              align_right(
+                  vtile(
+                      make_feature("Timbre"),
+                      make_feature("Rhythm"),
+                      make_feature("Label")
                   )
-    );
+              )
+          );
 }
 
 auto application::make_composition_controls() {
     return
-        margin({20.,0.,20.,20.},
-                  cycfi::elements::htile(
-                      make_composition_control("Valence"),
-                      make_composition_control("Arousal"),
-                      make_composition_control("Originality")
-                  )
+        margin({10., 10., 10., 10.},
+            cycfi::elements::htile(
+                make_composition_control("Valence"),
+                make_composition_control("Arousal"),
+                make_composition_control("Originality")
+            )
         );
 }
 
 auto application::make_application() {
-
     return
-        margin({ 20., 10., 20., 10. },
+        margin({10., 10., 10., 10.},
                vmin_size(400.,
                          htile(
-                             valign(0.5, margin({ 10., 10., 10., 10. }, pane("Emotions", make_mood_buttons(), 1.0F))),
-                             vstretch(0.5, margin({ 10., 10., 10., 10. }, pane("Controllers",
-                                          make_composition_controls(), 1.0F))),
+                             vstretch(0.5,
+                                    margin({ 10., 10., 10., 10.},
+                                    pane("Emotions", make_mood_buttons(), 1.0F))
+                             ),
+                             vstretch(0.5,
+                                      margin({10., 10., 10., 10.},
+                                      pane("Controllers", make_composition_controls(), 1.0F))
+                             ),
                              vtile(
-                                 hstretch(0.5, margin({ 10., 10., 10., 10. }, cycfi::elements::pane("Features", make_features(), 1.0F))),
-                                 margin({ 10., 10., 10., 10. }, cycfi::elements::pane("Player", make_player()))
+                                 hstretch(0.5,
+                                          margin({10., 10., 10., 10.},
+                                          pane("Features", make_features(), 1.0F))
+                                 ),
+                                 margin({ 10., 10., 10., 10. }, pane("Player", make_player()))
                              )
                          )
                )
@@ -321,7 +329,7 @@ void application::link_mood_buttons(int index) {
         };
 }
 
-void application::link_controls() {
+void application::link_components() {
 
     for(size_t i = 0; i < vertical_sliders.size(); ++i){
         link_sliders(i);
@@ -345,7 +353,7 @@ void application::initialize_application() {
     view_.content(
         make_application(), background_);
 
-    link_controls();
+    link_components();
 }
 
 void application::run() {

@@ -45,7 +45,7 @@ class application {
     void link_sliders(int index);
     void link_features(int index);
     void link_mood_buttons(int index);
-    void link_controls();
+    void link_components();
 
     using dial_ptr = std::shared_ptr<cycfi::elements::dial_base>;
     std::vector<dial_ptr> dials;
