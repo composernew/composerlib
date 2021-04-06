@@ -8,7 +8,7 @@
 #include <elements.hpp>
 #include <sstream>
 #include <iostream>
-#include <array>
+#include <vector>
 
 class application {
 
@@ -18,41 +18,61 @@ class application {
     template <bool is_vertical>
     auto make_markers();
 
-    static auto make_label(std::string const &label_name);
-    auto make_text(int index, std::string const &default_value);
-    auto make_dial(int index);
-    auto make_vertical_slider(int index);
+    // Labels
+    static auto make_title_label(std::string const &label_name);
+    auto push_value_label(std::string const &default_value);
 
-    auto make_control(std::string const &label_name, int slider_index, int text_index);
+    // GUI components
+    auto push_mood_button(std::string const &label_name, cycfi::elements::color color);
+    auto push_vertical_slider();
+    auto push_dial();
+    auto make_composition_control(std::string const &label_name);
+    auto make_feature(std::string const &name);
 
-    auto make_controllers();
+    // GUI
+    auto make_mood_buttons();
+    auto make_composition_controls();
     auto make_features();
     static auto make_player();
 
-    void dial_value(int dial_index, double val, cycfi::elements::view &view_);
-    void slider_value(int slider_index, double val, cycfi::elements::view &view_);
-    void link_control(int index, cycfi::elements::view &view_);
+    // Components values
+    void feature_value(int dial_index, double value);
+    void control_value(int slider_index, double value);
+    void mood_button_value(cycfi::elements::basic_toggle_button<> &mood_button, bool status);
+    void mood_button_value(size_t index, bool status);
+    void disable_mood_buttons(size_t index);
+    void mood_button_values(size_t index, double value);
 
-    void link_controls(cycfi::elements::view& view_);
+    // Links
+    void link_sliders(int index);
+    void link_features(int index);
+    void link_mood_buttons(int index);
+    void link_components();
 
     using dial_ptr = std::shared_ptr<cycfi::elements::dial_base>;
-    std::array<dial_ptr,6> dials;
+    std::vector<dial_ptr> feature_dials;
 
-    using label_ptr = decltype(share(cycfi::elements::label("")));
-    std::array<label_ptr,9> labels;
+    using label_ptr = std::shared_ptr<cycfi::elements::basic_label>;
+    std::vector<label_ptr> labels;
 
     using slider_ptr = std::shared_ptr<cycfi::elements::basic_slider_base>;
-    std::array<slider_ptr,3> vertical_sliders;
+    std::vector<slider_ptr> composition_controls_sliders;
 
-    cycfi::elements::app _app;
+    using button_ptr = std::shared_ptr<cycfi::elements::basic_toggle_button<>>;
+    std::vector<button_ptr> mood_buttons;
+
+    // Colors
+    static constexpr auto green = cycfi::elements::colors::green.level(0.7).opacity(0.4);
+    static constexpr auto red   = cycfi::elements::colors::red.opacity(0.4);
+
+    cycfi::elements::app app_;
 
   public:
 
-    application(const auto &background_color, int argc, char* argv[]) :
-        _background(background_color),
-        _window(_app.name()),
-        _view(_window),
-        _app(argc, argv, "Composer", "com.composer.composer")
+    application(const auto &background_color, int argc, char** argv) :
+        background_(background_color), view_(window_),
+        app_(argc, argv, "Composer", "com.composer.composer"),
+        window_(app_.name())
     {initialize_application();}
 
     auto make_application();
@@ -61,9 +81,9 @@ class application {
 
     void run();
 
-    cycfi::elements::box_element    _background;
-    cycfi::elements::window         _window;
-    cycfi::elements::view           _view;
+    cycfi::elements::box_element    background_;
+    cycfi::elements::window         window_;
+    cycfi::elements::view           view_;
 };
 
 #endif // COMPOSER_APPLICATION_H
