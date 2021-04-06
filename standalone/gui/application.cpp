@@ -197,17 +197,22 @@ void application::feature_value(int dial_index, double value) {
     dials[dial_index]->dial_base::value(value);
     view_.refresh(*dials[dial_index]);
 
-    labels[(dial_index+3)]->set_text(std::to_string(value));
-    view_.refresh(*labels[(dial_index+3)]);
+    labels[dial_index]->set_text(std::to_string(value));
+    view_.refresh(*labels[dial_index]);
 }
 
 void application::control_value(int slider_index, double value) {
 
+    /* The index need to be calculated here because the application creates the
+     * features first and then the controls
+     */
+    size_t label_index = dials.size() + slider_index;
+
     vertical_sliders[slider_index]->slider_base::value(value);
     view_.refresh(*vertical_sliders[slider_index]);
 
-    labels[slider_index]->set_text(std::to_string(value));
-    view_.refresh(*labels[slider_index]);
+    labels[label_index]->set_text(std::to_string(value));
+    view_.refresh(*labels[label_index]);
 }
 
 void application::mood_button_value(size_t index, bool status) {
@@ -252,15 +257,21 @@ void application::mood_button_values(size_t index, double value) {
 
 void application::link_sliders(int index) {
 
+    /* The index need to be calculated here because the application creates the
+     * features first and then the controls
+     */
+
+    size_t label_index = dials.size() + index;
+
     vertical_sliders[index]->on_change =
-        [index, this](double val){
+        [index, label_index, this](double val){
 
-          labels[index]->set_text(std::to_string(val));
-          view_.refresh(*labels[index]);
+          labels[label_index]->set_text(std::to_string(val));
+          view_.refresh(*labels[label_index]);
 
-          if(index == 0){
+          if(index == 2){
               feature_value(1, val);
-              feature_value(3, val);
+              feature_value(0, val);
               feature_value(4, val);
               mood_button_values(index, val);
           }
@@ -269,7 +280,7 @@ void application::link_sliders(int index) {
               feature_value(0, val);
               feature_value(2, val);
               feature_value(3, val);
-              feature_value(4, val);
+              feature_value(1, val);
               feature_value(5, val);
               mood_button_values(index, val);
           }
@@ -277,27 +288,26 @@ void application::link_sliders(int index) {
 }
 
 void application::link_features(int index) {
-    int dials_index = index + 3;
 
     dials[index]->on_change =
-        [index, dials_index, this](double val){
+        [index, this](double val){
 
-          labels[dials_index]->set_text(std::to_string(val));
-          view_.refresh(*labels[dials_index]);
+          labels[index]->set_text(std::to_string(val));
+          view_.refresh(*labels[index]);
 
-          if(index == 0 || index == 2 || index == 3 || index == 4 || index == 5){
+          if(index == 0 || index == 2 || index == 3 || index == 1 || index == 5){
               control_value(1, val);
               feature_value(2, val);
-              feature_value(3, val);
-              feature_value(4, val);
+              feature_value(0, val);
+              feature_value(1, val);
               feature_value(5, val);
               mood_button_values(1, val);
           }
 
-          if(index == 1 || index == 3 || index == 4){
-              control_value(0, val);
-              feature_value(3, val);
-              feature_value(4, val);
+          if(index == 1 || index == 0 || index == 4){
+              control_value(2, val);
+              feature_value(0, val);
+              feature_value(1, val);
               mood_button_values(0, val);
           }
         };
@@ -312,13 +322,13 @@ void application::link_mood_buttons(int index) {
     mood_buttons[index]->on_click =
         [index, value, value_arousal, this](double status) {
 
-              control_value(0, value);
-              feature_value(0, value);
-              feature_value(1, value);
-              feature_value(2, value);
-              feature_value(3, value_arousal);
-              feature_value(4, value_arousal);
-              feature_value(5, value_arousal);
+              control_value(2, value);
+              feature_value(3, value);
+              feature_value(4, value);
+              feature_value(5, value);
+              feature_value(0, value_arousal);
+              feature_value(1, value_arousal);
+              feature_value(2, value_arousal);
 
               if(index <= mood_buttons.size()/2){
                   control_value(1, value);
