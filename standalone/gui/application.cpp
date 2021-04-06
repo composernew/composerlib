@@ -38,7 +38,7 @@ auto application::push_value_label(std::string const &default_value) {
 
 auto application::push_dial() {
 
-    dials.emplace_back(share(
+    feature_dials.emplace_back(share(
         dial(
             radial_marks<20>(cycfi::elements::basic_knob<50>()),
             0.5
@@ -46,7 +46,7 @@ auto application::push_dial() {
     );
 
     auto markers = radial_labels<15>(
-        hold(dials.back()),
+        hold(feature_dials.back()),
         0.7,                                   // Label font size (relative size)
         "0", "1", "2", "3", "4",               // Labels
         "5", "6", "7", "8", "9", "10"
@@ -90,13 +90,13 @@ auto application::make_mood_buttons() {
 }
 
 auto application::push_vertical_slider() {
-    vertical_sliders.emplace_back(share(slider(
+    composition_controls_sliders.emplace_back(share(slider(
         cycfi::elements::basic_thumb<25>(),
         make_markers<true>(),
         0.5
     )));
 
-    return align_center(hold(vertical_sliders.back()));
+    return align_center(hold(composition_controls_sliders.back()));
 }
 
 auto application::make_composition_control(const std::string &label_name) {
@@ -194,8 +194,8 @@ auto application::make_application() {
 
 void application::feature_value(int dial_index, double value) {
 
-    dials[dial_index]->dial_base::value(value);
-    view_.refresh(*dials[dial_index]);
+    feature_dials[dial_index]->dial_base::value(value);
+    view_.refresh(*feature_dials[dial_index]);
 
     labels[dial_index]->set_text(std::to_string(value));
     view_.refresh(*labels[dial_index]);
@@ -206,10 +206,10 @@ void application::control_value(int slider_index, double value) {
     /* The index need to be calculated here because the application creates the
      * features first and then the controls
      */
-    size_t label_index = dials.size() + slider_index;
+    size_t label_index = feature_dials.size() + slider_index;
 
-    vertical_sliders[slider_index]->slider_base::value(value);
-    view_.refresh(*vertical_sliders[slider_index]);
+    composition_controls_sliders[slider_index]->slider_base::value(value);
+    view_.refresh(*composition_controls_sliders[slider_index]);
 
     labels[label_index]->set_text(std::to_string(value));
     view_.refresh(*labels[label_index]);
@@ -217,41 +217,39 @@ void application::control_value(int slider_index, double value) {
 
 void application::mood_button_value(size_t index, bool status) {
     mood_buttons[index]->value(status);
-        view_.refresh(*mood_buttons[index]);
+    view_.refresh(*mood_buttons[index]);
+}
+
+void application::mood_button_value(cycfi::elements::basic_toggle_button<> &mood_button, bool status) {
+    mood_button.value(status);
+    view_.refresh(mood_button);
+}
+
+void application::disable_mood_buttons(size_t index) {
+    // Select one emotion by time
+    for(auto &mood_button : mood_buttons){
+        if(mood_button != mood_buttons[index])
+            mood_button_value(*mood_button, false);
+    }
 }
 
 void application::mood_button_values(size_t index, double value) {
 
-    if(index == 0){
-        if(value > 0.5){
+    // These values represent only a simulation of emotions control by valence and arousal
 
-            mood_button_value(0, true);
-            mood_button_value(2, true);
-            mood_button_value(9, false);
-            mood_button_value(11, false);
-        }
-        else{
-            mood_button_value(0, false);
-            mood_button_value(2, false);
-            mood_button_value(9, true);
-            mood_button_value(11, true);
-        }
+    double size = mood_buttons.size();
+    size_t mood_button_index;
+
+    if(index == 2 || value < 0.5) {
+
+        mood_button_index = value / (1.0/(size-1));
+        mood_button_value(mood_button_index, true);
+        disable_mood_buttons(mood_button_index);
     }
-
-    if(index == 1){
-        if(value > 0.5){
-
-            mood_button_value(1, true);
-            mood_button_value(3, true);
-            mood_button_value(10, false);
-            mood_button_value(12, false);
-        }
-        else{
-            mood_button_value(1, false);
-            mood_button_value(3, false);
-            mood_button_value(10, true);
-            mood_button_value(12, true);
-        }
+    else {
+        mood_button_index = -1 * ((value / (1.0/size)) - size);
+        mood_button_value(mood_button_index, true);
+        disable_mood_buttons(mood_button_index);
     }
 }
 
@@ -261,9 +259,9 @@ void application::link_sliders(int index) {
      * features first and then the controls
      */
 
-    size_t label_index = dials.size() + index;
+    size_t label_index = feature_dials.size() + index;
 
-    vertical_sliders[index]->on_change =
+    composition_controls_sliders[index]->on_change =
         [index, label_index, this](double val){
 
           labels[label_index]->set_text(std::to_string(val));
@@ -289,7 +287,7 @@ void application::link_sliders(int index) {
 
 void application::link_features(int index) {
 
-    dials[index]->on_change =
+    feature_dials[index]->on_change =
         [index, this](double val){
 
           labels[index]->set_text(std::to_string(val));
@@ -322,30 +320,32 @@ void application::link_mood_buttons(int index) {
     mood_buttons[index]->on_click =
         [index, value, value_arousal, this](double status) {
 
-              control_value(2, value);
-              feature_value(3, value);
-              feature_value(4, value);
-              feature_value(5, value);
-              feature_value(0, value_arousal);
-              feature_value(1, value_arousal);
-              feature_value(2, value_arousal);
+            disable_mood_buttons(index);
 
-              if(index <= mood_buttons.size()/2){
-                  control_value(1, value);
-              }
-              else{
-                  control_value(1, value_arousal);
-              }
+            control_value(2, value);
+            feature_value(3, value);
+            feature_value(4, value);
+            feature_value(5, value);
+            feature_value(0, value_arousal);
+            feature_value(1, value_arousal);
+            feature_value(2, value_arousal);
+
+            if(index <= mood_buttons.size()/2){
+                control_value(1, value);
+            }
+            else{
+                control_value(1, value_arousal);
+            }
         };
 }
 
 void application::link_components() {
 
-    for(size_t i = 0; i < vertical_sliders.size(); ++i){
+    for(size_t i = 0; i < composition_controls_sliders.size(); ++i){
         link_sliders(i);
     }
 
-    for(size_t i = 0; i < dials.size(); ++i){
+    for(size_t i = 0; i < feature_dials.size(); ++i){
         link_features(i);
     }
 

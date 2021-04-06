@@ -38,7 +38,9 @@ class application {
     // Components values
     void feature_value(int dial_index, double value);
     void control_value(int slider_index, double value);
+    void mood_button_value(cycfi::elements::basic_toggle_button<> &mood_button, bool status);
     void mood_button_value(size_t index, bool status);
+    void disable_mood_buttons(size_t index);
     void mood_button_values(size_t index, double value);
 
     // Links
@@ -48,13 +50,13 @@ class application {
     void link_components();
 
     using dial_ptr = std::shared_ptr<cycfi::elements::dial_base>;
-    std::vector<dial_ptr> dials;
+    std::vector<dial_ptr> feature_dials;
 
     using label_ptr = std::shared_ptr<cycfi::elements::basic_label>;
     std::vector<label_ptr> labels;
 
     using slider_ptr = std::shared_ptr<cycfi::elements::basic_slider_base>;
-    std::vector<slider_ptr> vertical_sliders;
+    std::vector<slider_ptr> composition_controls_sliders;
 
     using button_ptr = std::shared_ptr<cycfi::elements::basic_toggle_button<>>;
     std::vector<button_ptr> mood_buttons;
