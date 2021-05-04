@@ -32,8 +32,25 @@ if(NOT q_POPULATED)
     FetchContent_Populate(Q)
     set(q_ROOT ${q_SOURCE_DIR})
     get_filename_component(q_ROOT "${q_ROOT}" ABSOLUTE)
-    add_subdirectory(${q_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/q EXCLUDE_FROM_ALL)
+    add_subdirectory(${q_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/q)
 endif()
+
+# Midifile library
+FetchContent_Declare(
+        midifile
+        GIT_REPOSITORY https://github.com/craigsapp/midifile.git
+        GIT_TAG ee165a3f418684febf16b5b06de5e1dd7e9613c1
+)
+
+FetchContent_GetProperties(midifile)
+if(NOT midifile_POPULATED)
+    FetchContent_Populate(midifile)
+    set(midifile_ROOT ${midifile_SOURCE_DIR})
+    get_filename_component(midifile_ROOT "${midifile_ROOT}" ABSOLUTE)
+    add_subdirectory(${midifile_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/midifile)
+endif()
+
+target_include_directories(midifile PUBLIC "${midifile_SOURCE_DIR}/include")
 
 #######################################################
 ### Library                                         ###
@@ -63,3 +80,5 @@ target_include_directories(audiolib
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_link_libraries(audiolib PUBLIC libq libqio cycfi::infra)
+target_pedantic_options(audiolib)
+target_exception_options(audiolib)
