@@ -9,12 +9,11 @@
 
 class SMFProcessor {
 
-
-
   public:
 
-    void read(std::string filename);
-    SMFProcessor();
+    SMFProcessor()= default;
+
+    void process(std::string filename);
 };
 
 #endif // COMPOSER_MIDI_PROCESSOR_H

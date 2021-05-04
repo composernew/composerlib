@@ -5,7 +5,7 @@
 #include "smf_processor.h"
 #include <MidiFile.h>
 
-void SMFProcessor::read(std::string filename) {
+void SMFProcessor::process(std::string filename) {
 
     smf::MidiFile midiFile;
 
@@ -38,8 +38,4 @@ void SMFProcessor::read(std::string filename) {
             std::cout << std::endl;
         }
     }
-}
-
-SMFProcessor::SMFProcessor() {
-
 }

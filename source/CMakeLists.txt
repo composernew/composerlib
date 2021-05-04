@@ -32,7 +32,7 @@ if(NOT q_POPULATED)
     FetchContent_Populate(Q)
     set(q_ROOT ${q_SOURCE_DIR})
     get_filename_component(q_ROOT "${q_ROOT}" ABSOLUTE)
-    add_subdirectory(${q_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/q)
+    add_subdirectory(${q_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/q EXCLUDE_FROM_ALL)
 endif()
 
 # Midifile library
@@ -82,3 +82,16 @@ target_include_directories(audiolib
 target_link_libraries(audiolib PUBLIC libq libqio cycfi::infra)
 target_pedantic_options(audiolib)
 target_exception_options(audiolib)
+
+add_library(smflib
+        smf/smf_processor.h
+        smf/smf_processor.cpp
+        )
+
+target_include_directories(smflib
+        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
+target_link_libraries(smflib PUBLIC midifile audiolib)
+target_pedantic_options(smflib)
+target_exception_options(smflib)
