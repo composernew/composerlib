@@ -8,7 +8,7 @@ int main() {
 
     SMFProcessor processor;
 
-    processor.process("../twinkle.mid");
+    processor.process("../twinkle.midi");
 
     return 0;
 }
