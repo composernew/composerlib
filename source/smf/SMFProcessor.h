@@ -6,14 +6,18 @@
 #define COMPOSER_MIDI_PROCESSOR_H
 
 #include <iostream>
+#include <audio/synth.h>
 
 class SMFProcessor {
 
+    synth synth_;
+
   public:
 
-    SMFProcessor()= default;
+    explicit SMFProcessor(synth &synth)
+        : synth_(synth.timbre_) {}
 
-    void process(std::string filename);
+    void process(const std::string &filename);
 };
 
 #endif // COMPOSER_MIDI_PROCESSOR_H

@@ -84,9 +84,9 @@ target_pedantic_options(audiolib)
 target_exception_options(audiolib)
 
 add_library(smflib
-        smf/smf_processor.h
-        smf/smf_processor.cpp
-        )
+        smf/SMFProcessor.h
+        smf/SMFProcessor.cpp
+)
 
 target_include_directories(smflib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
