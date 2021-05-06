@@ -2,13 +2,15 @@
 // Created by Carla on 04/05/2021.
 //
 
-#include <smf/smf_processor.h>
+#include <smf/SMFProcessor.h>
+#include <audio/synth.h>
 
 int main() {
 
-    SMFProcessor processor;
+    synth synth;
+    SMFProcessor processor(synth);
 
-    processor.process("../twinkle.midi");
+    processor.process("../notes.midi");
 
     return 0;
 }
