@@ -2,15 +2,19 @@
 // Created by Carla on 04/05/2021.
 //
 
-#include <smf/SMFProcessor.h>
 #include <audio/synth.h>
+#include <smf/SMFReader.h>
 
 int main() {
 
-    synth synth;
-    SMFProcessor processor(synth);
+    synth synth_;
+    SMFReader reader;
 
-    processor.process("../notes.midi");
+    reader.read("../notes.midi");
+
+    synth_.start();
+    synth_.play(reader.notes_);
+    synth_.stop();
 
     return 0;
 }

@@ -15,7 +15,7 @@ class synth : public cycfi::q::port_audio_stream
 {
     void process(out_channels const& out) override;
 
-
+    void set(cycfi::q::frequency const &freq, cycfi::q::duration const &dur);
 
     cycfi::q::phase_iterator   phase;   // The phase iterator
 
@@ -33,8 +33,6 @@ class synth : public cycfi::q::port_audio_stream
     void play(std::vector<std::tuple<int,cycfi::q::frequency,cycfi::q::duration>> &notes);
 
     void set_timbre(timbre timbre);
-
-    void set(cycfi::q::frequency const &freq, cycfi::q::duration const &dur);
 };
 
 #endif // COMPOSER_SYNTH_H
