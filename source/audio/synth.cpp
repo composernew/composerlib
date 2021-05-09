@@ -4,37 +4,47 @@ void synth::process(const out_channels &out) {
 
     auto left = out[0];
     auto right = out[1];
-    for (auto frame : out.frames())
-    {
+
+    for (auto frame : out.frames()) {
+
+        auto env_ = env();
+        filter.cutoff(env_);
+        auto val = cycfi::q::sin(phase++);
+
         switch (timbre_) {
             case timbre::triangle:
-                right[frame] = left[frame] = cycfi::q::triangle(phase++);
+                val = cycfi::q::triangle(phase++);
                 break;
             case timbre::square:
-                right[frame] = left[frame] = cycfi::q::square(phase++);
+                val = cycfi::q::square(phase++);
                 break;
             case timbre::saw:
-                right[frame] = left[frame] = cycfi::q::saw(phase++);
+                val = cycfi::q::saw(phase++);
                 break;
             default:
-                right[frame] = left[frame] = cycfi::q::sin(phase++);
+                val = cycfi::q::sin(phase++);
         }
+
+        val = clip(filter(val) * env_);
+        right[frame] = left[frame] = val;
     }
 }
 
 void synth::set(const cycfi::q::frequency &freq, const cycfi::q::duration &dur) {
     phase.set(freq, this->sampling_rate());
+    env.trigger(0.3);
     cycfi::q::sleep(dur);
 }
 
 void synth::play(std::vector<std::tuple<int, cycfi::q::frequency,cycfi::q::duration>> &notes){
 
+    using note_type = std::tuple<int, cycfi::q::frequency,cycfi::q::duration>;
     std::sort(notes.begin(),notes.end());
 
-    for(size_t i = 1; i <= notes.size(); ++i){
+    for(note_type &note : notes){
 
         // plays the frequency with specified duration
-        set(std::get<1>(notes[i-1]), std::get<2>(notes[i-1]));
+        set(std::get<1>(note), std::get<2>(note));
     }
 }
 
