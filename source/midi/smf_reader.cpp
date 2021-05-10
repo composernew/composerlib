@@ -13,5 +13,12 @@ smf::MidiEventList smf_reader::read(const std::string &filename) {
 
     midiFile.doTimeAnalysis();
 
+    if (midiFile.getTrackCount() > 1) {
+
+        // Converts multi-track data into a single time sequence.
+        // This makes possible to process the returned event list as a single track list
+        midiFile.joinTracks();
+    }
+
     return midiFile[0];
 }

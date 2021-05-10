@@ -11,7 +11,11 @@ auto midi_stream::convert_message(smf::MidiMessage &event) {
     cycfi::q::midi::raw_message message{};
     std::stringstream stream;
 
-    stream << std::hex << static_cast<int>(event[2]) << static_cast<int>(event[1]) << static_cast<int>(event[0]);
+    // Converts messages to hexadecimal
+    for(size_t i = event.size(); i > 0; --i){
+        stream << std::hex << static_cast<int>(event[i-1]);
+    }
+
     stream >> x;
 
     message.data = x;
