@@ -21,7 +21,7 @@ int main() {
     };
 
     synth synth_(env_cfg);
-    midi_stream stream(smf_reader::read("../notes.midi"));
+    midi_stream stream(smf_reader::read("../resources/twinkle.midi"));
     midi_processor processor{synth_};
 
     synth_.start();
