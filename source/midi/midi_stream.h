@@ -10,6 +10,9 @@
 #include <utility>
 #include "midi_processor.h"
 
+// The midi_stream class uses the midi_processor class to process a smf::MidiEventList.
+// That way is possible to cycfi::q::midi to handle all MIDI messages to play the event list.
+
 class midi_stream {
 
     static auto convert_message(smf::MidiMessage &event);

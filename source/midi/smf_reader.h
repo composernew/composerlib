@@ -11,6 +11,8 @@
 #include <q/support/midi.hpp>
 #include <MidiEventList.h>
 
+// The smf_reader class reads a MIDI file and returns a smf::MidiEventList prepared to be used to play MIDI notes.
+
 class smf_reader {
 
   public:

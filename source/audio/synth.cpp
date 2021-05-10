@@ -7,8 +7,13 @@ void synth::process(const out_channels &out) {
 
     for (auto frame : out.frames()) {
 
+        // Generate the ADSR envelope
         auto env_ = env();
+
+        // Set the filter frequency
         filter.cutoff(env_);
+
+        // Synthesize the sine wave
         auto val = cycfi::q::sin(phase++);
 
         switch (timbre_) {
@@ -25,7 +30,10 @@ void synth::process(const out_channels &out) {
                 val = cycfi::q::sin(phase++);
         }
 
+        // Apply the envelope (amplifier and filter) with soft clip
         val = clip(filter(val) * env_);
+
+        //Output
         right[frame] = left[frame] = val;
     }
 }

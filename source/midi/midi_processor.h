@@ -9,6 +9,8 @@
 #include <audio/synth.h>
 #include <q/support/midi.hpp>
 
+// The midi_processor class uses cycfi::q::midi::processor to handle MIDI messages and play them with a synthesizer.
+
 class midi_processor : cycfi::q::midi::processor {
 
     std::uint8_t    key_;
