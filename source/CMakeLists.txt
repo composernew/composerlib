@@ -84,8 +84,8 @@ target_pedantic_options(audiolib)
 target_exception_options(audiolib)
 
 add_library(smflib
-        midi/smf_reader.h
-        midi/smf_reader.cpp
+        midi/smf_io.h
+        midi/smf_io.cpp
         midi/midi_stream.cpp
         midi/midi_stream.h
         midi/midi_processor.cpp
