@@ -9,7 +9,7 @@
 #include <vector>
 #include <q/support/frequency.hpp>
 #include <q/support/midi.hpp>
-#include <MidiEventList.h>
+#include <MidiFile.h>
 
 // The smf_reader class reads a MIDI file and returns a smf::MidiEventList prepared to be used to play MIDI notes.
 

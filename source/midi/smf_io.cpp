@@ -3,7 +3,6 @@
 //
 
 #include "smf_io.h"
-#include <MidiFile.h>
 
 smf::MidiFile smf_io::read(const std::string &filename) {
 
