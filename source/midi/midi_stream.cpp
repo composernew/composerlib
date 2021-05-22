@@ -24,7 +24,24 @@ auto midi_stream::convert_message(smf::MidiMessage &event) {
     return message;
 }
 
+bool midi_stream::is_harmony() {
+
+    for (int event = 1; event < event_list.size(); ++event) {
+        if (event_list[event][0] == note_on && event_list[event-1][0] == note_on) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void midi_stream::process(midi_processor &processor) {
+
+    // Compositions with harmonies will not be supported at first
+    if(is_harmony()){
+        std::cout << "This MIDI file contains harmonies." << std::endl;
+        return;
+    }
 
     event_list.linkNotePairs();
 

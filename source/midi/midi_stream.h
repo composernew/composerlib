@@ -16,13 +16,17 @@
 class midi_stream {
 
     static auto convert_message(smf::MidiMessage &event);
+    bool is_harmony();
+
+    int note_on;
 
     smf::MidiEventList event_list;
 
   public:
 
     explicit midi_stream(smf::MidiEventList eventList)
-        : event_list(std::move(eventList)) {}
+        : event_list(std::move(eventList))
+        {note_on = 0x90;}
 
     void process(midi_processor &processor);
 };
