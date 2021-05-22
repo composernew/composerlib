@@ -17,8 +17,8 @@ class smf_io {
 
   public:
 
-    static smf::MidiEventList read(const std::string &filename);
-    static void write(smf::MidiEventList eventList, std::string const &filename);
+    static smf::MidiFile read(const std::string &filename);
+    static void write(smf::MidiFile midiFile, std::string const &filename);
 };
 
 #endif // COMPOSER_SMF_IO_H

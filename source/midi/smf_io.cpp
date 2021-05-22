@@ -5,7 +5,7 @@
 #include "smf_io.h"
 #include <MidiFile.h>
 
-smf::MidiEventList smf_io::read(const std::string &filename) {
+smf::MidiFile smf_io::read(const std::string &filename) {
 
     smf::MidiFile midiFile;
 
@@ -20,14 +20,9 @@ smf::MidiEventList smf_io::read(const std::string &filename) {
         midiFile.joinTracks();
     }
 
-    return midiFile[0];
+    return midiFile;
 }
 
-void smf_io::write(smf::MidiEventList eventList, std::string const &filename) {
-
-    smf::MidiFile midifile;
-
-    midifile[0] = eventList;
-
-    midifile.write(filename);
+void smf_io::write(smf::MidiFile midiFile, std::string const &filename) {
+    midiFile.write(filename);
 }
