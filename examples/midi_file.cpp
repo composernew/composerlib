@@ -23,17 +23,26 @@ int main() {
 
     synth synth_(env_cfg);
 
-    smf::MidiFile midiFile = smf_io::read("../resources/twinkle.midi");
-    midi_stream stream(midiFile[0]);
-    midi_processor processor{synth_};
+    smf_io smfIO;
 
-    synth_.start();
+    if (smfIO.read("../resources/twinkle.midi")) {
 
-    stream.process(processor);
+        midi_stream stream(smfIO.get_midifile()[0]);
+        midi_processor processor{synth_};
 
-    synth_.stop();
+        synth_.start();
 
-    smf_io::write(midiFile, "midiFile.midi");
+        stream.process(processor);
+
+        synth_.stop();
+    }
+    else {
+        std::cout << "Arquivo não encontrado." << std::endl;
+    }
+
+    if (!smf_io::write(smfIO.get_midifile(), "midiFile.midi")) {
+        std::cout << "Não foi possível escrever o arquivo" << std::endl;
+    }
 
     return 0;
 }

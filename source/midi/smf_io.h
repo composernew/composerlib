@@ -15,10 +15,14 @@
 
 class smf_io {
 
+    smf::MidiFile midiFile;
+
   public:
 
-    static smf::MidiFile read(const std::string &filename);
-    static void write(smf::MidiFile midiFile, std::string const &filename);
+    bool read(const std::string &filename);
+    static bool write(smf::MidiFile midiFile, std::string const &filename);
+
+    smf::MidiFile get_midifile();
 };
 
 #endif // COMPOSER_SMF_IO_H
