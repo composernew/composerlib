@@ -28,4 +28,10 @@ add_executable(ut_melody ut_melody.cpp)
 target_link_libraries(ut_melody PUBLIC composerlib Catch2)
 catch_discover_tests(ut_melody)
 
+add_executable(ut_writesmf ut_writesmf.cpp)
+target_link_libraries(ut_writesmf PUBLIC smflib Catch2)
+catch_discover_tests(ut_writesmf)
 
+add_executable(ut_readsmf ut_readsmf.cpp)
+target_link_libraries(ut_readsmf PUBLIC smflib Catch2)
+file(COPY ../resources/twinkle.midi DESTINATION "../resources")
