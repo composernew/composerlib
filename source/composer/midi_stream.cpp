@@ -4,7 +4,6 @@
 
 #include "midi_stream.h"
 #include <iostream>
-#include <sstream>
 
 auto midi_stream::convert_message(smf::MidiMessage &event) {
 

@@ -7,8 +7,8 @@ if (Matplot++_FOUND)
 endif()
 
 add_executable(example_audio audio.cpp)
-target_link_libraries(example_audio PRIVATE audiolib)
+target_link_libraries(example_audio PRIVATE composerlib)
 
-add_executable(example_midi_file midi_file.cpp)
-target_link_libraries(example_midi_file PRIVATE smflib)
+add_executable(example_play_midi play_midi.cpp)
+target_link_libraries(example_play_midi PRIVATE composerlib)
 file(COPY resources/twinkle.midi DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/resources")

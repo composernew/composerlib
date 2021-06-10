@@ -62,40 +62,16 @@ add_library(composerlib
         composer/melody.h
         composer/objective_parameters.cpp
         composer/objective_parameters.h
+        composer/synth.h
+        composer/synth.cpp
+        composer/midi_stream.cpp
+        composer/midi_stream.h
+        composer/midi_processor.cpp
+        composer/midi_processor.h
 )
 target_include_directories(composerlib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-target_link_libraries(composerlib PUBLIC Threads::Threads range-v3)
+target_link_libraries(composerlib PUBLIC Threads::Threads range-v3 libq libqio cycfi::infra midifile)
 target_pedantic_options(composerlib)
 target_exception_options(composerlib)
-
-add_library(audiolib
-        audio/synth.h
-        audio/synth.cpp
-        )
-
-target_include_directories(audiolib
-        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-
-target_link_libraries(audiolib PUBLIC libq libqio cycfi::infra)
-target_pedantic_options(audiolib)
-target_exception_options(audiolib)
-
-add_library(smflib
-        midi/smf_io.h
-        midi/smf_io.cpp
-        midi/midi_stream.cpp
-        midi/midi_stream.h
-        midi/midi_processor.cpp
-        midi/midi_processor.h
-)
-
-target_include_directories(smflib
-        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-
-target_link_libraries(smflib PUBLIC midifile audiolib)
-target_pedantic_options(smflib)
-target_exception_options(smflib)

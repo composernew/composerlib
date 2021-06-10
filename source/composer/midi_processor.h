@@ -6,7 +6,7 @@
 #ifndef COMPOSER_MIDI_PROCESSOR_H
 #define COMPOSER_MIDI_PROCESSOR_H
 
-#include <audio/synth.h>
+#include <composer/synth.h>
 #include <q/support/midi.hpp>
 
 // The midi_processor class uses cycfi::q::midi::processor to handle MIDI messages and play them with a synthesizer.

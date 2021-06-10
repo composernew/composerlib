@@ -1,4 +1,4 @@
-#include <audio/synth.h>
+#include <composer/synth.h>
 
 void synth::process(const out_channels &out) {
 
