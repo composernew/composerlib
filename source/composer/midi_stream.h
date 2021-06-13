@@ -13,10 +13,10 @@
 // The midi_stream class uses the midi_processor class to process a smf::MidiEventList.
 // That way is possible to cycfi::q::midi to handle all MIDI messages to play the event list.
 
-class midi_stream {
+static auto to_raw_message(smf::MidiMessage &event);
+bool is_harmony();
 
-    static auto convert_message(smf::MidiMessage &event);
-    bool is_harmony();
+class midi_stream {
 
     int note_on;
 

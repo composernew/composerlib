@@ -6,7 +6,7 @@
 #include <iostream>
 #include <sstream>
 
-auto midi_stream::convert_message(smf::MidiMessage &event) {
+auto to_raw_message(smf::MidiMessage &event) {
 
     int x;
     cycfi::q::midi::raw_message message{};
@@ -24,7 +24,7 @@ auto midi_stream::convert_message(smf::MidiMessage &event) {
     return message;
 }
 
-bool midi_stream::is_harmony() {
+bool is_harmony(smf::MidiEventList &event_list) {
 
     for (int event = 1; event < event_list.size(); ++event) {
         if (event_list[event][0] == note_on && event_list[event-1][0] == note_on) {
@@ -47,7 +47,7 @@ void midi_stream::process(midi_processor &processor) {
 
     for (int event = 0; event < event_list.size(); ++event) {
 
-        cycfi::q::midi::raw_message message = convert_message(event_list[event]);
+        cycfi::q::midi::raw_message message = to_raw_message(event_list[event]);
         cycfi::q::midi::dispatch(message, event_list[event].tick, processor);
         cycfi::q::sleep(event_list[event].getDurationInSeconds());
     }
