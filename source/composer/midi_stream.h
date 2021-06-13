@@ -10,25 +10,11 @@
 #include <utility>
 #include "midi_processor.h"
 
-// The midi_stream class uses the midi_processor class to process a smf::MidiEventList.
+// This library uses the midi_processor class to process a smf::MidiEventList.
 // That way is possible to cycfi::q::midi to handle all MIDI messages to play the event list.
 
-static auto to_raw_message(smf::MidiMessage &event);
-bool is_harmony();
-
-class midi_stream {
-
-    int note_on;
-
-    smf::MidiEventList event_list;
-
-  public:
-
-    explicit midi_stream(smf::MidiEventList eventList)
-        : event_list(std::move(eventList))
-        {note_on = 0x90;}
-
-    void process(midi_processor &processor);
-};
+auto to_raw_message(smf::MidiMessage &event);
+bool is_harmony(smf::MidiEventList &event_list);
+void process(midi_processor &processor, smf::MidiEventList &event_list);
 
 #endif // COMPOSER_MIDI_STREAM_H

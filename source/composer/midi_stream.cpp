@@ -27,7 +27,7 @@ auto to_raw_message(smf::MidiMessage &event) {
 bool is_harmony(smf::MidiEventList &event_list) {
 
     for (int event = 1; event < event_list.size(); ++event) {
-        if (event_list[event][0] == note_on && event_list[event-1][0] == note_on) {
+        if (event_list[event][0] == 0x90 && event_list[event-1][0] == 0x90) {
             return true;
         }
     }
@@ -35,10 +35,10 @@ bool is_harmony(smf::MidiEventList &event_list) {
     return false;
 }
 
-void midi_stream::process(midi_processor &processor) {
+void process(midi_processor &processor, smf::MidiEventList &event_list) {
 
     // Compositions with harmonies will not be supported at first
-    if(is_harmony()){
+    if(is_harmony(event_list)){
         std::cout << "This MIDI file contains harmonies." << std::endl;
         return;
     }
