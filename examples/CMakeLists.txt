@@ -8,7 +8,3 @@ endif()
 
 add_executable(example_audio audio.cpp)
 target_link_libraries(example_audio PRIVATE composerlib)
-
-add_executable(example_play_midi play_midi.cpp)
-target_link_libraries(example_play_midi PRIVATE composerlib)
-file(COPY resources/twinkle.midi DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/resources")
