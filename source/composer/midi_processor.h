@@ -9,13 +9,13 @@
 #include <composer/synth.h>
 #include <q/support/midi.hpp>
 
-// The midi_processor class uses cycfi::q::midi::processor to handle MIDI messages and play them with a synthesizer.
-
 namespace composer {
 
-    class midi_processor : cycfi::q::midi::processor {
+    /// \brief Handle MIDI messages and play them with a synthesizer.
+    ///
+    /// The synthesizer process note-on and note-off MIDI events using operators from cycfi::q::midi::processor
 
-        synth &synthesizer_;
+    class midi_processor : cycfi::q::midi::processor {
 
       public:
 
@@ -28,6 +28,10 @@ namespace composer {
         void operator()(cycfi::q::midi::note_on msg, std::size_t time);
 
         void operator()(cycfi::q::midi::note_off msg, std::size_t time);
+
+      private:
+
+        synth &synthesizer_;
     };
 }
 

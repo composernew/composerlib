@@ -1,3 +1,8 @@
+/*=============================================================================
+   Copyright (c) 2014-2021 Joel de Guzman. All rights reserved.
+   Distributed under the MIT License [ https://opensource.org/licenses/MIT ]
+=============================================================================*/
+
 #ifndef COMPOSER_SYNTH_H
 #define COMPOSER_SYNTH_H
 
@@ -11,24 +16,13 @@
 #include <q_io/audio_stream.hpp>
 #include <vector>
 
-// Based on Q 'sin_synth' example - https://github.com/cycfi/q/blob/master/example/sin_synth.cpp
-
 namespace composer {
 
     class synth : public cycfi::q::port_audio_stream {
 
-        void process(out_channels const& out) override;
-
-        void set(cycfi::q::frequency const &freq, cycfi::q::duration const &dur);
-
-        cycfi::q::reso_filter       filter; // The resonant filter
-        cycfi::q::soft_clip         clip;   // Soft clip
-
       public:
 
         enum class timbre {sine, triangle, square, saw};
-
-        timbre timbre_;
 
         explicit synth(cycfi::q::envelope::config &envelope_config, timbre timbre = timbre::sine)
             : port_audio_stream( 0, 2)
@@ -42,6 +36,16 @@ namespace composer {
 
         cycfi::q::phase_iterator    phase;  // The phase iterator
         cycfi::q::envelope          env;    // The envelope
+
+      private:
+
+        void process(out_channels const& out) override;
+
+        void set(cycfi::q::frequency const &freq, cycfi::q::duration const &dur);
+
+        timbre                      timbre_;
+        cycfi::q::reso_filter       filter; // The resonant filter
+        cycfi::q::soft_clip         clip;   // Soft clip
     };
 }
 
