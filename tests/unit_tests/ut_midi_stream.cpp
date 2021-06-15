@@ -15,7 +15,7 @@ TEST_CASE ("MidiEventList contains harmony") {
     // Empty MIDI file
     smf::MidiFile midi_file;
 
-    REQUIRE_THROWS_WITH(is_harmony(midi_file[0]), "Empty MidiEventList.");
+    REQUIRE_FALSE(is_harmony(midi_file[0]));
 
     // MIDI file containing melody
     midi_file.read("../resources/twinkle.midi");
@@ -24,7 +24,7 @@ TEST_CASE ("MidiEventList contains harmony") {
         midi_file.joinTracks();
     }
 
-    REQUIRE(is_harmony(midi_file[0]) == false);
+    REQUIRE_FALSE(is_harmony(midi_file[0]));
 
     // MIDI file containing harmony
     midi_file.read("../resources/twinkle_harmonic.mid");
@@ -51,8 +51,6 @@ TEST_CASE ("Dispatch MIDI messages to synthesizer") {
     midi_processor processor(synth_);
     smf::MidiFile midi_file;
 
-    REQUIRE_THROWS_WITH(dispatch_midi_messages(processor, midi_file[0]), "Empty MidiEventList.");
-
     // MIDI file containing melody
     midi_file.read("../resources/twinkle.midi");
 
@@ -60,6 +58,7 @@ TEST_CASE ("Dispatch MIDI messages to synthesizer") {
         midi_file.joinTracks();
     }
 
+    // Exception throws are not expected because the MIDI file contains only melodies
     REQUIRE_NOTHROW(dispatch_midi_messages(processor, midi_file[0]));
 
     midi_file.read("../resources/twinkle_harmonic.mid");
@@ -73,12 +72,19 @@ TEST_CASE ("Dispatch MIDI messages to synthesizer") {
 
 TEST_CASE ("smf::MidiMessage to raw message") {
 
-    smf::MidiMessage empty_message;
+    // Valid messages
 
-    REQUIRE_THROWS_WITH(to_raw_message(empty_message), "Empty message");
+    WHEN ("The message is a valid note-on") {
 
-    // Valid message
-    smf::MidiMessage message = {144, 48, 64};
+        smf::MidiMessage message = {144, 48, 64};
 
-    REQUIRE_NOTHROW(to_raw_message(message));
+        REQUIRE(to_raw_message(message).data == 4206736);
+    }
+
+    WHEN ("The message is a valid note-off") {
+
+        smf::MidiMessage message = {128, 53, 64};
+
+        REQUIRE(to_raw_message(message).data == 4208000);
+    }
 }
