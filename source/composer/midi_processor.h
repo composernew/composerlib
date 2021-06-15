@@ -11,22 +11,24 @@
 
 // The midi_processor class uses cycfi::q::midi::processor to handle MIDI messages and play them with a synthesizer.
 
-class midi_processor : cycfi::q::midi::processor {
+namespace composer {
 
-    std::uint8_t    key_;
-    synth           &synthesizer_;
+    class midi_processor : cycfi::q::midi::processor {
 
-  public:
+        synth &synthesizer_;
 
-    using cycfi::q::midi::processor::operator();
+      public:
 
-    explicit midi_processor(synth &synthesizer)
-        : synthesizer_(synthesizer)
-        , key_(60) {}
+        using cycfi::q::midi::processor::operator();
 
-    void operator()(cycfi::q::midi::note_on msg, std::size_t time);
+        explicit midi_processor(synth &synthesizer)
+            : synthesizer_(synthesizer)
+        {}
 
-    void operator()(cycfi::q::midi::note_off msg, std::size_t time);
-};
+        void operator()(cycfi::q::midi::note_on msg, std::size_t time);
+
+        void operator()(cycfi::q::midi::note_off msg, std::size_t time);
+    };
+}
 
 #endif // COMPOSER_MIDI_PROCESSOR_H

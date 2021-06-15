@@ -4,20 +4,22 @@
 =============================================================================*/
 
 #include "midi_processor.h"
-void midi_processor::operator()(cycfi::q::midi::note_on msg, std::size_t time) {
-    processor::operator()(msg, time);
 
-    float range = 128.0;
+namespace composer {
 
-    key_ = msg.key();
-    auto freq = cycfi::q::midi::note_frequency(key_);
-    synthesizer_.phase.set(freq, synthesizer_.sampling_rate());
-    synthesizer_.env.trigger(static_cast<float>(msg.velocity()) / range);
-}
+    void midi_processor::operator()(cycfi::q::midi::note_on msg, std::size_t time) {
+        processor::operator()(msg, time);
 
-void midi_processor::operator()(cycfi::q::midi::note_off msg, std::size_t time) {
-    processor::operator()(msg, time);
+        constexpr float range = 128.0;
 
-    if (msg.key() == key_)
+        auto freq = cycfi::q::midi::note_frequency(msg.key());
+        synthesizer_.phase.set(freq, synthesizer_.sampling_rate());
+        synthesizer_.env.trigger(static_cast<float>(msg.velocity()) / range);
+    }
+
+    void midi_processor::operator()(cycfi::q::midi::note_off msg, std::size_t time) {
+        processor::operator()(msg, time);
+
         synthesizer_.env.release();
+    }
 }
