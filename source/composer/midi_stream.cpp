@@ -1,16 +1,13 @@
 #include "midi_stream.h"
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 namespace composer {
 
     cycfi::q::midi::raw_message to_raw_message(smf::MidiMessage &midi_message) {
 
-        if(midi_message.empty()){
-            throw std::runtime_error("Empty message");
-        }
-
-        int x;
+        int x = 0;
         cycfi::q::midi::raw_message message{};
         std::stringstream stream;
 
@@ -28,12 +25,14 @@ namespace composer {
 
     bool is_harmony(smf::MidiEventList &event_list) {
 
+        constexpr int note_on = 0x90;
+
         if(event_list.size() == 0){
-            throw std::runtime_error("Empty MidiEventList.");
+            return false;
         }
 
         for (int event = 1; event < event_list.size(); ++event) {
-            if (event_list[event][0] == 0x90 && event_list[event-1][0] == 0x90) {
+            if (event_list[event][0] == note_on && event_list[event-1][0] == note_on) {
                 return true;
             }
         }
@@ -42,10 +41,6 @@ namespace composer {
     }
 
     void dispatch_midi_messages(midi_processor &processor, smf::MidiEventList &event_list) {
-
-        if(event_list.size() == 0){
-            throw std::runtime_error("Empty MidiEventList.");
-        }
 
         if(is_harmony(event_list)){
             throw std::runtime_error("This MIDI file contains harmonies: not implemented yet.");
