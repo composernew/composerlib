@@ -30,22 +30,22 @@ int main(){
     // Synthesizer timbres
 
     // sine timbre by default
-    synth _synth(env_cfg);
+    composer::synth _synth(env_cfg);
     _synth.start();
     _synth.play(notes);
     _synth.stop();
 
-    _synth.set_timbre(synth::timbre::triangle);
+    _synth.set_timbre(composer::synth::timbre::triangle);
     _synth.start();
     _synth.play(notes);
     _synth.stop();
 
-    _synth.set_timbre(synth::timbre::square);
+    _synth.set_timbre(composer::synth::timbre::square);
     _synth.start();
     _synth.play(notes);
     _synth.stop();
 
-    _synth.set_timbre(synth::timbre::saw);
+    _synth.set_timbre(composer::synth::timbre::saw);
     _synth.start();
     _synth.play(notes);
     _synth.stop();
