@@ -13,8 +13,11 @@
 // This library uses the midi_processor class to process a smf::MidiEventList.
 // That way is possible to cycfi::q::midi to handle all MIDI messages to play the event list.
 
-auto to_raw_message(smf::MidiMessage &event);
-bool is_harmony(smf::MidiEventList &event_list);
-void process(midi_processor &processor, smf::MidiEventList &event_list);
+namespace composer {
+
+    bool is_harmony(smf::MidiEventList &event_list);
+    void dispatch_midi_messages(midi_processor &processor, smf::MidiEventList &event_list);
+    cycfi::q::midi::raw_message to_raw_message(smf::MidiMessage &midi_message);
+}
 
 #endif // COMPOSER_MIDI_STREAM_H

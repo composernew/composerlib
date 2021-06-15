@@ -15,7 +15,7 @@ TEST_CASE ("MidiEventList contains harmony") {
     // Empty MIDI file
     smf::MidiFile midi_file;
 
-    REQUIRE(is_harmony(midi_file[0]) == false);
+    REQUIRE_THROWS_WITH(is_harmony(midi_file[0]), "Empty MidiEventList.");
 
     // MIDI file containing melody
     midi_file.read("../resources/twinkle.midi");
