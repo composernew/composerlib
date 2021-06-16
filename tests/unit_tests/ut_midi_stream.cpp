@@ -72,8 +72,6 @@ TEST_CASE ("Dispatch MIDI messages to synthesizer") {
 
 TEST_CASE ("smf::MidiMessage to raw message") {
 
-    // Valid messages
-
     WHEN ("The message is a valid note-on") {
 
         smf::MidiMessage message = {144, 48, 64};
@@ -86,5 +84,12 @@ TEST_CASE ("smf::MidiMessage to raw message") {
         smf::MidiMessage message = {128, 53, 64};
 
         REQUIRE(to_raw_message(message).data == 4208000);
+    }
+
+    WHEN ("The message is empty") {
+
+        smf::MidiMessage message;
+
+        REQUIRE(to_raw_message(message).data == 0);
     }
 }
