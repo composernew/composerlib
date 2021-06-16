@@ -18,6 +18,10 @@
 
 namespace composer {
 
+    /// \brief Synthesizes four types of waves: sine, triangle, square or saw.
+    ///
+    /// This class is used to play frquencies from MIDI files.
+
     class synth : public cycfi::q::port_audio_stream {
 
       public:
@@ -39,8 +43,10 @@ namespace composer {
 
       private:
 
+        /// Implements the process function from cycfi::q::port_audio_stream to synthesize the wave as specified.
         void process(out_channels const& out) override;
 
+        /// Changes a note frequency and duration during play.
         void set(cycfi::q::frequency const &freq, cycfi::q::duration const &dur);
 
         timbre                      timbre_;
