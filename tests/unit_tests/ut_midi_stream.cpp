@@ -18,7 +18,7 @@ TEST_CASE ("MidiEventList contains harmony") {
     REQUIRE_FALSE(is_harmony(midi_file[0]));
 
     // MIDI file containing melody
-    midi_file.read("../resources/twinkle.midi");
+    midi_file.read("resources/twinkle.midi");
 
     if (midi_file.getTrackCount() > 1) {
         midi_file.joinTracks();
@@ -27,7 +27,7 @@ TEST_CASE ("MidiEventList contains harmony") {
     REQUIRE_FALSE(is_harmony(midi_file[0]));
 
     // MIDI file containing harmony
-    midi_file.read("../resources/twinkle_harmonic.mid");
+    midi_file.read("resources/twinkle_harmonic.mid");
 
     if (midi_file.getTrackCount() > 1) {
         midi_file.joinTracks();
@@ -52,7 +52,7 @@ TEST_CASE ("Dispatch MIDI messages to synthesizer") {
     smf::MidiFile midi_file;
 
     // MIDI file containing melody
-    midi_file.read("../resources/twinkle.midi");
+    midi_file.read("resources/twinkle.midi");
 
     if (midi_file.getTrackCount() > 1) {
         midi_file.joinTracks();
@@ -61,7 +61,7 @@ TEST_CASE ("Dispatch MIDI messages to synthesizer") {
     // Exception throws are not expected because the MIDI file contains only melodies
     REQUIRE_NOTHROW(dispatch_midi_messages(processor, midi_file[0]));
 
-    midi_file.read("../resources/twinkle_harmonic.mid");
+    midi_file.read("resources/twinkle_harmonic.mid");
 
     if (midi_file.getTrackCount() > 1) {
         midi_file.joinTracks();
