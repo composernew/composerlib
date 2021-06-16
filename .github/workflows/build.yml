@@ -78,6 +78,7 @@ jobs:
           sudo cp -R * /usr/local/
           export CC=/usr/local/bin/clang
           export CXX=/usr/local/bin/clang++
+          sudo xcode-select -s "/Applications/Xcode_12.4.app"
       - name: Install elements dependencies
         id: cmake_and_ninja
         shell: cmake -P {0}
