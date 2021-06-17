@@ -35,6 +35,23 @@ if(NOT q_POPULATED)
     add_subdirectory(${q_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/q EXCLUDE_FROM_ALL)
 endif()
 
+# Midifile library
+FetchContent_Declare(
+        midifile
+        GIT_REPOSITORY https://github.com/craigsapp/midifile.git
+        GIT_TAG ee165a3f418684febf16b5b06de5e1dd7e9613c1
+)
+
+FetchContent_GetProperties(midifile)
+if(NOT midifile_POPULATED)
+    FetchContent_Populate(midifile)
+    set(midifile_ROOT ${midifile_SOURCE_DIR})
+    get_filename_component(midifile_ROOT "${midifile_ROOT}" ABSOLUTE)
+    add_subdirectory(${midifile_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/midifile)
+endif()
+
+target_include_directories(midifile PUBLIC "${midifile_SOURCE_DIR}/include")
+
 #######################################################
 ### Library                                         ###
 #######################################################
@@ -45,21 +62,16 @@ add_library(composerlib
         composer/melody.h
         composer/objective_parameters.cpp
         composer/objective_parameters.h
+        composer/synth.h
+        composer/synth.cpp
+        composer/midi_stream.cpp
+        composer/midi_stream.h
+        composer/midi_processor.cpp
+        composer/midi_processor.h
 )
 target_include_directories(composerlib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-target_link_libraries(composerlib PUBLIC Threads::Threads range-v3)
+target_link_libraries(composerlib PUBLIC Threads::Threads range-v3 libq libqio cycfi::infra midifile)
 target_pedantic_options(composerlib)
 target_exception_options(composerlib)
-
-add_library(audiolib
-        audio/synth.h
-        audio/synth.cpp
-        )
-
-target_include_directories(audiolib
-        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-
-target_link_libraries(audiolib PUBLIC libq libqio cycfi::infra)

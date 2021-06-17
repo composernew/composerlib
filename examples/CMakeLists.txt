@@ -7,4 +7,4 @@ if (Matplot++_FOUND)
 endif()
 
 add_executable(example_audio audio.cpp)
-target_link_libraries(example_audio PRIVATE audiolib)
+target_link_libraries(example_audio PRIVATE composerlib)
