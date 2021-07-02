@@ -4,8 +4,11 @@
 
 #include "melody.h"
 #include <iostream>
+#include <chrono>
 
 namespace composer {
+
+    std::default_random_engine melody::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
     melody::melody(smf::MidiEventList &notes)
         : notes_(notes) {}
@@ -29,6 +32,21 @@ namespace composer {
             for (int i=0; i< notes_[event].size(); i++)
                 std::cout << (int)notes_[event][i] << ' ';
             std::cout << std::endl;
+        }
+    }
+
+    void melody::mutation(double mutation_strength) {
+
+        std::uniform_real_distribution<double> d(0.0,1.0);
+
+        for (int event = 0; event < notes_.size(); ++event) {
+
+            if(notes_[event].size() == 3){
+
+                if (d(generator_) < mutation_strength && (notes_[event][1] + 1) < 127) {
+                    notes_[event][1] = notes_[event][1] + 1;
+                }
+            }
         }
     }
 }

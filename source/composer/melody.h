@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <MidiFile.h>
+#include <random>
 
 namespace composer {
     class melody {
@@ -15,9 +16,11 @@ namespace composer {
         melody(smf::MidiEventList &notes);
         [[nodiscard]] const smf::MidiEventList &notes() const;
         void disp();
+        void mutation(double mutation_strength);
 
       private:
         smf::MidiEventList notes_;
+        static std::default_random_engine generator_;
     };
 
 } // namespace composer
