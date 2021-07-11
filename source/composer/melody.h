@@ -13,13 +13,13 @@ namespace composer {
     class melody {
       public:
 
-        melody(smf::MidiEventList &notes);
-        [[nodiscard]] const smf::MidiEventList &notes() const;
+        melody(std::vector<std::vector<int>> &notes);
+        [[nodiscard]] const std::vector<std::vector<int>> &notes() const;
         void disp();
         void mutation(double mutation_strength);
 
       private:
-        smf::MidiEventList notes_;
+        std::vector<std::vector<int>> melody_;
         static std::default_random_engine generator_;
     };
 

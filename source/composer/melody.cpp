@@ -10,27 +10,19 @@ namespace composer {
 
     std::default_random_engine melody::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-    melody::melody(smf::MidiEventList &notes)
-        : notes_(notes) {}
+    melody::melody(std::vector<std::vector<int>> &notes)
+        : melody_(notes) {}
 
-    const smf::MidiEventList &melody::notes() const { return notes_; }
+    const std::vector<std::vector<int>> &melody::notes() const { return melody_; }
 
     void melody::disp() {
 
         std::cout << "Solution" << std::endl;
 
-        for (int event = 0; event < notes_.size(); ++event) {
-
-            std::cout << std::dec << notes_[event].tick;
-            std::cout << '\t' << std::dec << notes_[event].seconds;
-            std::cout << '\t';
-
-            if (notes_[event].isNoteOn())
-                std::cout << notes_[event].getDurationInSeconds();
-            std::cout << '\t' << std::hex;
-
-            for (int i=0; i< notes_[event].size(); i++)
-                std::cout << (int)notes_[event][i] << ' ';
+        for (const std::vector<int> &measure : melody_) {
+            for (const int &note : measure) {
+                std::cout << note << " ";
+            }
             std::cout << std::endl;
         }
     }
@@ -39,12 +31,12 @@ namespace composer {
 
         std::uniform_real_distribution<double> d(0.0,1.0);
 
-        for (int event = 0; event < notes_.size(); ++event) {
+        for (int event = 0; event < melody_.size(); ++event) {
 
-            if(notes_[event].size() == 3){
+            if(melody_[event].size() == 3){
 
-                if (d(generator_) < mutation_strength && (notes_[event][1] + 1) < 127) {
-                    notes_[event][1] = notes_[event][1] + 1;
+                if (d(generator_) < mutation_strength && (melody_[event][1] + 1) < 127) {
+                    melody_[event][1] = melody_[event][1] + 1;
                 }
             }
         }
