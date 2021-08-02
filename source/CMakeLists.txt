@@ -68,6 +68,8 @@ add_library(composerlib
         composer/midi_stream.h
         composer/midi_processor.cpp
         composer/midi_processor.h
+        composer/melody_p.cpp
+        composer/melody_p.h
 )
 target_include_directories(composerlib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
