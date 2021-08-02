@@ -20,4 +20,16 @@ namespace composer {
             this->melody_[i] = measure;
         }
     }
+
+    void melody_p::display() {
+
+        std::cout << "Melody" << std::endl;
+
+        for (const std::vector<int> &measure : this->melody_) {
+            for (const int &note : measure) {
+                std::cout << note << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
 }

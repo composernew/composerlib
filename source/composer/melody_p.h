@@ -15,6 +15,7 @@ namespace composer {
     class melody_p {
       public:
         explicit melody_p(const size_t &problem_size, const size_t &individual_size);
+        void display();
       private:
         std::vector<std::vector<int>> melody_;
         static std::default_random_engine generator_;
