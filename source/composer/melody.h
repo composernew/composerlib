@@ -8,21 +8,18 @@
 #include <vector>
 #include <MidiFile.h>
 #include <random>
+#include <iostream>
+#include <chrono>
 
 namespace composer {
     class melody {
       public:
-
-        melody(std::vector<std::vector<int>> &notes);
-        [[nodiscard]] const std::vector<std::vector<int>> &notes() const;
-        void disp();
-        void mutation(double mutation_strength);
-
+        explicit melody(const size_t &problem_size, const size_t &individual_size);
+        void display();
       private:
         std::vector<std::vector<int>> melody_;
         static std::default_random_engine generator_;
     };
-
 } // namespace composer
 
 #endif // COMPOSER_MELODY_H

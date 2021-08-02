@@ -3,43 +3,34 @@
 //
 
 #include "melody.h"
-#include <iostream>
-#include <chrono>
 
 namespace composer {
 
     std::default_random_engine melody::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-    melody::melody(std::vector<std::vector<int>> &notes)
-        : melody_(notes) {}
+    melody::melody(const size_t &problem_size, const size_t &individual_size)
+    : melody_(problem_size)
+    {
+        std::vector<int> measure(individual_size);
 
-    const std::vector<std::vector<int>> &melody::notes() const { return melody_; }
+        for (size_t i = 0; i < problem_size; ++i) {
+            std::generate(measure.begin(), measure.end(), [this]() {
+                std::uniform_int_distribution<int> distribution(0, 127);
+                return distribution(this->generator_);
+            });
+            this->melody_[i] = measure;
+        }
+    }
 
-    void melody::disp() {
+    void melody::display() {
 
-        std::cout << "Solution" << std::endl;
+        std::cout << "Melody" << std::endl;
 
-        for (const std::vector<int> &measure : melody_) {
+        for (const std::vector<int> &measure : this->melody_) {
             for (const int &note : measure) {
                 std::cout << note << " ";
             }
             std::cout << std::endl;
         }
     }
-
-    void melody::mutation(double mutation_strength) {
-
-        std::uniform_real_distribution<double> d(0.0,1.0);
-
-        for (int event = 0; event < melody_.size(); ++event) {
-
-            if(melody_[event].size() == 3){
-
-                if (d(generator_) < mutation_strength && (melody_[event][1] + 1) < 127) {
-                    melody_[event][1] = melody_[event][1] + 1;
-                }
-            }
-        }
-    }
 }
-
