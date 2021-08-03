@@ -10,12 +10,17 @@
 #include <random>
 #include <iostream>
 #include <chrono>
+#include <tuple>
 
 namespace composer {
     class melody {
       public:
         explicit melody(const size_t &problem_size, const size_t &individual_size);
         void display();
+        static std::vector<int> create_measure(const size_t &individual_size);
+        static std::vector<int> crossover(std::vector<int> &parent);
+        static void mutation(std::vector<int> &individual, double &mutation_strength);
+        static std::tuple<double,double> evaluate(std::vector<int> &individual);
       private:
         std::vector<std::vector<int>> melody_;
         static std::default_random_engine generator_;

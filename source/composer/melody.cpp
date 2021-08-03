@@ -11,14 +11,8 @@ namespace composer {
     melody::melody(const size_t &problem_size, const size_t &individual_size)
     : melody_(problem_size)
     {
-        std::vector<int> measure(individual_size);
-
         for (size_t i = 0; i < problem_size; ++i) {
-            std::generate(measure.begin(), measure.end(), [this]() {
-                std::uniform_int_distribution<int> distribution(0, 127);
-                return distribution(this->generator_);
-            });
-            this->melody_[i] = measure;
+            this->melody_[i] = create_measure(individual_size);
         }
     }
 
@@ -32,5 +26,46 @@ namespace composer {
             }
             std::cout << std::endl;
         }
+    }
+
+    std::vector<int> melody::create_measure(const size_t &individual_size) {
+        std::vector<int> measure(individual_size);
+
+        std::generate(measure.begin(), measure.end(), []() {
+            std::uniform_int_distribution<int> d(0, 127);
+            return d(generator_);
+        });
+
+        return measure;
+    }
+
+    std::vector<int> melody::crossover(std::vector<int> &parent) {
+        std::uniform_int_distribution<int> d(0,1);
+        std::vector<int> child = create_measure(parent.size());
+
+        for (size_t i = 0; i < parent.size(); ++i) {
+            if (d(generator_)) {
+                child[i] = parent[i];
+            }
+        }
+
+        return child;
+    }
+
+    void melody::mutation(std::vector<int> &individual, double &mutation_strength) {
+
+        std::uniform_real_distribution<double> d(0.0, 1.0);
+
+        for (int &item : individual) {
+            if (d(generator_) < mutation_strength) {
+                item = item + 1;
+            }
+        }
+    }
+
+    std::tuple<double, double> melody::evaluate(std::vector<int> &individual) {
+        double valence = 0;
+        double arousal = 0;
+        return {valence, arousal};
     }
 }
