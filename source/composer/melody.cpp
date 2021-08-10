@@ -12,7 +12,7 @@ namespace composer {
     : melody_(problem_size)
     {
         for (size_t i = 0; i < problem_size; ++i) {
-            this->melody_[i] = create_measure(individual_size);
+            this->melody_[i] = create_individual(individual_size);
         }
     }
 
@@ -28,7 +28,7 @@ namespace composer {
         }
     }
 
-    std::vector<int> melody::create_measure(const size_t &individual_size) {
+    std::vector<int> melody::create_individual(const size_t &individual_size) {
         std::vector<int> measure(individual_size);
 
         std::generate(measure.begin(), measure.end(), []() {
@@ -41,7 +41,7 @@ namespace composer {
 
     std::vector<int> melody::crossover(std::vector<int> &parent) {
         std::uniform_int_distribution<int> d(0,1);
-        std::vector<int> child = create_measure(parent.size());
+        std::vector<int> child = create_individual(parent.size());
 
         for (size_t i = 0; i < parent.size(); ++i) {
             if (d(generator_)) {
