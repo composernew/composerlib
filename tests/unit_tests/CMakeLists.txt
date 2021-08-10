@@ -32,12 +32,10 @@ catch_discover_tests(ut_melody)
 add_executable(ut_midi_stream ut_midi_stream.cpp)
 target_link_libraries(ut_midi_stream PUBLIC composerlib Catch2)
 
-set(TEST_RESOURCES
-        resources/twinkle_harmonic.mid
-        resources/twinkle.midi)
-
 if (MSVC)
-    file(COPY ${TEST_RESOURCES} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/resources")
+    configure_file("resources/twinkle_harmonic.mid" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/resources/twinkle_harmonic.mid" COPYONLY)
+    configure_file("resources/twinkle.midi" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/resources/twinkle.midi" COPYONLY)
 else()
-    file(COPY ${TEST_RESOURCES} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/resources")
+    configure_file("resources/twinkle_harmonic.mid" "${CMAKE_CURRENT_BINARY_DIR}/resources/twinkle_harmonic.mid" COPYONLY)
+    configure_file("resources/twinkle.midi" "${CMAKE_CURRENT_BINARY_DIR}/resources/twinkle.midi" COPYONLY)
 endif()
