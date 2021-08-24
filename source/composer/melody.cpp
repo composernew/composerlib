@@ -52,7 +52,7 @@ namespace composer {
         return child;
     }
 
-    void melody::mutation(std::vector<int> &individual, double &mutation_strength) {
+    void melody::simple_mutation(std::vector<int> &individual, double mutation_strength) {
 
         std::uniform_real_distribution<double> d(0.0, 1.0);
 
@@ -63,9 +63,68 @@ namespace composer {
         }
     }
 
+    void melody::reverse_measure(std::vector<int> &individual, double mutation_strength) {
+
+        std::uniform_real_distribution<double> d(0.0, 1.0);
+
+        if (d(generator_) < mutation_strength) {
+            std::reverse(individual.begin(), individual.end());
+        }
+    }
+
+    void melody::exchange_pulses(std::vector<int> &individual, double mutation_strength) {
+
+        std::uniform_real_distribution<double> d(0.0, 1.0);
+        if (d(generator_) < mutation_strength) {
+            std::uniform_int_distribution<int> value_distribution(0, static_cast<int>(individual.size()-1));
+            int first_pulse = value_distribution(generator_);
+            int second_pulse = value_distribution(generator_);
+            std::swap(individual[first_pulse], individual[second_pulse]);
+        }
+    }
+
+    void melody::reverse_pulses(std::vector<int> &individual, double mutation_strength) {
+
+        std::uniform_real_distribution<double> d(0.0, 1.0);
+        if (d(generator_) < mutation_strength) {
+
+            std::uniform_int_distribution<int> first_value_distribution(0, static_cast<int>(individual.size()));
+            int first_pulse = first_value_distribution(generator_);
+
+            std::uniform_int_distribution<int> second_value_distribution(first_pulse, static_cast<int>(individual.size()));
+            int second_pulse = second_value_distribution(generator_);
+
+            std::reverse(individual.begin() + first_pulse, individual.begin() + second_pulse);
+        }
+    }
+
+    double melody::evaluate_pitch_distribution(std::vector<int> &individual) {
+
+        int mode = 0;
+        int max_count = 0;
+
+        for (const int &value : individual) {
+            int count = std::count(individual.begin(), individual.end(), value);
+            if (count > max_count) {
+                max_count = count;
+                mode = value;
+            }
+        }
+
+        return mode;
+    }
+
     std::tuple<double, double> melody::evaluate(std::vector<int> &individual) {
         double valence = 0;
         double arousal = 0;
+
+        valence = valence - evaluate_pitch_distribution(individual);
+        arousal = arousal - evaluate_pitch_distribution(individual);
+
         return {valence, arousal};
+    }
+
+    std::vector<std::vector<int>> melody::get_melody() {
+        return this->melody_;
     }
 }

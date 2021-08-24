@@ -48,7 +48,7 @@ namespace composer {
         /// individual passed as parameter.
         static std::vector<int> crossover(std::vector<int> &parent);
 
-        /// \brief The mutation operator.
+        /// \brief The simple_mutation operator.
         ///
         /// This operator increases some values in the individual by one depending
         /// on the mutation strength provided.
@@ -56,7 +56,41 @@ namespace composer {
         /// \param individual The individual that has to be modified.
         /// \param mutation_strength A double value that is used as parameter to
         /// define the possibility of a value in an individual being modified.
-        static void mutation(std::vector<int> &individual, double &mutation_strength);
+        static void simple_mutation(std::vector<int> &individual, double mutation_strength);
+
+        /// \brief The reverse_measure mutation operator.
+        ///
+        /// This operator reverses the order of all individual values depending
+        /// on the mutation strength provided. Note that its different from
+        /// the simple mutation, changing all positions of values.
+        ///
+        /// \param individual The individual that has to be modified.
+        /// \param mutation_strength A double value that is used as parameter to
+        /// define the possibility of a value in an individual being modified.
+        static void reverse_measure(std::vector<int> &individual, double mutation_strength);
+
+        /// \brief The exchange_pulses mutation operator.
+        ///
+        /// This operator exchanges two selected values of individuals depending
+        /// on the mutation strength provided.
+        ///
+        /// \param individual The individual that has to be modified.
+        /// \param mutation_strength A double value that is used as parameter to
+        /// define the possibility of a value in an individual being modified.
+        static void exchange_pulses(std::vector<int> &individual, double mutation_strength);
+
+        /// \brief The reverse_pulses mutation operator.
+        ///
+        /// This operator reverses a range between two selected values of
+        /// individuals depending on the mutation strength provided.
+        ///
+        /// \param individual The individual that has to be modified.
+        /// \param mutation_strength A double value that is used as parameter to
+        /// define the possibility of a value in an individual being modified.
+        static void reverse_pulses(std::vector<int> &individual, double mutation_strength);
+
+        /// \brief The most used values in an individual.
+        static double evaluate_pitch_distribution(std::vector<int> &individual);
 
         /// \brief An evaluate function to determine the valence and arousal values of
         /// an individual.
@@ -67,6 +101,8 @@ namespace composer {
         /// \return A tuple with the valence and arousal values of the individual
         /// passed as parameter.
         static std::tuple<double,double> evaluate(std::vector<int> &individual);
+
+        std::vector<std::vector<int>> get_melody();
 
       private:
         std::vector<std::vector<int>> melody_;        ///< The melody to be optimized.
