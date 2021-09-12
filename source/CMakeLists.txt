@@ -52,6 +52,15 @@ endif()
 
 target_include_directories(midifile PUBLIC "${midifile_SOURCE_DIR}/include")
 
+# Midifile library
+FetchContent_Declare(
+        pareto
+        GIT_REPOSITORY https://github.com/alandefreitas/pareto.git
+        GIT_TAG v1.2.0
+)
+
+FetchContent_MakeAvailable(pareto)
+
 #######################################################
 ### Library                                         ###
 #######################################################
@@ -72,6 +81,6 @@ add_library(composerlib
 target_include_directories(composerlib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-target_link_libraries(composerlib PUBLIC Threads::Threads range-v3 libq libqio cycfi::infra midifile)
+target_link_libraries(composerlib PUBLIC Threads::Threads range-v3 libq libqio cycfi::infra midifile pareto)
 target_pedantic_options(composerlib)
 target_exception_options(composerlib)
