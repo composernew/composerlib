@@ -24,8 +24,8 @@ FetchContent_Declare(
         GIT_TAG 3e246461b40ded09b34a51192a3c0e7184290655
 )
 
-option(Q_BUILD_EXAMPLES OFF)
-option(Q_BUILD_TEST OFF)
+set(Q_BUILD_EXAMPLES OFF)
+set(Q_BUILD_TEST OFF)
 
 FetchContent_GetProperties(Q)
 if(NOT q_POPULATED)
@@ -52,14 +52,24 @@ endif()
 
 target_include_directories(midifile PUBLIC "${midifile_SOURCE_DIR}/include")
 
-# Midifile library
+# Pareto library
 FetchContent_Declare(
         pareto
         GIT_REPOSITORY https://github.com/alandefreitas/pareto.git
         GIT_TAG v1.2.0
 )
 
-FetchContent_MakeAvailable(pareto)
+set(pareto_BUILD_EXAMPLES OFF)
+set(pareto_BUILD_TESTS OFF)
+set(pareto_BUILD_BENCHMARKS OFF)
+set(pareto_BUILD_PARETO_WITH_PMR_BY_DEFAULT ON)
+set(pareto_BUILD_LONG_TESTS OFF)
+
+FetchContent_GetProperties(pareto)
+if (NOT pareto_POPULATED)
+    FetchContent_Populate(pareto)
+    add_subdirectory(${pareto_SOURCE_DIR} ${pareto_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif ()
 
 #######################################################
 ### Library                                         ###
