@@ -128,7 +128,7 @@ namespace composer {
         return this->melody_;
     }
 
-    void melody::set_melody(std::vector<int> individual) {
+    void melody::add_individual(std::vector<int> individual) {
         melody_.push_back(individual);
     }
 

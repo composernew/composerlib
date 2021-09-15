@@ -103,7 +103,7 @@ namespace composer {
         static std::tuple<double,double> evaluate(std::vector<int> &individual);
 
         std::vector<std::vector<int>> get_melody();
-        void set_melody(std::vector<int> individual);
+        void add_individual(std::vector<int> individual);
         void clear();
 
       private:

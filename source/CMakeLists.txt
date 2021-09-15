@@ -87,6 +87,8 @@ add_library(composerlib
         composer/midi_stream.h
         composer/midi_processor.cpp
         composer/midi_processor.h
+        composer/nsga_ii.cpp
+        composer/nsga_ii.h
 )
 target_include_directories(composerlib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
