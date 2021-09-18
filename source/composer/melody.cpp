@@ -121,12 +121,22 @@ namespace composer {
         return mode_value;
     }
 
+    double melody::evaluate_pitch_variety(std::vector<int> individual) {
+
+        double unique_values;
+
+        std::sort(individual.begin(), individual.end());
+        unique_values = std::unique(individual.begin(), individual.end()) - individual.begin();
+
+        return unique_values/static_cast<double>(individual.size());
+    }
+
     std::tuple<double, double> melody::evaluate(std::vector<int> &individual) {
         double valence = 0;
         double arousal = 0;
 
-        valence = valence;
-        arousal = arousal + evaluate_pitch_distribution(individual);
+        valence = valence + evaluate_pitch_variety(individual);
+        arousal = arousal + evaluate_pitch_distribution(individual) + evaluate_pitch_variety(individual);
 
         return {valence, arousal};
     }

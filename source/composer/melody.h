@@ -11,6 +11,7 @@
 #include <iostream>
 #include <chrono>
 #include <tuple>
+#include <algorithm>
 
 namespace composer {
 
@@ -91,6 +92,8 @@ namespace composer {
 
         /// \brief The most used values in an individual.
         static double evaluate_pitch_distribution(std::vector<int> &individual);
+
+        static double evaluate_pitch_variety(std::vector<int> individual);
 
         /// \brief An evaluate function to determine the valence and arousal values of
         /// an individual.
