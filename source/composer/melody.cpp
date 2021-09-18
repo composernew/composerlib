@@ -98,10 +98,15 @@ namespace composer {
         }
     }
 
+    double melody::normalize(int &value, double max, double min, double max_value, double min_value) {
+        return (max - min) * (value - min_value)/(max_value - min_value);
+    }
+
     double melody::evaluate_pitch_distribution(std::vector<int> &individual) {
 
         int mode = 0;
         int max_count = 0;
+        double mode_value = 0;
 
         for (const int &value : individual) {
             int count = std::count(individual.begin(), individual.end(), value);
@@ -111,15 +116,17 @@ namespace composer {
             }
         }
 
-        return mode;
+        mode_value = normalize(mode, 1., -1., 0., 108.);
+
+        return mode_value;
     }
 
     std::tuple<double, double> melody::evaluate(std::vector<int> &individual) {
         double valence = 0;
         double arousal = 0;
 
-        valence = valence - evaluate_pitch_distribution(individual);
-        arousal = arousal - evaluate_pitch_distribution(individual);
+        valence = valence;
+        arousal = arousal + evaluate_pitch_distribution(individual);
 
         return {valence, arousal};
     }

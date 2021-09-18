@@ -102,6 +102,8 @@ namespace composer {
         /// passed as parameter.
         static std::tuple<double,double> evaluate(std::vector<int> &individual);
 
+        static double normalize(int &value, double max, double min, double max_value, double min_value);
+
         std::vector<std::vector<int>> get_melody();
         void add_individual(std::vector<int> individual);
         void clear();
