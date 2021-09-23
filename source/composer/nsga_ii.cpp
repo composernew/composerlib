@@ -14,8 +14,8 @@ namespace composer {
     void nsga_ii() {
 
         // Problem parameters
-        const size_t problem_size = 20;
-        const size_t individual_size = 4;
+        const size_t problem_size = 1000;
+        const size_t individual_size = 8;
 
         // Create problem
         composer::melody problem(problem_size, individual_size);
@@ -50,7 +50,7 @@ namespace composer {
                 candidate_solution = problem.crossover(problem.get_melody()[0]);
 
                 // Mutation
-                problem.reverse_pulses(candidate_solution, 100);
+                problem.reverse_pulses(candidate_solution, 0.0005);
 
                 problem.add_individual(candidate_solution);
 
