@@ -5,6 +5,7 @@
 #include <iostream>
 #include <composer/melody.h>
 #include <pareto/archive.h>
+#include <memory_resource>
 #include "MidiFile.h"
 #include "Options.h"
 #include "nsga_ii.h"
