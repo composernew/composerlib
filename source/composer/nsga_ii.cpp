@@ -5,7 +5,6 @@
 #include <iostream>
 #include <composer/melody.h>
 #include <pareto/archive.h>
-#include <memory_resource>
 #include "MidiFile.h"
 #include "Options.h"
 #include "nsga_ii.h"
@@ -13,6 +12,9 @@
 namespace composer {
 
     void nsga_ii() {
+
+        static std::default_random_engine generator_;
+        generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
         // Problem parameters
         const size_t problem_size = 1000;
@@ -48,7 +50,8 @@ namespace composer {
             for (size_t j = 0; j < problem_size; ++j) {
 
                 // Selection and crossover
-                candidate_solution = problem.crossover(problem.get_melody()[0]);
+                std::uniform_int_distribution<int> d(0, (problem_size-1));
+                candidate_solution = problem.crossover(problem.get_melody()[d(generator_)]);
 
                 // Mutation
                 problem.reverse_pulses(candidate_solution, 0.0005);
