@@ -58,10 +58,16 @@ namespace composer {
     void melody::simple_mutation(std::vector<int> &individual, double mutation_strength) {
 
         std::uniform_real_distribution<double> d(0.0, 1.0);
+        std::uniform_int_distribution<int> dist_int(0, 1);
 
         for (int &item : individual) {
             if (d(generator_) < mutation_strength) {
-                item = item + 1;
+                if(dist_int(generator_)) {
+                    item = item + 1;
+                }
+                else {
+                    item = item - 1;
+                }
             }
         }
     }
