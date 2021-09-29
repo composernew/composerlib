@@ -47,7 +47,7 @@ namespace composer {
         /// \param parent A vector of integers that is an individual from previous generation.
         /// \return A vector of integers that represents an individual that is a child of the
         /// individual passed as parameter.
-        static std::vector<int> crossover(std::vector<int> &parent);
+        static std::vector<int> crossover(std::vector<int> &first_parent, std::vector<int> &second_parent);
 
         /// \brief The simple_mutation operator.
         ///

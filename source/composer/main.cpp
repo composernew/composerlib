@@ -46,7 +46,7 @@ int main() {
 
             // Selection and crossover
             std::uniform_int_distribution<int> d(0, (problem_size-1));
-            candidate_solution = problem.crossover(problem.get_melody()[d(generator_)]);
+            candidate_solution = problem.crossover(problem.get_melody()[d(generator_)], problem.get_melody()[d(generator_)]);
 
             // Mutation
             problem.reverse_pulses(candidate_solution, 0.0005);

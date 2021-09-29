@@ -39,13 +39,16 @@ namespace composer {
         return measure;
     }
 
-    std::vector<int> melody::crossover(std::vector<int> &parent) {
+    std::vector<int> melody::crossover(std::vector<int> &first_parent, std::vector<int> &second_parent) {
         std::uniform_int_distribution<int> d(0,1);
-        std::vector<int> child = create_individual(parent.size());
+        std::vector<int> child;
 
-        for (size_t i = 0; i < parent.size(); ++i) {
+        for (size_t i = 0; i < first_parent.size(); ++i) {
             if (d(generator_)) {
-                child[i] = parent[i];
+                child.push_back(first_parent[i]);
+            }
+            else {
+                child.push_back(second_parent[i]);
             }
         }
 
