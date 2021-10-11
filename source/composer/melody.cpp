@@ -11,8 +11,9 @@ namespace composer {
     melody::melody(const size_t &problem_size, const size_t &individual_size)
     : melody_(problem_size)
     {
+        std::uniform_int_distribution<int> d(0, 127);
         for (size_t i = 0; i < problem_size; ++i) {
-            this->melody_[i] = create_individual(individual_size);
+            this->melody_[i] = d(generator_);
         }
     }
 
@@ -20,11 +21,8 @@ namespace composer {
 
         std::cout << "Melody" << std::endl;
 
-        for (const std::vector<int> &measure : this->melody_) {
-            for (const int &note : measure) {
+        for (const int &note : this->melody_) {
                 std::cout << note << " ";
-            }
-            std::cout << std::endl;
         }
     }
 
@@ -115,7 +113,7 @@ namespace composer {
 
         int mode = 0;
         int max_count = 0;
-        double mode_value = 0;
+        double mode_value;
 
         for (const int &value : individual) {
             int count = std::count(individual.begin(), individual.end(), value);
@@ -150,11 +148,11 @@ namespace composer {
         return {valence, arousal};
     }
 
-    std::vector<std::vector<int>> melody::get_melody() {
+    std::vector<int> melody::get_melody() {
         return this->melody_;
     }
 
-    void melody::add_individual(std::vector<int> individual) {
+    void melody::add_individual(const int &individual) {
         melody_.push_back(individual);
     }
 

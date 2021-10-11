@@ -107,12 +107,12 @@ namespace composer {
 
         static double normalize(int &value, double max, double min, double max_value, double min_value);
 
-        std::vector<std::vector<int>> get_melody();
-        void add_individual(std::vector<int> individual);
+        std::vector<int> get_melody();
+        void add_individual(const int &individual);
         void clear();
 
       private:
-        std::vector<std::vector<int>> melody_;        ///< The melody to be optimized.
+        std::vector<int> melody_;                     ///< The melody to be optimized.
         static std::default_random_engine generator_; ///< Used to generate random values and create the melody.
     };
 } // namespace composer
