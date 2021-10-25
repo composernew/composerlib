@@ -31,10 +31,10 @@ namespace composer {
         ///
         /// \param problem_size The number of individuals of the problem.
         /// \param individual_size The individual size. Each individual is a vector of integers.
-        explicit melody(const size_t &problem_size, const size_t &individual_size);
+        explicit melody(const size_t &individual_size);
 
         /// Displays the current state of the melody in the console.
-        void display();
+        static void display(std::vector<std::vector<int>> const &solution);
 
         /// \brief An auxiliary function that creates an individual.
         ///
@@ -105,7 +105,7 @@ namespace composer {
         /// passed as parameter.
         static std::tuple<double,double> evaluate(std::vector<int> &individual);
 
-        static double normalize(int &value, double max, double min, double max_value, double min_value);
+        static double normalize(double value, double max, double min, double max_value, double min_value);
 
         std::vector<int> get_melody();
         void add_individual(const int &individual);

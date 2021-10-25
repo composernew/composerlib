@@ -8,21 +8,26 @@ namespace composer {
 
     std::default_random_engine melody::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-    melody::melody(const size_t &problem_size, const size_t &individual_size)
-    : melody_(problem_size)
+    melody::melody(const size_t &individual_size)
+    : melody_(individual_size)
     {
-        std::uniform_int_distribution<int> d(0, 127);
-        for (size_t i = 0; i < problem_size; ++i) {
-            this->melody_[i] = d(generator_);
-        }
+        /*std::generate(melody_.begin(), melody_.end(), []() {
+            std::uniform_int_distribution<int> d(0, 127);
+            return d(generator_);
+        });*/
+        melody_ = create_individual(individual_size);
     }
 
-    void melody::display() {
+    void melody::display(std::vector<std::vector<int>> const &solution) {
 
         std::cout << "Melody" << std::endl;
 
-        for (const int &note : this->melody_) {
+        for (const auto &melody : solution) {
+
+            for (const int &note : melody) {
                 std::cout << note << " ";
+            }
+            std::cout << std::endl;
         }
     }
 
@@ -30,7 +35,7 @@ namespace composer {
         std::vector<int> measure(individual_size);
 
         std::generate(measure.begin(), measure.end(), []() {
-            std::uniform_int_distribution<int> d(0, 127);
+            std::uniform_int_distribution<int> d(21, 108);
             return d(generator_);
         });
 
@@ -105,15 +110,14 @@ namespace composer {
         }
     }
 
-    double melody::normalize(int &value, double max, double min, double max_value, double min_value) {
-        return (max - min) * (value - min_value)/(max_value - min_value);
+    double melody::normalize(double value, double max, double min, double max_value, double min_value) {
+        return (max - min) * (value - min_value)/(max_value - min_value) + min;
     }
 
     double melody::evaluate_pitch_distribution(std::vector<int> &individual) {
 
         int mode = 0;
         int max_count = 0;
-        double mode_value;
 
         for (const int &value : individual) {
             int count = std::count(individual.begin(), individual.end(), value);
@@ -123,9 +127,7 @@ namespace composer {
             }
         }
 
-        mode_value = normalize(mode, 1., -1., 0., 108.);
-
-        return mode_value;
+        return mode;
     }
 
     double melody::evaluate_pitch_variety(std::vector<int> individual) {
@@ -135,15 +137,21 @@ namespace composer {
         std::sort(individual.begin(), individual.end());
         unique_values = std::unique(individual.begin(), individual.end()) - individual.begin();
 
-        return unique_values/static_cast<double>(individual.size());
+        return unique_values;
     }
 
     std::tuple<double, double> melody::evaluate(std::vector<int> &individual) {
         double valence = 0;
         double arousal = 0;
+        double normalized_pitch_variety =
+            normalize(evaluate_pitch_variety(individual), 1,
+                      -1, 16., 1.);
+        double normalized_pitch_distribution =
+            normalize(evaluate_pitch_distribution(individual), 1.,
+                      -1., 108., 0.);
 
-        valence = valence + evaluate_pitch_variety(individual);
-        arousal = arousal + evaluate_pitch_distribution(individual) + evaluate_pitch_variety(individual);
+        valence = normalized_pitch_variety;
+        arousal =  (normalized_pitch_variety + normalized_pitch_distribution)/2;
 
         return {valence, arousal};
     }
