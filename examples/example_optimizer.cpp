@@ -10,17 +10,31 @@
 #include "matplot/matplot.h"
 #include <pareto/matplot/archive.h>
 #include <functional>
+#include <fstream>
 
 using namespace composer;
 
-void nsga_ii() {
+void nsga_ii(int execution) {
+
+    std::ostringstream stream;
+    stream << "experiment_" << execution << ".txt";
+    std::string experiment = stream.str();
+
+    std::ofstream file(experiment);
+
+    file << "Execution " << execution << " ";
 
     static std::default_random_engine generator_;
     generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
     // Problem parameters
-    const size_t problem_size = 100;
+    const size_t problem_size = 10;
     const size_t individual_size = 16;
+
+    // Search parameters
+    const size_t max_iterations = 30;
+
+    file << "population " << problem_size << " individual_size " << individual_size << " iterations " << max_iterations << '\n';
 
     // Create population
     std::vector<std::vector<int>> population;
@@ -29,12 +43,16 @@ void nsga_ii() {
         population.emplace_back(problem);
     }
 
-    melody::display(population);
+    //melody::display(population);
+    file << "Initial population \n";
+    for (auto const& individual : population) {
+        for (auto const& note : individual) {
+            file << note << ' ';
+        }
+        file << '\n';
+    }
 
-    //problem.display();
-
-    // Search parameters
-    const size_t max_iterations = 30;
+    file << "Num. individuals: " << population.size() << '\n';
 
     /*if (midi_file.read("resources/twinkle.midi")){
 
@@ -57,27 +75,31 @@ void nsga_ii() {
 
     solution_t candidate_solution(midi_file[0]);*/
 
-    std::vector<int> candidate_solution(4);
+    std::vector<int> candidate_solution(16);
     std::vector<std::tuple<double,double>> fitness;
-    std::tuple<double, double> evaluation;
+    std::tuple<double, double, double, double> evaluation;
     size_t capacity = 100;
-    using allocator = std::allocator<std::pair<const ::pareto::point<double, 2>, double>>;
-    using Container = pareto::spatial_map<double, 2, double, std::less<double>, allocator>;
-    pareto::archive<double, 2, double, Container> pareto_archive(capacity, {pareto::min, pareto::min});
+    using allocator = std::allocator<std::pair<const ::pareto::point<double, 4>, double>>;
+    using Container = pareto::spatial_map<double, 4, double, std::less<double>, allocator>;
+    pareto::archive<double, 4, double, Container> pareto_archive(capacity, {pareto::min, pareto::min, pareto::max, pareto::max});
     std::vector<std::vector<int>> solution;
     std::vector<std::tuple<double, int>> crowding_distance;
-    double valence, arousal;
+    double min_valence, min_arousal, max_valence, max_arousal;
 
+    file << "Pareto archive \n";
     for (size_t i = 0; i < problem_size; ++i) {
         evaluation = melody::evaluate(population[i]);
-        valence = std::get<0>(evaluation);
-        arousal = std::get<1>(evaluation);
-        pareto_archive(valence, arousal) = static_cast<double>(i);
+        min_valence = std::get<0>(evaluation);
+        min_arousal = std::get<1>(evaluation);
+        max_valence = std::get<2>(evaluation);
+        max_arousal = std::get<3>(evaluation);
+        pareto_archive(min_valence, min_arousal, max_valence, max_arousal) = static_cast<double>(i);
+        file << "[" << min_valence << ", " << min_arousal << ", " << max_valence << ", " << max_arousal << "] -> " << i << "\n";
     }
 
     for (size_t i = 0; i < max_iterations; ++i) {
         std::cout << "Solution #" << i + 1 << std::endl;
-
+        file << "Solution # " << i << "\n";
         for (size_t j = 0; j < problem_size; ++j) {
 
             // Selection and crossover
@@ -91,11 +113,13 @@ void nsga_ii() {
 
             // Evaluation
             evaluation = melody::evaluate(candidate_solution);
-            valence = std::get<0>(evaluation);
-            arousal = std::get<1>(evaluation);
+            min_valence = std::get<0>(evaluation);
+            min_arousal = std::get<1>(evaluation);
+            max_valence = std::get<2>(evaluation);
+            max_arousal = std::get<3>(evaluation);
 
             // No dominated ranking
-            pareto_archive(valence, arousal) = static_cast<double>(j+problem_size);
+            pareto_archive(min_valence, min_arousal, max_valence, max_arousal) = static_cast<double>(j+problem_size);
         }
 
         auto it = pareto_archive.begin_front();
@@ -124,6 +148,7 @@ void nsga_ii() {
             }
         }
         else if (it->size() < problem_size) {
+            // não sestá inserindo individuos que nao fazem parte de nenhuma fronteira
             for (it = pareto_archive.begin_front(); (it != pareto_archive.end_front() || solution.size() == problem_size); ++it) {
                 for (const auto &[k, v] : pareto_archive) {
                     solution.push_back(population[v]);
@@ -143,11 +168,40 @@ void nsga_ii() {
             population.emplace_back(individual);
         }
 
+        file << "Selected population \n";
+        for (auto const& individual : population) {
+            for (auto const& note : individual) {
+                file << note << ' ';
+            }
+            file << '\n';
+        }
+
+        for (auto it = pareto_archive.begin_front(); it != pareto_archive.end_front(); ++it) {
+            file << "Front with " << it->size() << " elements" << "\n";
+            for (const auto &[k, v] : *it) {
+                file << k << " -> " << v << "\n";
+            }
+        }
+
+        std::ostringstream archive_stream;
+        archive_stream << "archive_" << execution << ".svg";
+        std::string archive_name = archive_stream.str();
+
+        matplot::hold(false);
+        matplot::save(archive_name);
+
         solution.clear();
     }
 
-    std::cout << "Solution:" << std::endl;
-    composer::melody::display(population);
+    //std::cout << "Solution:" << std::endl;
+    //melody::display(population);
+    file << "Final solution\n";
+    for (auto const& individual : population) {
+        for (auto const& note : individual) {
+            file << note << ' ';
+        }
+        file << '\n';
+    }
 
     // If number of individuals in rank > melody.size
         // Crowding distance
@@ -159,28 +213,35 @@ void nsga_ii() {
         // Insert rank individuals in population
 
 
-    std::cout << "Number of fronts: " << pareto_archive.size_fronts() << std::endl;
+    file << "Number of fronts: " << pareto_archive.size_fronts() << "\n";
 
-    std::cout << "Front Iterators:" << std::endl;
+    file << "Front Iterators:" << "\n";
     for (auto it = pareto_archive.begin_front(); it != pareto_archive.end_front(); ++it) {
-        std::cout << "Front with " << it->size() << " elements" << std::endl;
+        file << "Front with " << it->size() << " elements" << "\n";
         for (const auto &[k, v] : *it) {
-            std::cout << k << " -> " << v << std::endl;
+            file << k << " -> " << v << "\n";
         }
     }
 
-    std::cout << "Solution:" << std::endl;
+    /*std::cout << "Solution:" << std::endl;
+    //errado, a população final ficou bem maior
     for (int i = 0; i < problem_size; ++i) {
         for (int j = 0; j < population[i].size(); ++j) {
             std::cout << population[i][j] << " ";
         }
         std::cout << std::endl;
-    }
+    }*/
 
     // Plot a single 2d archive
+    //ver se vai funcionar com o novo archive de 4 elementos
+
+    std::ostringstream archive_stream;
+    archive_stream << "final_archive_" << execution << ".svg";
+    std::string archive_name = archive_stream.str();
+
     matplot::hold(false);
     pareto::plot_archive(pareto_archive);
-    matplot::save("archive2d.svg");
+    matplot::save(archive_name);
     matplot::show();
 
     auto it = pareto_archive.begin_front();
@@ -194,7 +255,7 @@ void nsga_ii() {
     }
 
     melody::display(final_solution);
-
+    //verificar se está mostrando o archive inteiro ou só a frente e depois salvar
     matplot::hold(false);
     pareto::plot_front(p_front);
     matplot::save("pareto2d.svg");
@@ -242,10 +303,15 @@ void nsga_ii() {
         else std::cout << midifile;
     } else
         midifile.write(filename);
+
+    file.close();
 }
 
 int main() {
 
-    nsga_ii();
+    for (int i = 0; i < 1; ++i) {
+        nsga_ii(i);
+    }
+
     return 0;
 }

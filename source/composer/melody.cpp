@@ -140,7 +140,7 @@ namespace composer {
         return unique_values;
     }
 
-    std::tuple<double, double> melody::evaluate(std::vector<int> &individual) {
+    std::tuple<double, double, double, double> melody::evaluate(std::vector<int> &individual) {
         double valence = 0;
         double arousal = 0;
         double normalized_pitch_variety =
@@ -153,7 +153,12 @@ namespace composer {
         valence = normalized_pitch_variety;
         arousal =  (normalized_pitch_variety + normalized_pitch_distribution)/2;
 
-        return {valence, arousal};
+        double min_valence = minimize(valence);
+        double max_valence = maximize(valence);
+        double min_arousal = minimize(arousal);
+        double max_arousal = maximize(arousal);
+
+        return {min_valence, min_arousal, max_valence, max_arousal};
     }
 
     std::vector<int> melody::get_melody() {
@@ -166,5 +171,15 @@ namespace composer {
 
     void melody::clear() {
         melody_.clear();
+    }
+
+    double melody::minimize(double value) {
+        if (value > 0) return 0.;
+        return value;
+    }
+
+    double melody::maximize(double value) {
+        if (value < 0) return 0.;
+        return value;
     }
 }
