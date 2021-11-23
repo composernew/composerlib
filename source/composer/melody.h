@@ -103,13 +103,9 @@ namespace composer {
         /// \param individual The individual that is evaluated.
         /// \return A tuple with the valence and arousal values of the individual
         /// passed as parameter.
-        static std::tuple<double,double,double,double> evaluate(std::vector<int> &individual);
+        static std::tuple<double,double,double,double> evaluate(std::vector<int> &individual, double max_value);
 
         static double normalize(double value, double max, double min, double max_value, double min_value);
-
-        // verificar forma mais elegante de fazer
-        static double minimize(double value);
-        static double maximize(double value);
 
         std::vector<int> get_melody();
         void add_individual(const int &individual);

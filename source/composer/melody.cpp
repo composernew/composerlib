@@ -66,10 +66,12 @@ namespace composer {
         for (int &item : individual) {
             if (d(generator_) < mutation_strength) {
                 if(dist_int(generator_)) {
-                    item = item + 1;
+                    if (item < 108)
+                        item = item + 1;
                 }
                 else {
-                    item = item - 1;
+                    if (item > 21)
+                        item = item - 1;
                 }
             }
         }
@@ -140,25 +142,20 @@ namespace composer {
         return unique_values;
     }
 
-    std::tuple<double, double, double, double> melody::evaluate(std::vector<int> &individual) {
-        double valence = 0;
-        double arousal = 0;
+    std::tuple<double, double, double, double> melody::evaluate(std::vector<int> &individual, double max_value) {
+        double valence;
+        double arousal;
         double normalized_pitch_variety =
             normalize(evaluate_pitch_variety(individual), 1,
-                      -1, 16., 1.);
+                      -1, max_value, 1.);
         double normalized_pitch_distribution =
             normalize(evaluate_pitch_distribution(individual), 1.,
-                      -1., 108., 0.);
+                      -1., 108., 21);
 
         valence = normalized_pitch_variety;
         arousal =  (normalized_pitch_variety + normalized_pitch_distribution)/2;
 
-        double min_valence = minimize(valence);
-        double max_valence = maximize(valence);
-        double min_arousal = minimize(arousal);
-        double max_arousal = maximize(arousal);
-
-        return {min_valence, min_arousal, max_valence, max_arousal};
+        return {std::min(0.,valence), std::max(0.,valence), std::min(0.,arousal), std::max(0.,arousal)};
     }
 
     std::vector<int> melody::get_melody() {
@@ -171,15 +168,5 @@ namespace composer {
 
     void melody::clear() {
         melody_.clear();
-    }
-
-    double melody::minimize(double value) {
-        if (value > 0) return 0.;
-        return value;
-    }
-
-    double melody::maximize(double value) {
-        if (value < 0) return 0.;
-        return value;
     }
 }
