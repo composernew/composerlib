@@ -155,7 +155,7 @@ namespace composer {
         valence = normalized_pitch_variety;
         arousal =  (normalized_pitch_variety + normalized_pitch_distribution)/2;
 
-        return {std::min(0.,valence), std::max(0.,valence), std::min(0.,arousal), std::max(0.,arousal)};
+        return {std::min(0.,valence), std::min(0.,arousal), std::max(0.,valence), std::max(0.,arousal)};
     }
 
     std::vector<int> melody::get_melody() {
