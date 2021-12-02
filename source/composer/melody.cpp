@@ -116,7 +116,7 @@ namespace composer {
         return (max - min) * (value - min_value)/(max_value - min_value) + min;
     }
 
-    double melody::evaluate_pitch_distribution(std::vector<int> &individual) {
+    double melody::evaluate_pitch_distribution(const std::vector<int> &individual) {
 
         int mode = 0;
         int max_count = 0;
@@ -153,7 +153,7 @@ namespace composer {
                       -1., 108., 21);
 
         valence = normalized_pitch_variety;
-        arousal =  (normalized_pitch_variety + normalized_pitch_distribution)/2;
+        arousal =  (normalized_pitch_variety + normalized_pitch_distribution)/2.;
 
         return {std::min(0.,valence), std::min(0.,arousal), std::max(0.,valence), std::max(0.,arousal)};
     }

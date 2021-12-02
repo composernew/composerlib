@@ -91,7 +91,7 @@ namespace composer {
         static void reverse_pulses(std::vector<int> &individual, double mutation_strength);
 
         /// \brief The most used values in an individual.
-        static double evaluate_pitch_distribution(std::vector<int> &individual);
+        static double evaluate_pitch_distribution(const std::vector<int> &individual);
 
         static double evaluate_pitch_variety(std::vector<int> individual);
 
