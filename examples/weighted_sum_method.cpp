@@ -86,9 +86,9 @@ bool compare(melody &a, melody &b) {
     return a.get_distance() < b.get_distance();
 }
 
-std::tuple<std::vector<melody>, double, double> genetic_algorithm(
-    size_t population_size, size_t individual_size, double mutation_strength,
-    int max_iterations, std::pair<double,double> emotion_target) {
+std::tuple<std::vector<melody>, double, double, double, double, double>
+    genetic_algorithm( size_t population_size, size_t individual_size,
+                  double mutation_strength, int max_iterations, std::pair<double,double> emotion_target) {
 
     std::ofstream file("evolution.txt");
 
@@ -104,6 +104,13 @@ std::tuple<std::vector<melody>, double, double> genetic_algorithm(
     clock_t inicio_CPU;       // clock no inicio da aplicacao do metodo
     clock_t fim_CPU;          // clock ao encontrar a melhos solução
     double best_time;
+
+    double easy_goal = 0.2;
+    double medium_goal = 0.1;
+    double hard_goal = 0.0;
+    double easy_time = 0;
+    double medium_time = 0;
+    double hard_time = 0;
 
     inicio_CPU = clock();
 
@@ -137,12 +144,26 @@ std::tuple<std::vector<melody>, double, double> genetic_algorithm(
             best_solution = population[0].get_distance();
             fim_CPU = clock();
             best_time = (double)(fim_CPU - inicio_CPU)/CLOCKS_PER_SEC;
+
+            // Para cálculo da distribuição da probabilidade empírica
+            if (best_solution == hard_goal) {
+                hard_time = best_time;
+                return {population, best_solution, best_time, easy_time, medium_time, hard_time};
+            }
+            else if (best_solution <= medium_goal) {
+                medium_time = best_time;
+                return {population, best_solution, best_time, easy_time, medium_time, hard_time};
+            }
+            else if (best_solution <= easy_goal) {
+                easy_time = best_time;
+                return {population, best_solution, best_time, easy_time, medium_time, hard_time};
+            }
         }
     }
 
     file.close();
 
-    return {population, best_solution, best_time};
+    return {population, best_solution, best_time, easy_time, medium_time, hard_time};
 }
 
 void save_results(auto &results, size_t population_size, size_t individual_size,
@@ -156,7 +177,10 @@ void save_results(auto &results, size_t population_size, size_t individual_size,
     for (int i = 0; i < num_executions; ++i) {
 
         file << "Execution: " << i << " - Best solution: " << std::get<1>(results[i])
-             << " - Best stime: " << std::get<2>(results[i]) << "\n";
+             << " - Best stime: " << std::get<2>(results[i]);
+
+        file << " - Easy time: " << std::get<3>(results[i]) << " - Medium time: "
+            << std::get<4>(results[i]) << " - Hard time: " << std::get<5>(results[i]) << "\n";
 
         if (std::get<1>(results[i]) < best_solution) {
             best_solution = std::get<1>(results[i]);
@@ -203,11 +227,11 @@ int main () {
     size_t population_size = 500;
     size_t individual_size = 16;
     double mutation_strength = 0.07;
-    int max_iterations = 10;
+    int max_iterations = 100;
     std::pair<double,double> target = {0.5,0.5};
 
-    std::tuple<std::vector<melody>, double, double> result;
-    std::vector<std::tuple<std::vector<melody>, double, double>> results;
+    std::tuple<std::vector<melody>, double, double, double, double, double> result;
+    std::vector<std::tuple<std::vector<melody>, double, double, double, double, double>> results;
 
     for (int i = 0; i < 100; ++i) {
         std::cout << "Exec. " << i << "\n";
