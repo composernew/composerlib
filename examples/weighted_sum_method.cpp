@@ -5,11 +5,10 @@
 #include <iostream>
 #include <vector>
 #include <composer/melody.h>
-#include <map>
+#include <cmath>
+#include <ctime>
 
 using namespace composer;
-
-enum class problem {min_min, max_max, min_max, max_min};
 
 static std::default_random_engine generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
@@ -17,34 +16,8 @@ std::vector<int> c_major_double() {
     return {60, 62, 64, 65, 67, 69, 71, 72, 60, 62, 64, 65, 67, 69, 71, 72};
 }
 
-void init_population(size_t size, std::vector<std::vector<int>> &population) {
-
-    for (size_t i = 0; i < size; ++i) {
-        population.emplace_back(c_major_double());
-    }
-}
-
-double weighted_sum(double valence, double arousal, problem type, double lambda_1, double lambda_2) {
-
-    switch(type) {
-    case problem::max_max:
-        valence *= -1;
-        arousal *= -1;
-        break;
-
-    case problem::min_max:
-        arousal *= -1;
-        break;
-
-    case problem::max_min:
-        valence *= -1;
-        break;
-
-    default: // problem::min_min by default
-        break;
-    }
-
-    return (lambda_1 * valence) + (lambda_2 * arousal);
+double euclidian_distance(std::pair<double,double> p1, std::pair<double,double> p2) {
+    return sqrt(pow((p1.first - p2.first), 2) + (pow((p1.second - p2.second),2)));
 }
 
 std::pair<double,double> evaluate_individual(const std::vector<int> &individual, double max_value) {
@@ -62,19 +35,19 @@ std::pair<double,double> evaluate_individual(const std::vector<int> &individual,
     return {valence,arousal};
 }
 
-void evaluate_population(std::vector<std::pair<double, int>> &population_values,
-                         const std::vector<std::vector<int>> &population_melody, double max_value,
-                         problem type, double lambda_1, double lambda_2) {
+melody init_melody(const std::pair<double,double> &emotion_target, const std::vector<int> &new_melody) {
 
-    std::pair<double,double> evaluation;
+    melody m(new_melody);
+    m.set_valence_arousal(evaluate_individual(m.get_melody(), m.get_melody().size()));
+    m.set_distance(euclidian_distance(emotion_target, m.get_valence_arousal()));
 
-    for (size_t i = 0; i < population_melody.size(); ++i) {
+    return m;
+}
 
-        evaluation = evaluate_individual(population_melody[i], max_value);
-        population_values.emplace_back(std::pair(
-            weighted_sum(evaluation.first, evaluation.second, type, lambda_1, lambda_2),
-            static_cast<int>(i))
-       );
+void init_population(size_t size, const std::pair<double,double> &emotion_target, std::vector<melody> &population) {
+
+    for (size_t i = 0; i < size; ++i) {
+        population.emplace_back(init_melody(emotion_target, c_major_double()));
     }
 }
 
@@ -84,30 +57,57 @@ void select_parents(int &parent_1, int &parent_2, size_t population_size) {
     parent_2 = d(generator_);
 }
 
-bool compare(const std::pair<double,int> &a, const std::pair<double,int> &b) {
-    return a.first < b.first;
+void select_mutation(std::vector<int> &individual, double mutation_strength) {
+
+    std::uniform_real_distribution<double> real_d(0.0, 1.0);
+
+    if (real_d(generator_) < mutation_strength) {
+        std::uniform_int_distribution<int> d(1, 4);
+
+        int mutation = d(generator_);
+
+        switch (mutation) {
+        case 1:
+            melody::simple_mutation(individual);
+            break;
+        case 2:
+            melody::reverse_measure(individual);
+            break;
+        case 3:
+            melody::exchange_pulses(individual);
+        default:
+            melody::reverse_pulses(individual);
+            break;
+        }
+    }
 }
 
-std::pair<std::vector<std::vector<int>>, std::vector<std::pair<double, int>>> genetic_algorithm(
+bool compare(melody &a, melody &b) {
+    return a.get_distance() < b.get_distance();
+}
+
+std::tuple<std::vector<melody>, double, double> genetic_algorithm(
     size_t population_size, size_t individual_size, double mutation_strength,
-    int max_iterations, double lambda_1, double lambda_2, problem type) {
+    int max_iterations, std::pair<double,double> emotion_target) {
 
-    std::vector<std::vector<int>> population_melody;
-    std::vector<std::pair<double, int>> population_values;
+    std::ofstream file("evolution.txt");
 
-    init_population(population_size, population_melody);
+    std::vector<melody> population;
 
-    std::vector<int> candidate_solution(individual_size);
-
-    std::vector<std::vector<int>> new_population_melody(population_size);
-
-    std::pair<double,double> evaluation;
+    std::vector<int> child(individual_size);
 
     int parent_1;
     int parent_2;
 
-    evaluate_population(population_values, population_melody, static_cast<double>(individual_size),
-                        type, lambda_1, lambda_2);
+    double best_solution = 2;
+
+    clock_t inicio_CPU;       // clock no inicio da aplicacao do metodo
+    clock_t fim_CPU;          // clock ao encontrar a melhos solução
+    double best_time;
+
+    inicio_CPU = clock();
+
+    init_population(population_size, emotion_target, population);
 
     for (int j = 0; j < max_iterations; ++j) {
         for (int i = 0; i < population_size; ++i) {
@@ -116,80 +116,106 @@ std::pair<std::vector<std::vector<int>>, std::vector<std::pair<double, int>>> ge
             select_parents(parent_1, parent_2, population_size);
 
             // Crossover
-            candidate_solution = melody::crossover(population_melody[parent_1], population_melody[parent_2]);
+            child = melody::crossover(population[parent_1].get_melody(),
+                                      population[parent_2].get_melody());
 
             // Mutation
-            melody::simple_mutation(candidate_solution, mutation_strength);
+            select_mutation(child, mutation_strength);
 
-            population_melody.emplace_back(candidate_solution);
-
-            // Evaluation
-            evaluation = evaluate_individual(candidate_solution, static_cast<double>(individual_size));
-            population_values.emplace_back(std::pair(
-                weighted_sum(evaluation.first, evaluation.second, type, lambda_1, lambda_2),
-                (i+population_size))
-            );
+            // Evaluation and population
+            population.emplace_back(init_melody(emotion_target, child));
         }
 
         // Parents substitution
-        std::ranges::sort(population_values.begin(), population_values.end(), compare);
-        population_values.erase(population_values.begin()+static_cast<int>(population_size),population_values.end());
+        std::sort(population.begin(), population.end(), compare);
+        population.erase(population.begin()+static_cast<int>(population_size),
+                         population.end());
 
-        for (size_t i = 0; i < population_size; ++i) {
-            new_population_melody[i] = population_melody[population_values[i].second];
+        file << population[0].get_distance() << "\n";
+
+        if (population[0].get_distance() < best_solution) {
+            best_solution = population[0].get_distance();
+            fim_CPU = clock();
+            best_time = (double)(fim_CPU - inicio_CPU)/CLOCKS_PER_SEC;
         }
-
-        population_melody.clear();
-        population_melody = new_population_melody;
     }
 
-    return {population_melody,population_values};
+    file.close();
+
+    return {population, best_solution, best_time};
 }
 
-int main () {
+void save_results(auto &results, size_t population_size, size_t individual_size,
+                  double mutation_strength, int max_iterations) {
 
-    size_t population_size = 100;
-    size_t individual_size = 16;
-    double mutation_strength = 0.05;
-    int max_iterations = 100;
+    int num_executions = 100;
+    double best_solution = 2;
+    int best_execution = 0;
+    std::ofstream file("teste2.txt");
 
-    double lambda_1 = 0.5;
-    double lambda_2 = 0.5;
-    problem type = problem::min_min;
+    for (int i = 0; i < num_executions; ++i) {
 
-    std::pair<std::vector<std::vector<int>>, std::vector<std::pair<double, int>>> melody_values;
+        file << "Execution: " << i << " - Best solution: " << std::get<1>(results[i])
+             << " - Best stime: " << std::get<2>(results[i]) << "\n";
 
-    melody_values = genetic_algorithm(population_size, individual_size, mutation_strength, max_iterations, lambda_1, lambda_2, type);
+        if (std::get<1>(results[i]) < best_solution) {
+            best_solution = std::get<1>(results[i]);
+            best_execution = i;
+        }
+    }
 
+    // Best execution results
     // Save results
-    std::ofstream file("experiment_result_min-min.txt");
-
     file << "POPULATION SIZE: " << population_size << "\n";
     file << "INDIVIDUAL SIZE: " << individual_size << "\n";
     file << "MAX ITERATIONS: " << max_iterations << "\n";
     file << "MUTATION STRENGTH: " << mutation_strength << "\n";
-    file << "LAMBDA 1: : " << lambda_1 << "\n";
-    file << "LAMBDA 2: : " << lambda_2 << "\n";
-    file << "PROBLEM TYPE: MIN MIN \n\n";
+    file << "PROBLEM TYPE: MAX MIN \n\n";
 
     file << "FINAL MELODIES\n";
 
-    for (const auto &melody_ : melody_values.first) {
+    for (melody &melody_ : std::get<0>(results[best_execution])) {
         file << "[";
-        for (const int &note : melody_) {
+        for (const int &note : melody_.get_melody()) {
             file << note << " ";
         }
         file << "]\n";
     }
 
+    file << "\nPOPULATION DISTANCE\n";
+
+    for (melody &melody_ : std::get<0>(results[best_execution])) {
+        file << "[" << melody_.get_distance() << "]\n";
+    }
+
     file << "\nPOPULATION VALUES\n";
 
-    for (const auto& [key, value] : melody_values.second) {
-        file << "[" << key << " ";
-        file << "]\n";
+    for (melody &melody_ : std::get<0>(results[best_execution])) {
+        file << "(" << melody_.get_valence_arousal().first << "," <<
+            melody_.get_valence_arousal().second << ")\n";
     }
 
     file.close();
+}
+
+int main () {
+
+    size_t population_size = 500;
+    size_t individual_size = 16;
+    double mutation_strength = 0.07;
+    int max_iterations = 10;
+    std::pair<double,double> target = {0.5,0.5};
+
+    std::tuple<std::vector<melody>, double, double> result;
+    std::vector<std::tuple<std::vector<melody>, double, double>> results;
+
+    for (int i = 0; i < 100; ++i) {
+        std::cout << "Exec. " << i << "\n";
+        result = genetic_algorithm(population_size, individual_size, mutation_strength, max_iterations, target);
+        results.emplace_back(result);
+    }
+
+    save_results(results, population_size, individual_size, mutation_strength, max_iterations);
 
     return 0;
 }

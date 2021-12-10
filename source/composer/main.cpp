@@ -93,7 +93,7 @@ int main() {
         problem.clear();
 
         for (std::vector<int> individual : solution) {
-            problem.add_individual(individual);
+            problem.set_melody(individual);
         }
 
         solution.clear();

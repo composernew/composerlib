@@ -31,7 +31,9 @@ namespace composer {
         ///
         /// \param problem_size The number of individuals of the problem.
         /// \param individual_size The individual size. Each individual is a vector of integers.
-        explicit melody(const size_t &individual_size);
+        explicit melody(const std::vector<int> &initial_melody);
+
+        melody();
 
         /// Displays the current state of the melody in the console.
         static void display(std::vector<std::vector<int>> const &solution);
@@ -47,7 +49,7 @@ namespace composer {
         /// \param parent A vector of integers that is an individual from previous generation.
         /// \return A vector of integers that represents an individual that is a child of the
         /// individual passed as parameter.
-        static std::vector<int> crossover(std::vector<int> &first_parent, std::vector<int> &second_parent);
+        static std::vector<int> crossover(const std::vector<int> &first_parent, const std::vector<int> &second_parent);
 
         /// \brief The simple_mutation operator.
         ///
@@ -57,7 +59,7 @@ namespace composer {
         /// \param individual The individual that has to be modified.
         /// \param mutation_strength A double value that is used as parameter to
         /// define the possibility of a value in an individual being modified.
-        static void simple_mutation(std::vector<int> &individual, double mutation_strength);
+        static void simple_mutation(std::vector<int> &individual);
 
         /// \brief The reverse_measure mutation operator.
         ///
@@ -68,7 +70,7 @@ namespace composer {
         /// \param individual The individual that has to be modified.
         /// \param mutation_strength A double value that is used as parameter to
         /// define the possibility of a value in an individual being modified.
-        static void reverse_measure(std::vector<int> &individual, double mutation_strength);
+        static void reverse_measure(std::vector<int> &individual);
 
         /// \brief The exchange_pulses mutation operator.
         ///
@@ -78,7 +80,7 @@ namespace composer {
         /// \param individual The individual that has to be modified.
         /// \param mutation_strength A double value that is used as parameter to
         /// define the possibility of a value in an individual being modified.
-        static void exchange_pulses(std::vector<int> &individual, double mutation_strength);
+        static void exchange_pulses(std::vector<int> &individual);
 
         /// \brief The reverse_pulses mutation operator.
         ///
@@ -88,7 +90,7 @@ namespace composer {
         /// \param individual The individual that has to be modified.
         /// \param mutation_strength A double value that is used as parameter to
         /// define the possibility of a value in an individual being modified.
-        static void reverse_pulses(std::vector<int> &individual, double mutation_strength);
+        static void reverse_pulses(std::vector<int> &individual);
 
         /// \brief The most used values in an individual.
         static double evaluate_pitch_distribution(const std::vector<int> &individual);
@@ -107,12 +109,24 @@ namespace composer {
 
         static double normalize(double value, double max, double min, double max_value, double min_value);
 
-        std::vector<int> get_melody();
-        void add_individual(const int &individual);
+
+        void set_melody(const std::vector<int> &new_melody);
+
+
         void clear();
+
+        // Funções metaheurísticas
+        void set_distance(double distance);
+        void set_valence_arousal(const std::pair<double,double> valence_arousal);
+        std::pair<double,double> get_valence_arousal();
+        std::vector<int> get_melody();
+        double get_distance();
 
       private:
         std::vector<int> melody_;                     ///< The melody to be optimized.
+        std::pair<double,double> valence_arousal;     ///< Valence and arousal values.
+        double distance;                              ///< Distance from optimal solution
+
         static std::default_random_engine generator_; ///< Used to generate random values and create the melody.
     };
 } // namespace composer

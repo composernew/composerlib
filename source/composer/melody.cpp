@@ -8,14 +8,10 @@ namespace composer {
 
     std::default_random_engine melody::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-    melody::melody(const size_t &individual_size)
-    : melody_(individual_size)
+    melody::melody(const std::vector<int> &initial_melody)
+    : melody_(initial_melody.size())
     {
-        /*std::generate(melody_.begin(), melody_.end(), []() {
-            std::uniform_int_distribution<int> d(0, 127);
-            return d(generator_);
-        });*/
-        melody_ = create_individual(individual_size);
+        melody_ = initial_melody;
     }
 
     void melody::display(std::vector<std::vector<int>> const &solution) {
@@ -42,7 +38,7 @@ namespace composer {
         return measure;
     }
 
-    std::vector<int> melody::crossover(std::vector<int> &first_parent, std::vector<int> &second_parent) {
+    std::vector<int> melody::crossover(const std::vector<int> &first_parent, const std::vector<int> &second_parent) {
         std::uniform_int_distribution<int> d(0,1);
         std::vector<int> child;
 
@@ -58,58 +54,43 @@ namespace composer {
         return child;
     }
 
-    void melody::simple_mutation(std::vector<int> &individual, double mutation_strength) {
+    void melody::simple_mutation(std::vector<int> &individual) {
 
-        std::uniform_real_distribution<double> d(0.0, 1.0);
         std::uniform_int_distribution<int> dist_int(0, 1);
 
         for (int &item : individual) {
-            if (d(generator_) < mutation_strength) {
-                if(dist_int(generator_)) {
-                    if (item < 108)
-                        item = item + 1;
-                }
-                else {
-                    if (item > 21)
-                        item = item - 1;
-                }
+            if(dist_int(generator_)) {
+                if (item < 108)
+                    item = item + 1;
+            }
+            else {
+                if (item > 21)
+                    item = item - 1;
             }
         }
     }
 
-    void melody::reverse_measure(std::vector<int> &individual, double mutation_strength) {
-
-        std::uniform_real_distribution<double> d(0.0, 1.0);
-
-        if (d(generator_) < mutation_strength) {
-            std::reverse(individual.begin(), individual.end());
-        }
+    void melody::reverse_measure(std::vector<int> &individual) {
+        std::reverse(individual.begin(), individual.end());
     }
 
-    void melody::exchange_pulses(std::vector<int> &individual, double mutation_strength) {
+    void melody::exchange_pulses(std::vector<int> &individual) {
 
-        std::uniform_real_distribution<double> d(0.0, 1.0);
-        if (d(generator_) < mutation_strength) {
-            std::uniform_int_distribution<int> value_distribution(0, static_cast<int>(individual.size()-1));
-            int first_pulse = value_distribution(generator_);
-            int second_pulse = value_distribution(generator_);
-            std::swap(individual[first_pulse], individual[second_pulse]);
-        }
+        std::uniform_int_distribution<int> value_distribution(0, static_cast<int>(individual.size()-1));
+        int first_pulse = value_distribution(generator_);
+        int second_pulse = value_distribution(generator_);
+        std::swap(individual[first_pulse], individual[second_pulse]);
     }
 
-    void melody::reverse_pulses(std::vector<int> &individual, double mutation_strength) {
+    void melody::reverse_pulses(std::vector<int> &individual) {
 
-        std::uniform_real_distribution<double> d(0.0, 1.0);
-        if (d(generator_) < mutation_strength) {
+        std::uniform_int_distribution<int> first_value_distribution(0, static_cast<int>(individual.size()));
+        int first_pulse = first_value_distribution(generator_);
 
-            std::uniform_int_distribution<int> first_value_distribution(0, static_cast<int>(individual.size()));
-            int first_pulse = first_value_distribution(generator_);
+        std::uniform_int_distribution<int> second_value_distribution(first_pulse, static_cast<int>(individual.size()));
+        int second_pulse = second_value_distribution(generator_);
 
-            std::uniform_int_distribution<int> second_value_distribution(first_pulse, static_cast<int>(individual.size()));
-            int second_pulse = second_value_distribution(generator_);
-
-            std::reverse(individual.begin() + first_pulse, individual.begin() + second_pulse);
-        }
+        std::reverse(individual.begin() + first_pulse, individual.begin() + second_pulse);
     }
 
     double melody::normalize(double value, double max, double min, double max_value, double min_value) {
@@ -162,11 +143,34 @@ namespace composer {
         return this->melody_;
     }
 
-    void melody::add_individual(const int &individual) {
-        melody_.push_back(individual);
+    void melody::set_melody(const std::vector<int> &new_melody) {
+        melody_ = new_melody;
     }
 
     void melody::clear() {
         melody_.clear();
+    }
+
+    void melody::set_distance(double distance) {
+        this->distance = distance;
+    }
+
+    void melody::set_valence_arousal(
+        const std::pair<double, double> valence_arousal) {
+        this->valence_arousal = valence_arousal;
+    }
+
+    std::pair<double, double> melody::get_valence_arousal() {
+        return this->valence_arousal;
+    }
+
+    melody::melody() {
+        this->melody_ = {};
+        this->valence_arousal = {0.0, 0.0};
+        this->distance = 0.0;
+    }
+
+    double melody::get_distance() {
+        return this->distance;
     }
 }
