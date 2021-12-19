@@ -38,7 +38,7 @@ std::pair<double,double> evaluate_individual(const std::vector<int> &individual,
 melody init_melody(const std::pair<double,double> &emotion_target, const std::vector<int> &new_melody) {
 
     melody m(new_melody);
-    m.set_valence_arousal(evaluate_individual(m.get_melody(), m.get_melody().size()));
+    m.set_valence_arousal(evaluate_individual(m.get_melody(), static_cast<double>(m.get_melody().size())));
     m.set_distance(euclidian_distance(emotion_target, m.get_valence_arousal()));
 
     return m;
@@ -52,17 +52,17 @@ void init_population(size_t size, const std::pair<double,double> &emotion_target
 }
 
 void select_parents(int &parent_1, int &parent_2, size_t population_size) {
-    std::uniform_int_distribution<int> d(0, (static_cast<int>(population_size)-1));
+    std::uniform_int_distribution d(0, (static_cast<int>(population_size)-1));
     parent_1 = d(generator_);
     parent_2 = d(generator_);
 }
 
 void select_mutation(std::vector<int> &individual, double mutation_strength) {
 
-    std::uniform_real_distribution<double> real_d(0.0, 1.0);
+    std::uniform_real_distribution real_d(0.0, 1.0);
 
     if (real_d(generator_) < mutation_strength) {
-        std::uniform_int_distribution<int> d(1, 4);
+        std::uniform_int_distribution d(1, 4);
 
         int mutation = d(generator_);
 
@@ -134,7 +134,7 @@ std::tuple<std::vector<melody>, double, double, double, double, double>
         }
 
         // Parents substitution
-        std::sort(population.begin(), population.end(), compare);
+        std::ranges::sort(population.begin(), population.end(), compare);
         population.erase(population.begin()+static_cast<int>(population_size),
                          population.end());
 
@@ -234,7 +234,6 @@ int main () {
     std::vector<std::tuple<std::vector<melody>, double, double, double, double, double>> results;
 
     for (int i = 0; i < 100; ++i) {
-        std::cout << "Exec. " << i << "\n";
         result = genetic_algorithm(population_size, individual_size, mutation_strength, max_iterations, target);
         results.emplace_back(result);
     }

@@ -9,19 +9,11 @@ endif()
 add_executable(example_audio audio.cpp)
 target_link_libraries(example_audio PRIVATE composerlib)
 
-add_executable(example_pareto pareto_front.cpp)
-target_link_libraries(example_pareto PRIVATE composerlib)
-target_exception_options(example_pareto)
-
-add_executable(example_optimizer example_optimizer.cpp)
-target_link_libraries(example_optimizer PRIVATE composerlib)
-target_exception_options(example_optimizer)
-
 configure_file("resources/exp-01.midi" "${CMAKE_CURRENT_BINARY_DIR}/resources/exp-01.midi" COPYONLY)
 add_executable(example_midi play_midi.cpp)
 target_link_libraries(example_midi PRIVATE composerlib)
 target_exception_options(example_midi)
 
-add_executable(weighted_sum mono_objective.cpp)
-target_link_libraries(weighted_sum PRIVATE composerlib)
-target_exception_options(weighted_sum)
+add_executable(mono_objective mono_objective.cpp)
+target_link_libraries(mono_objective PRIVATE composerlib)
+target_exception_options(mono_objective)

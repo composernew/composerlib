@@ -105,19 +105,14 @@ namespace composer {
         /// \param individual The individual that is evaluated.
         /// \return A tuple with the valence and arousal values of the individual
         /// passed as parameter.
-        static std::tuple<double,double,double,double> evaluate(std::vector<int> &individual, double max_value);
+        static std::tuple<double,double,double,double> evaluate(const std::vector<int> &individual, double max_value);
 
         static double normalize(double value, double max, double min, double max_value, double min_value);
 
-
-        void set_melody(const std::vector<int> &new_melody);
-
-
         void clear();
 
-        // Funções metaheurísticas
-        void set_distance(double distance);
-        void set_valence_arousal(const std::pair<double,double> valence_arousal);
+        void set_distance(double new_distance);
+        void set_valence_arousal(const std::pair<double,double> new_valence_arousal);
         std::pair<double,double> get_valence_arousal();
         std::vector<int> get_melody();
         double get_distance();
