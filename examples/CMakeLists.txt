@@ -22,6 +22,6 @@ add_executable(example_midi play_midi.cpp)
 target_link_libraries(example_midi PRIVATE composerlib)
 target_exception_options(example_midi)
 
-add_executable(weighted_sum weighted_sum_method.cpp)
+add_executable(weighted_sum mono_objective.cpp)
 target_link_libraries(weighted_sum PRIVATE composerlib)
 target_exception_options(weighted_sum)
