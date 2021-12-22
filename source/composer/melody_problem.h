@@ -7,6 +7,7 @@
 
 #include <utility>
 #include <vector>
+#include <algorithm>
 
 namespace composer {
     class melody_problem {
@@ -15,7 +16,12 @@ namespace composer {
 
         [[nodiscard]] std::vector<int> get_melody() const;
 
-        static std::vector<int> melody_problem::c_major_double();
+        static std::vector<int> c_major_double();
+
+        static double evaluate_pitch_distribution(melody_problem const &individual);
+        static double evaluate_pitch_variety(melody_problem const &individual);
+        static double normalize(double value, double max, double min, double max_value, double min_value);
+        static std::pair<double,double> evaluate(melody_problem const &individual);
 
       private:
         std::vector<int> melody_;
