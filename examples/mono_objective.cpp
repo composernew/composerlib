@@ -4,7 +4,8 @@
 
 #include <iostream>
 #include <vector>
-#include <composer/melody.h>
+#include "composer/melody.h"
+#include "composer/melody_problem.h"
 #include <cmath>
 #include <ctime>
 
@@ -12,42 +13,13 @@ using namespace composer;
 
 static std::default_random_engine generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-std::vector<int> c_major_double() {
-    return {60, 62, 64, 65, 67, 69, 71, 72, 60, 62, 64, 65, 67, 69, 71, 72};
-}
-
-double euclidian_distance(std::pair<double,double> p1, std::pair<double,double> p2) {
-    return sqrt(pow((p1.first - p2.first), 2) + (pow((p1.second - p2.second),2)));
-}
-
-std::pair<double,double> evaluate_individual(const std::vector<int> &individual, double max_value) {
-
-    double normalized_pitch_variety =
-        melody::normalize(melody::evaluate_pitch_variety(individual), 1,
-                                    -1, max_value, 1.);
-    double normalized_pitch_distribution =
-        melody::normalize(melody::evaluate_pitch_distribution(individual), 1.,
-                                    -1., 108., 20);
-
-    double valence = normalized_pitch_variety;
-    double arousal = (normalized_pitch_variety + normalized_pitch_distribution)/2.;
-
-    return {valence,arousal};
-}
-
-melody init_melody(const std::pair<double,double> &emotion_target, const std::vector<int> &new_melody) {
-
-    melody m(new_melody);
-    m.set_valence_arousal(evaluate_individual(m.get_melody(), static_cast<double>(m.get_melody().size())));
-    m.set_distance(euclidian_distance(emotion_target, m.get_valence_arousal()));
-
-    return m;
-}
+const melody_problem problem;
 
 void init_population(size_t size, const std::pair<double,double> &emotion_target, std::vector<melody> &population) {
 
     for (size_t i = 0; i < size; ++i) {
-        population.emplace_back(init_melody(emotion_target, c_major_double()));
+        melody m(problem, emotion_target);
+        population.emplace_back(m);
     }
 }
 
@@ -57,7 +29,46 @@ void select_parents(int &parent_1, int &parent_2, size_t population_size) {
     parent_2 = d(generator_);
 }
 
-void select_mutation(std::vector<int> &individual, double mutation_strength) {
+void simple_mutation(melody &individual) {
+
+    std::uniform_int_distribution dist_int(0, 1);
+
+    for (int &item : individual.get_melody()) {
+        if(dist_int(generator_)) {
+            if (item < 108)
+                item = item + 1;
+        }
+        else {
+            if (item > 21)
+                item = item - 1;
+        }
+    }
+}
+
+void reverse_measure(melody &individual) {
+    std::ranges::reverse(individual.get_melody().begin(), individual.get_melody().end());
+}
+
+void exchange_pulses(melody &individual) {
+
+    std::uniform_int_distribution value_distribution(0, static_cast<int>(individual.get_melody().size()-1));
+    int first_pulse = value_distribution(generator_);
+    int second_pulse = value_distribution(generator_);
+    std::swap(individual.get_melody()[first_pulse], individual.get_melody()[second_pulse]);
+}
+
+void reverse_pulses(melody &individual) {
+
+    std::uniform_int_distribution first_value_distribution(0, static_cast<int>(individual.get_melody().size()));
+    int first_pulse = first_value_distribution(generator_);
+
+    std::uniform_int_distribution second_value_distribution(first_pulse, static_cast<int>(individual.get_melody().size()));
+    int second_pulse = second_value_distribution(generator_);
+
+    std::reverse(individual.get_melody().begin() + first_pulse, individual.get_melody().begin() + second_pulse);
+}
+
+void select_mutation(melody &individual, double mutation_strength) {
 
     std::uniform_real_distribution real_d(0.0, 1.0);
 
@@ -68,22 +79,38 @@ void select_mutation(std::vector<int> &individual, double mutation_strength) {
 
         switch (mutation) {
         case 1:
-            melody::simple_mutation(individual);
+            simple_mutation(individual);
             break;
         case 2:
-            melody::reverse_measure(individual);
+            reverse_measure(individual);
             break;
         case 3:
-            melody::exchange_pulses(individual);
+            exchange_pulses(individual);
         default:
-            melody::reverse_pulses(individual);
+            reverse_pulses(individual);
             break;
         }
     }
 }
 
-bool compare(melody &a, melody &b) {
+bool compare(const melody &a, const melody &b) {
     return a.get_distance() < b.get_distance();
+}
+
+melody crossover(const melody &first_parent, const melody &second_parent) {
+    std::uniform_int_distribution d(0,1);
+    melody child;
+
+    for (size_t i = 0; i < first_parent.get_melody().size(); ++i) {
+        if (d(generator_)) {
+            child.get_melody().emplace_back(first_parent.get_melody()[i]);
+        }
+        else {
+            child.get_melody().emplace_back(second_parent.get_melody()[i]);
+        }
+    }
+
+    return child;
 }
 
 std::tuple<std::vector<melody>, double, double, double, double, double>
@@ -94,7 +121,7 @@ std::tuple<std::vector<melody>, double, double, double, double, double>
 
     std::vector<melody> population;
 
-    std::vector<int> child(individual_size);
+    melody child;
 
     int parent_1;
     int parent_2;
@@ -123,14 +150,16 @@ std::tuple<std::vector<melody>, double, double, double, double, double>
             select_parents(parent_1, parent_2, population_size);
 
             // Crossover
-            child = melody::crossover(population[parent_1].get_melody(),
-                                      population[parent_2].get_melody());
+            child = crossover(population[parent_1], population[parent_2]);
 
             // Mutation
             select_mutation(child, mutation_strength);
 
-            // Evaluation and population
-            population.emplace_back(init_melody(emotion_target, child));
+            // Evaluation
+            melody::evaluate(child);
+
+            // Population
+            population.emplace_back(child);
         }
 
         // Parents substitution
@@ -198,7 +227,7 @@ void save_results(auto &results, size_t population_size, size_t individual_size,
 
     file << "FINAL MELODIES\n";
 
-    for (melody &melody_ : std::get<0>(results[best_execution])) {
+    for (const melody &melody_ : std::get<0>(results[best_execution])) {
         file << "[";
         for (const int &note : melody_.get_melody()) {
             file << note << " ";
@@ -208,13 +237,13 @@ void save_results(auto &results, size_t population_size, size_t individual_size,
 
     file << "\nPOPULATION DISTANCE\n";
 
-    for (melody &melody_ : std::get<0>(results[best_execution])) {
+    for (const melody &melody_ : std::get<0>(results[best_execution])) {
         file << "[" << melody_.get_distance() << "]\n";
     }
 
     file << "\nPOPULATION VALUES\n";
 
-    for (melody &melody_ : std::get<0>(results[best_execution])) {
+    for (const melody &melody_ : std::get<0>(results[best_execution])) {
         file << "(" << melody_.get_valence_arousal().first << "," <<
             melody_.get_valence_arousal().second << ")\n";
     }
