@@ -13,12 +13,12 @@ using namespace composer;
 
 static std::default_random_engine generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-const melody_problem problem;
+const melody_problem problem({0.5, 0.5});
 
-void init_population(size_t size, const std::pair<double,double> &emotion_target, std::vector<melody> &population) {
+void init_population(size_t size, std::vector<melody> &population) {
 
     for (size_t i = 0; i < size; ++i) {
-        melody m(problem, emotion_target);
+        melody m(problem);
         population.emplace_back(m);
     }
 }
@@ -141,7 +141,7 @@ std::tuple<std::vector<melody>, double, double, double, double, double>
 
     inicio_CPU = clock();
 
-    init_population(population_size, emotion_target, population);
+    init_population(population_size, population);
 
     for (int j = 0; j < max_iterations; ++j) {
         for (int i = 0; i < population_size; ++i) {

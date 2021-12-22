@@ -9,11 +9,9 @@
 
 namespace composer {
 
-    melody::melody(melody_problem const &problem, const std::pair<double,double> &target)
-        : target_(target)
-    {
+    melody::melody(melody_problem const &problem) {
         this->valence_arousal = composer::melody_problem::evaluate(problem);
-        this->distance = composer::melody::euclidean_distance(target, this->valence_arousal);
+        this->distance = composer::melody::euclidean_distance(problem.get_target(), this->valence_arousal);
         this->melody_ = problem.get_melody();
     }
 

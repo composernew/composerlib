@@ -6,7 +6,9 @@
 
 namespace composer {
 
-    melody_problem::melody_problem() {
+    melody_problem::melody_problem(std::pair<double,double> target)
+        : target_(target)
+    {
         this->melody_ = c_major_double();
     }
 
@@ -65,6 +67,9 @@ namespace composer {
         double arousal = (normalized_pitch_variety + normalized_pitch_distribution)/2.;
 
         return {valence,arousal};
+    }
+    std::pair<double, double> melody_problem::get_target() const {
+        return this->target_;
     }
 
 } // namespace composer

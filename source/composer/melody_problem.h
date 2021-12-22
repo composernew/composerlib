@@ -12,7 +12,7 @@
 namespace composer {
     class melody_problem {
       public:
-        explicit melody_problem();
+        explicit melody_problem(std::pair<double,double> target);
 
         [[nodiscard]] std::vector<int> get_melody() const;
 
@@ -23,9 +23,11 @@ namespace composer {
         static double normalize(double value, double max, double min, double max_value, double min_value);
         static std::pair<double,double> evaluate(melody_problem const &individual);
 
+        [[nodiscard]] std::pair<double,double> get_target() const;
+
       private:
         std::vector<int> melody_;
-
+        std::pair<double,double> target_;
     };
 } // namespace composer
 

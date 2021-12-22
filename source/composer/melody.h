@@ -32,7 +32,7 @@ namespace composer {
         ///
         /// \param problem_size The number of individuals of the problem.
         /// \param individual_size The individual size. Each individual is a vector of integers.
-        explicit melody(melody_problem const &problem, const std::pair<double,double> &target);
+        explicit melody(melody_problem const &problem);
 
         melody();
 
@@ -57,7 +57,6 @@ namespace composer {
 
         std::vector<int> melody_;
         std::pair<double,double> valence_arousal;
-        std::pair<double,double> target_;
         double distance;
     };
 } // namespace composer
