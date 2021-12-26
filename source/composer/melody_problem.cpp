@@ -4,16 +4,24 @@
 
 #include "melody_problem.h"
 
+#include <utility>
+
 namespace composer {
 
-    melody_problem::melody_problem(std::pair<double,double> target)
-        : target_(target)
+    melody_problem::melody_problem(std::pair<double,double> target, const std::vector<int> &problem)
+        : target_(std::move(target))
     {
-        this->melody_ = c_major_double();
+        this->melody_ = problem;
     }
 
     std::vector<int> melody_problem::c_major_double() {
         return {60, 62, 64, 65, 67, 69, 71, 72, 60, 62, 64, 65, 67, 69, 71, 72};
+    }
+
+    std::vector<int> melody_problem::twinkle() {
+        return {53, 53, 60, 60, 62, 62, 60, 20, 58, 58, 57, 57, 55, 55, 53, 20,
+                60, 60, 58, 58, 57, 57, 55, 20, 60, 60, 58, 58, 57, 57, 55, 20,
+                53, 53, 60, 60, 62, 62, 60, 20, 58, 58, 57, 57, 55, 55, 53, 20};
     }
 
     std::vector<int> composer::melody_problem::get_melody() const {

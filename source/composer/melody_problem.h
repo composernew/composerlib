@@ -12,11 +12,12 @@
 namespace composer {
     class melody_problem {
       public:
-        explicit melody_problem(std::pair<double,double> target);
+        explicit melody_problem(std::pair<double,double> target, const std::vector<int> &problem);
 
         [[nodiscard]] std::vector<int> get_melody() const;
 
         static std::vector<int> c_major_double();
+        static std::vector<int> twinkle();
 
         static double evaluate_pitch_distribution(melody_problem const &individual);
         static double evaluate_pitch_variety(melody_problem const &individual);

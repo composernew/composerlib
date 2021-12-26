@@ -13,12 +13,28 @@ using namespace composer;
 
 static std::default_random_engine generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-const melody_problem problem({0.5, 0.5});
+const melody_problem first_problem({0.5, 0.5}, melody_problem::c_major_double());
+const melody_problem second_problem({0.5, 0.5}, melody_problem::twinkle());
 
 void init_population(size_t size, std::vector<melody> &population) {
 
     for (size_t i = 0; i < size; ++i) {
-        melody m(problem);
+        melody m(first_problem);
+        population.emplace_back(m);
+    }
+}
+
+void init_population(size_t size, std::vector<melody> &population, double percentage) {
+
+    int partial_size = static_cast<int>(size) - (static_cast<int>(size) * percentage);
+
+    for (size_t i = 0; i < partial_size; ++i) {
+        melody m(first_problem);
+        population.emplace_back(m);
+    }
+
+    for (size_t i = partial_size; i < size; ++i) {
+        melody m(second_problem);
         population.emplace_back(m);
     }
 }
