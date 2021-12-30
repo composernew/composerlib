@@ -39,10 +39,9 @@ namespace composer {
 
     void genetic_algorithm::init_random_population() {
 
-        melody_problem problem(this->problem_.get_target(), melody_problem::problem_type::random,
-                               this->problem_.get_melody().size());
-
         for (size_t i = 0; i < this->population_size_; ++i) {
+            melody_problem problem(this->problem_.get_target(), melody_problem::problem_type::random,
+                                   this->problem_.get_melody().size());
             melody individual(problem);
             this->population_.emplace_back(individual);
         }
