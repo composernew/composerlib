@@ -6,7 +6,6 @@
 #define COMPOSER_MELODY_H
 
 #include <vector>
-#include <MidiFile.h>
 #include <random>
 #include <iostream>
 #include <chrono>

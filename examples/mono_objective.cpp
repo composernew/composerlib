@@ -9,7 +9,7 @@
 
 using namespace composer;
 
-void save_results(auto &results, size_t population_size, size_t individual_size,
+/*void save_results(auto &results, size_t population_size, size_t individual_size,
                   double mutation_strength, int max_iterations) {
 
     int num_executions = 100;
@@ -60,10 +60,10 @@ void save_results(auto &results, size_t population_size, size_t individual_size,
     for (const melody &melody_ : std::get<0>(results[best_execution])) {
         file << "(" << melody_.get_valence_arousal().first << "," <<
             melody_.get_valence_arousal().second << ")\n";
-    }*/
+    }
 
     file.close();
-}
+}*/
 
 int main () {
 

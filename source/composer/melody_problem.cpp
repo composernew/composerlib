@@ -76,6 +76,7 @@ namespace composer {
 
         return {valence,arousal};
     }
+
     std::pair<double, double> melody_problem::get_target() const {
         return this->target_;
     }
