@@ -23,22 +23,33 @@ namespace composer {
 
         static bool compare(const melody &a, const melody &b);
 
-        void calculate_objective_function(melody &individual);
+        void calculate_objective_function(melody &individual) const;
 
         void optimizer();
 
         void display() const;
 
+        [[nodiscard]] std::pair<melody,size_t> get_best_individual() const;
+        [[nodiscard]] std::vector<melody> get_half_evolution() const;
+        [[nodiscard]] std::vector<melody> get_best_individuals() const;
+        [[nodiscard]] std::vector<melody> get_population() const;
+        [[nodiscard]] double get_time() const;
+
+
       private:
-        int parent_1_;
-        int parent_2_;
+        int parent_1;
+        int parent_2;
         double crossover_strength_;
         double mutation_strength_;
         int population_size_;
         size_t max_iterations_;
-        std::vector<melody> population_;
         melody_problem problem_;
+        std::vector<melody> population;
 
+        double execution_time;
+        std::vector<melody> best_individuals;
+        std::vector<melody> half_evolution;
+        std::pair<melody,size_t> best_individual;
         static std::default_random_engine generator_;
     };
 } // namespace composer

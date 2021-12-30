@@ -3,80 +3,147 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include "composer/melody_problem.h"
 #include "composer/genetic_algorithm.h"
 
 using namespace composer;
 
-/*void save_results(auto &results, size_t population_size, size_t individual_size,
-                  double mutation_strength, int max_iterations) {
-
-    int num_executions = 100;
-    double best_solution = 2;
-    int best_execution = 0;
-    std::ofstream file("teste2.txt");
-
-    /*for (int i = 0; i < num_executions; ++i) {
-
-        file << "Execution: " << i << " - Best solution: " << std::get<1>(results[i])
-             << " - Best stime: " << std::get<2>(results[i]);
-
-        file << " - Easy time: " << std::get<3>(results[i]) << " - Medium time: "
-            << std::get<4>(results[i]) << " - Hard time: " << std::get<5>(results[i]) << "\n";
-
-        if (std::get<1>(results[i]) < best_solution) {
-            best_solution = std::get<1>(results[i]);
-            best_execution = i;
-        }
+void save_melody(std::ofstream &file, std::vector<int> const &melody) {
+    for (auto const &note : melody) {
+        file << note << ' ';
     }
+    file << '\n';
+}
 
-    // Best execution results
-    // Save results
-    file << "POPULATION SIZE: " << population_size << "\n";
-    file << "INDIVIDUAL SIZE: " << individual_size << "\n";
-    file << "MAX ITERATIONS: " << max_iterations << "\n";
-    file << "MUTATION STRENGTH: " << mutation_strength << "\n";
-    file << "PROBLEM TYPE: MAX MIN \n\n";
+void save_population(std::string const &filename, std::vector<melody> const &population) {
 
-    file << "FINAL MELODIES\n";
+    std::ofstream file(filename);
 
-    for (const melody &melody_ : std::get<0>(results[best_execution])) {
-        file << "[";
-        for (const int &note : melody_.get_melody()) {
-            file << note << " ";
-        }
-        file << "]\n";
-    }
-
-    file << "\nPOPULATION DISTANCE\n";
-
-    for (const melody &melody_ : std::get<0>(results[best_execution])) {
-        file << "[" << melody_.get_distance() << "]\n";
-    }
-
-    file << "\nPOPULATION VALUES\n";
-
-    for (const melody &melody_ : std::get<0>(results[best_execution])) {
-        file << "(" << melody_.get_valence_arousal().first << "," <<
-            melody_.get_valence_arousal().second << ")\n";
+    for (auto const &individual : population) {
+        save_melody(file, individual.get_melody());
     }
 
     file.close();
-}*/
+}
+
+void save_distance(std::ofstream &file, double distance) {
+    file << distance << '\n';
+}
+
+void save_objective_function(std::string const &filename, std::vector<melody> const &population) {
+
+    std::ofstream file(filename);
+
+    for (auto const &individual : population) {
+        save_distance(file, individual.get_distance());
+    }
+
+    file.close();
+}
+
+void save_emotions(std::string const &filename, std::vector<melody> const &population) {
+
+    std::ofstream file(filename);
+
+    for (auto const &individual : population) {
+        file << individual.get_valence_arousal().first  << ' '
+             << individual.get_valence_arousal().second << '\n';
+    }
+
+    file.close();
+}
+
+void save_best_individual (std::string const &filename,
+                           std::pair<melody,size_t> const & best_individual) {
+
+    std::ofstream file(filename);
+
+    file << "generation " << best_individual.second << '\n';
+    save_melody(file, best_individual.first.get_melody());
+    file << best_individual.first.get_distance() << '\n';
+
+    file.close();
+}
+
+void save_time(std::string const &filename, std::vector<double> const &execution_times) {
+
+    std::ofstream file(filename);
+
+    for (auto const &time : execution_times) {
+        file << time << '\n';
+    }
+
+    file.close();
+}
+
+void save_parameters(std::string const &filename, double crossover_strength,
+                     double mutation_strength, int population_size,
+                     size_t max_iterations, double valence_target,
+                     double arousal_target) {
+
+    std::ofstream file(filename);
+
+    file << "--crossover_strength " << crossover_strength << ' ';
+    file << "--mutation_strength "  << mutation_strength  << ' ';
+    file << "--population_size "    << population_size    << ' ';
+    file << "--max_iterations "     << max_iterations     << ' ';
+    file << "--target "             << valence_target     << ' '
+                                    << arousal_target     << ' ';
+
+    file.close();
+}
 
 int main () {
 
     int population_size = 500;
-    double mutation_strength = 0.1;
+    double mutation_strength = 0.2;
     double crossover_strength = 0.5;
-    int max_iterations = 1000;
+    int max_iterations = 500;
+    std::pair<double, double> target = {0.5, 0.5};
 
-    const melody_problem problem({0.5, 0.5}, melody_problem::problem_type::c_major_double);
+    const melody_problem problem(target, melody_problem::problem_type::random);
+
+    // Variables to save results
+    std::vector<double> execution_times;
 
     composer::genetic_algorithm ga(crossover_strength, mutation_strength, population_size, max_iterations, problem);
 
-    ga.optimizer();
+    save_population("initial-population.txt", ga.get_population());
+
+    for (size_t i = 0; i < 100; ++i) {
+
+        ga.optimizer();
+
+        execution_times.emplace_back(ga.get_time());
+
+        // Half evolution
+        save_population("execution-" + std::to_string(i+1) +
+                            "-half-pop-melodies.txt", ga.get_half_evolution());
+        save_objective_function("execution-" + std::to_string(i+1) +
+                                    "-half-pop-objectives.txt", ga.get_half_evolution());
+        save_emotions("execution-" + std::to_string(i+1) +
+                          "-half-pop-emotions.txt", ga.get_half_evolution());
+
+        // Final result
+        save_population("execution-" + std::to_string(i+1) +
+                            "-pop-melodies.txt", ga.get_population());
+        save_objective_function("execution-" + std::to_string(i+1) +
+                                    "-pop-objectives.txt", ga.get_population());
+        save_emotions("execution-" + std::to_string(i+1) +
+                          "-pop-emotions.txt", ga.get_population());
+
+        save_best_individual("execution-" + std::to_string(i+1) +
+                                 "-best-individual.txt", ga.get_best_individual());
+
+        save_objective_function("execution-" + std::to_string(i+1) +
+                                    "-best_individuals.txt", ga.get_best_individuals());
+    }
+
+    save_parameters("parameters.txt", crossover_strength, mutation_strength,
+                    population_size, max_iterations, target.first, target.second);
+    save_time("execution-times.txt", execution_times);
 
     ga.display();
 
