@@ -21,7 +21,10 @@ namespace composer {
           max_iterations_(max_iterations),
           problem_(std::move(problem))
     {
-        init_population();
+        if (problem.get_type() == melody_problem::problem_type::random)
+            init_random_population();
+        else init_population();
+
         this->parent_1_ = 0;
         this->parent_2_ = 0;
     }

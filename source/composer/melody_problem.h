@@ -18,7 +18,8 @@ namespace composer {
         enum class problem_type {c_major_double, twinkle, random};
 
         melody_problem(std::pair<double,double> target, problem_type type, size_t size = 16)
-            : target_(std::move(target)) {
+            : target_(std::move(target)),
+              type_(type) {
 
             switch (type) {
 
@@ -52,10 +53,12 @@ namespace composer {
         static std::pair<double,double> evaluate(melody_problem const &individual);
 
         [[nodiscard]] std::pair<double,double> get_target() const;
+        [[nodiscard]] problem_type get_type() const;
 
       private:
         std::vector<int> melody_;
         std::pair<double,double> target_;
+        problem_type type_;
 
         static std::default_random_engine generator_;
     };

@@ -88,5 +88,9 @@ namespace composer {
         return this->target_;
     }
 
+    melody_problem::problem_type melody_problem::get_type() const {
+        return this->type_;
+    }
+
 } // namespace composer
 
