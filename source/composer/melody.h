@@ -46,7 +46,7 @@ namespace composer {
 
         void evaluate();
 
-        static double euclidean_distance(std::pair<double,double> p1, std::pair<double,double> p2);
+        static double euclidean_distance(std::pair<double,double> const &p1, std::pair<double,double> const &p2);
 
         /// \brief The simple_mutation operator.
         ///
@@ -105,6 +105,8 @@ namespace composer {
         void set_valence_arousal(std::pair<double,double> new_valence_arousal);
 
         void set_melody(int note);
+
+        void set_distance(double new_distance);
 
       private:
 

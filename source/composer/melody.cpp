@@ -74,7 +74,7 @@ namespace composer {
         melody::set_valence_arousal({valence, arousal});
     }
 
-    double melody::euclidean_distance(std::pair<double,double> p1, std::pair<double,double> p2) {
+    double melody::euclidean_distance(std::pair<double,double> const &p1, std::pair<double,double> const &p2) {
         return sqrt(pow((p1.first - p2.first), 2) + (pow((p1.second - p2.second),2)));
     }
 
@@ -149,5 +149,9 @@ namespace composer {
 
     void melody::set_melody(int note) {
         this->melody_.emplace_back(note);
+    }
+
+    void melody::set_distance(double new_distance) {
+        this->distance = new_distance;
     }
 }

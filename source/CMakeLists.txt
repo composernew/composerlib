@@ -95,6 +95,8 @@ add_library(composerlib
         composer/midi_processor.h
         composer/melody_problem.cpp
         composer/melody_problem.h
+        composer/genetic_algorithm.cpp
+        composer/genetic_algorithm.h
 )
 
 target_include_directories(composerlib

@@ -34,7 +34,7 @@ namespace composer {
         int max_count = 1; // Avoids that mode became the first element of the individual when there is no mode.
 
         for (const auto &value : individual.get_melody()) {
-            auto count = static_cast<int>(std::ranges::count(individual.get_melody().begin(),
+            auto count = static_cast<int>(std::count(individual.get_melody().begin(),
                                                              individual.get_melody().end(), value));
             if (count > max_count) {
                 max_count = count;
@@ -49,7 +49,7 @@ namespace composer {
 
         double unique_values;
 
-        std::ranges::sort(individual.get_melody().begin(),individual.get_melody().end());
+        std::sort(individual.get_melody().begin(),individual.get_melody().end());
         unique_values = std::unique(individual.get_melody().begin(),
                                     individual.get_melody().end()) - individual.get_melody().begin();
 
