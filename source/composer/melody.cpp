@@ -4,7 +4,6 @@
 
 #include "melody.h"
 #include "melody_problem.h"
-
 #include <utility>
 
 namespace composer {

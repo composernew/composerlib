@@ -15,6 +15,8 @@ namespace composer {
                           int population_size, size_t max_iterations, melody_problem problem);
 
         void init_population();
+        void init_partial_random_population();
+        void init_random_population();
 
         void select_parents();
 
