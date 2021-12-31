@@ -28,7 +28,7 @@ namespace composer {
         int max_count = 1; // Avoids that mode became the first element of the individual when there is no mode.
 
         for (const auto &value : this->melody_) {
-            auto count = static_cast<int>(std::ranges::count(this->melody_.begin(),
+            auto count = static_cast<int>(std::count(this->melody_.begin(),
                                            this->melody_.end(), value));
             if (count > max_count) {
                 max_count = count;
@@ -43,7 +43,7 @@ namespace composer {
 
         double unique_values;
 
-        std::ranges::sort(this->melody_.begin(),this->melody_.end());
+        std::sort(this->melody_.begin(),this->melody_.end());
         unique_values = std::unique(this->melody_.begin(),
                                     this->melody_.end()) - this->melody_.begin();
 
@@ -95,7 +95,7 @@ namespace composer {
     }
 
     void melody::reverse_measure() {
-        std::ranges::reverse(this->melody_.begin(), this->melody_.end());
+        std::reverse(this->melody_.begin(), this->melody_.end());
     }
 
     void melody::exchange_pulses() {
