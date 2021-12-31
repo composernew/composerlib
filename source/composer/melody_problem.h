@@ -8,16 +8,43 @@
 #include <utility>
 #include <vector>
 #include <algorithm>
+#include <random>
+#include <chrono>
 
 namespace composer {
     class melody_problem {
       public:
-        explicit melody_problem(std::pair<double,double> target, const std::vector<int> &problem);
+
+        enum class problem_type {c_major_double, twinkle, random};
+
+        melody_problem(std::pair<double,double> target, problem_type type, size_t size = 16)
+            : target_(std::move(target)) {
+
+            switch (type) {
+
+                case problem_type::c_major_double:
+                    this->melody_ = c_major_double();
+                    break;
+
+                case problem_type::twinkle:
+                    this->melody_ = twinkle();
+                    break;
+
+                case problem_type::random:
+                    this->melody_ = random_problem(size);
+                    break;
+
+                default:
+                    this->melody_ = random_problem(size);
+                    break;
+            }
+        };
 
         [[nodiscard]] std::vector<int> get_melody() const;
 
         static std::vector<int> c_major_double();
         static std::vector<int> twinkle();
+        static std::vector<int> random_problem(size_t size);
 
         static double evaluate_pitch_distribution(melody_problem const &individual);
         static double evaluate_pitch_variety(melody_problem const &individual);
@@ -29,6 +56,8 @@ namespace composer {
       private:
         std::vector<int> melody_;
         std::pair<double,double> target_;
+
+        static std::default_random_engine generator_;
     };
 } // namespace composer
 

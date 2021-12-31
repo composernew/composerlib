@@ -72,7 +72,7 @@ int main () {
     double crossover_strength = 0.5;
     int max_iterations = 1000;
 
-    const melody_problem problem({0.5, 0.5});
+    const melody_problem problem({0.5, 0.5}, melody_problem::problem_type::c_major_double);
 
     composer::genetic_algorithm ga(crossover_strength, mutation_strength, population_size, max_iterations, problem);
 

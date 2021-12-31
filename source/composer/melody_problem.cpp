@@ -3,16 +3,11 @@
 //
 
 #include "melody_problem.h"
-
 #include <utility>
 
 namespace composer {
 
-    melody_problem::melody_problem(std::pair<double,double> target, const std::vector<int> &problem)
-        : target_(std::move(target))
-    {
-        this->melody_ = problem;
-    }
+    std::default_random_engine melody_problem::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
     std::vector<int> melody_problem::c_major_double() {
         return {60, 62, 64, 65, 67, 69, 71, 72, 60, 62, 64, 65, 67, 69, 71, 72};
@@ -22,6 +17,18 @@ namespace composer {
         return {53, 53, 60, 60, 62, 62, 60, 20, 58, 58, 57, 57, 55, 55, 53, 20,
                 60, 60, 58, 58, 57, 57, 55, 20, 60, 60, 58, 58, 57, 57, 55, 20,
                 53, 53, 60, 60, 62, 62, 60, 20, 58, 58, 57, 57, 55, 55, 53, 20};
+    }
+
+    std::vector<int> melody_problem::random_problem(size_t size) {
+
+        std::vector<int> melody;
+        std::uniform_int_distribution d(20, 108);
+
+        for (size_t i = 0; i < size; ++i) {
+            melody.emplace_back(d(generator_));
+        }
+
+        return melody;
     }
 
     std::vector<int> composer::melody_problem::get_melody() const {
