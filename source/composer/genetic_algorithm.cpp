@@ -30,7 +30,6 @@ namespace composer {
 
         this-> best_individual = {melody(problem_), 0};
         this->best_individuals = {};
-        this->execution_time = 0;
     }
 
     void genetic_algorithm::init_population() {
@@ -98,11 +97,6 @@ namespace composer {
         melody child;
         std::uniform_real_distribution d(0.0, 1.0);
 
-        clock_t inicio_CPU;
-        clock_t fim_CPU;
-
-        inicio_CPU = clock();
-
         for (int j = 0; j < this->max_iterations_; ++j) {
             for (int i = 0; i < this->population_size_; ++i) {
 
@@ -142,10 +136,6 @@ namespace composer {
                 this->half_evolution = this->population;
             }
         }
-
-        fim_CPU = clock();
-        this->execution_time =
-            static_cast<double>((fim_CPU - inicio_CPU)/CLOCKS_PER_SEC);
     }
 
     void genetic_algorithm::display() const {
@@ -166,10 +156,6 @@ namespace composer {
 
     std::vector<melody> genetic_algorithm::get_best_individuals() const {
         return this->best_individuals;
-    }
-
-    double genetic_algorithm::get_time() const {
-        return this->execution_time;
     }
 
     std::vector<melody> genetic_algorithm::get_population() const {

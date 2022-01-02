@@ -33,8 +33,6 @@ namespace composer {
         [[nodiscard]] std::vector<melody> get_half_evolution() const;
         [[nodiscard]] std::vector<melody> get_best_individuals() const;
         [[nodiscard]] std::vector<melody> get_population() const;
-        [[nodiscard]] double get_time() const;
-
 
       private:
         int parent_1;
@@ -46,7 +44,6 @@ namespace composer {
         melody_problem problem_;
         std::vector<melody> population;
 
-        double execution_time;
         std::vector<melody> best_individuals;
         std::vector<melody> half_evolution;
         std::pair<melody,size_t> best_individual;

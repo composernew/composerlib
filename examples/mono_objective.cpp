@@ -97,16 +97,19 @@ void save_parameters(std::string const &filename, double crossover_strength,
 
 int main () {
 
-    int population_size = 500;
-    double mutation_strength = 0.2;
-    double crossover_strength = 0.5;
-    int max_iterations = 500;
-    std::pair<double, double> target = {0.5, 0.5};
+    int population_size = 635;
+    double mutation_strength = 0.0892;
+    double crossover_strength = 0.445;
+    int max_iterations = 971;
+    std::pair<double, double> target = {0.5,-0.5};
 
-    const melody_problem problem(target, melody_problem::problem_type::random);
+    const melody_problem problem(target, melody_problem::problem_type::twinkle);
 
     // Variables to save results
     std::vector<double> execution_times;
+    double execution_time;
+    clock_t initial_time;
+    clock_t final_time;
 
     composer::genetic_algorithm ga(crossover_strength, mutation_strength, population_size, max_iterations, problem);
 
@@ -114,9 +117,15 @@ int main () {
 
     for (size_t i = 0; i < 100; ++i) {
 
+        initial_time = clock();
+
         ga.optimizer();
 
-        execution_times.emplace_back(ga.get_time());
+        final_time = clock();
+
+        execution_time = static_cast<double>(final_time - initial_time)/CLOCKS_PER_SEC;
+
+        execution_times.emplace_back(execution_time);
 
         // Half evolution
         save_population("execution-" + std::to_string(i+1) +
