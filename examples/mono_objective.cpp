@@ -101,7 +101,7 @@ int main () {
     double mutation_strength = 0.0892;
     double crossover_strength = 0.445;
     int max_iterations = 971;
-    std::pair<double, double> target = {0.5,-0.5};
+    std::pair<double, double> target = {-0.5,0.5};
 
     const melody_problem problem(target, melody_problem::problem_type::twinkle);
 
@@ -111,11 +111,16 @@ int main () {
     clock_t initial_time;
     clock_t final_time;
 
-    composer::genetic_algorithm ga(crossover_strength, mutation_strength, population_size, max_iterations, problem);
+    for (size_t i = 0; i < 1; ++i) {
 
-    save_population("initial-population.txt", ga.get_population());
+        composer::genetic_algorithm ga(crossover_strength, mutation_strength, population_size, max_iterations, problem);
 
-    for (size_t i = 0; i < 100; ++i) {
+        //save_population("max_max/execution-" + std::to_string(i+1) +
+                        //"-initial-population.txt", ga.get_population());
+
+        save_objective_function("max_max/initial-objective-function-values.txt",
+                                ga.get_population());
+        save_emotions("max_max/initial-emotions.txt", ga.get_population());
 
         initial_time = clock();
 
@@ -128,33 +133,33 @@ int main () {
         execution_times.emplace_back(execution_time);
 
         // Half evolution
-        save_population("execution-" + std::to_string(i+1) +
+        save_population("max_max/half-evolution/melodies/execution-" + std::to_string(i+1) +
                             "-half-pop-melodies.txt", ga.get_half_evolution());
-        save_objective_function("execution-" + std::to_string(i+1) +
+        save_objective_function("max_max/half-evolution/objective-function-values/execution-" + std::to_string(i+1) +
                                     "-half-pop-objectives.txt", ga.get_half_evolution());
-        save_emotions("execution-" + std::to_string(i+1) +
+        save_emotions("max_max/half-evolution/emotions/execution-" + std::to_string(i+1) +
                           "-half-pop-emotions.txt", ga.get_half_evolution());
 
         // Final result
-        save_population("execution-" + std::to_string(i+1) +
+        save_population("max_max/final-evolution/melodies/execution-" + std::to_string(i+1) +
                             "-pop-melodies.txt", ga.get_population());
-        save_objective_function("execution-" + std::to_string(i+1) +
+        save_objective_function("max_max/final-evolution/objective-function-values/execution-" + std::to_string(i+1) +
                                     "-pop-objectives.txt", ga.get_population());
-        save_emotions("execution-" + std::to_string(i+1) +
+        save_emotions("max_max/final-evolution/emotions/execution-" + std::to_string(i+1) +
                           "-pop-emotions.txt", ga.get_population());
 
-        save_best_individual("execution-" + std::to_string(i+1) +
+        save_best_individual("max_max/best-individual/execution-" + std::to_string(i+1) +
                                  "-best-individual.txt", ga.get_best_individual());
 
-        save_objective_function("execution-" + std::to_string(i+1) +
+        save_objective_function("max_max/evolution/execution-" + std::to_string(i+1) +
                                     "-best_individuals.txt", ga.get_best_individuals());
+
+        ga.display();
     }
 
-    save_parameters("parameters.txt", crossover_strength, mutation_strength,
+    save_parameters("max_max/parameters.txt", crossover_strength, mutation_strength,
                     population_size, max_iterations, target.first, target.second);
-    save_time("execution-times.txt", execution_times);
-
-    ga.display();
+    save_time("max_max/execution-times.txt", execution_times);
 
     return 0;
 }
