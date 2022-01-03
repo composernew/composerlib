@@ -79,17 +79,20 @@ namespace composer {
 
     void melody::simple_mutation() {
 
-        std::uniform_int_distribution dist_int(0, 1);
+        auto max = static_cast<int>(this->melody_.size()-1);
 
-        for (int &item : this->melody_) {
-            if(dist_int(generator_)) {
-                if (item < 108)
-                    item = item + 1;
-            }
-            else {
-                if (item > 21)
-                    item = item - 1;
-            }
+        std::uniform_int_distribution up_down(0, 1);
+        std::uniform_int_distribution d(0, max);
+
+        int position = d(generator_);
+
+        if(up_down(generator_)) {
+            if (this->melody_[position] < 108)
+                this->melody_[position] = this->melody_[position] + 1;
+        }
+        else {
+            if (this->melody_[position] > 20)
+                this->melody_[position] = this->melody_[position] - 1;
         }
     }
 
@@ -99,21 +102,29 @@ namespace composer {
 
     void melody::exchange_pulses() {
 
-        int max = static_cast<int>(this->melody_.size()-1);
+        auto max = static_cast<int>(this->melody_.size()-1);
 
-        std::uniform_int_distribution value_distribution(0, max);
-        int first_pulse = value_distribution(generator_);
-        int second_pulse = value_distribution(generator_);
+        std::uniform_int_distribution d(0, max);
+        int first_pulse = d(generator_);
+
+        int second_pulse = d(generator_);
+
+        while (second_pulse == first_pulse) {
+            second_pulse = d(generator_);
+        }
+
         std::swap(this->melody_[first_pulse], this->melody_[second_pulse]);
     }
 
     void melody::reverse_pulses() {
 
-        std::uniform_int_distribution first_value_distribution(0, static_cast<int>(this->melody_.size()));
-        int first_pulse = first_value_distribution(generator_);
+        auto max = static_cast<int>(this->melody_.size()-1);
 
-        std::uniform_int_distribution second_value_distribution(first_pulse, static_cast<int>(this->melody_.size()));
-        int second_pulse = second_value_distribution(generator_);
+        std::uniform_int_distribution d(0, max);
+        int first_pulse = d(generator_);
+
+        d = std::uniform_int_distribution((first_pulse+1), max);
+        int second_pulse = d(generator_);
 
         std::reverse(this->melody_.begin() + first_pulse, this->melody_.begin() + second_pulse);
     }

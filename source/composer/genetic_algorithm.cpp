@@ -63,7 +63,7 @@ namespace composer {
         std::uniform_real_distribution real_d(0.0, 1.0);
 
         if (real_d(generator_) < mutation_strength) {
-            std::uniform_int_distribution d(1, 4);
+            std::uniform_int_distribution d(1, 3);
 
             int mutation = d(generator_);
 
@@ -76,8 +76,8 @@ namespace composer {
                 break;
             case 3:
                 individual.exchange_pulses();
+                break;
             default:
-                individual.reverse_pulses();
                 break;
             }
         }
