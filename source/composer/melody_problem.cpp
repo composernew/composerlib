@@ -35,6 +35,10 @@ namespace composer {
         return this->melody_;
     }
 
+    void melody_problem::set_melody(const std::vector<int> &new_melody) {
+        this->melody_ = new_melody;
+    }
+
     double melody_problem::evaluate_pitch_distribution(melody_problem const &individual) {
 
         int mode = 0;

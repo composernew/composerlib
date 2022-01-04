@@ -42,6 +42,7 @@ namespace composer {
         };
 
         [[nodiscard]] std::vector<int> get_melody() const;
+        void set_melody(std::vector<int> const &new_melody);
 
         static std::vector<int> c_major_double();
         static std::vector<int> twinkle();

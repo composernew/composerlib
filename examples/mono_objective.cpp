@@ -6,7 +6,7 @@
 #include <fstream>
 #include <vector>
 #include "composer/melody_problem.h"
-#include "composer/genetic_algorithm.h"
+#include "composer/genetic_algorithm.hpp"
 
 using namespace composer;
 
@@ -95,15 +95,15 @@ void save_parameters(std::string const &filename, double crossover_strength,
     file.close();
 }
 
-int main () {
+template<typename problem, typename solution>
+void solver() {
+    int population_size = 1000;
+    double mutation_strength = 0.1898;
+    double crossover_strength = 0.9265;
+    int max_iterations = 1126;
+    std::pair<double, double> target = {0.5,0.5};
 
-    int population_size = 635;
-    double mutation_strength = 0.0892;
-    double crossover_strength = 0.445;
-    int max_iterations = 971;
-    std::pair<double, double> target = {-0.5,0.5};
-
-    const melody_problem problem(target, melody_problem::problem_type::twinkle);
+    const problem p(target, problem::problem_type::c_major_double);
 
     // Variables to save results
     std::vector<double> execution_times;
@@ -113,10 +113,10 @@ int main () {
 
     for (size_t i = 0; i < 1; ++i) {
 
-        composer::genetic_algorithm ga(crossover_strength, mutation_strength, population_size, max_iterations, problem);
+        composer::genetic_algorithm<problem, solution> ga(crossover_strength, mutation_strength, population_size, max_iterations, p);
 
         //save_population("max_max/execution-" + std::to_string(i+1) +
-                        //"-initial-population.txt", ga.get_population());
+        //"-initial-population.txt", ga.get_population());
 
         save_objective_function("max_max/initial-objective-function-values.txt",
                                 ga.get_population());
@@ -160,6 +160,11 @@ int main () {
     save_parameters("max_max/parameters.txt", crossover_strength, mutation_strength,
                     population_size, max_iterations, target.first, target.second);
     save_time("max_max/execution-times.txt", execution_times);
+}
+
+int main () {
+
+    solver<melody_problem, melody>();
 
     return 0;
 }

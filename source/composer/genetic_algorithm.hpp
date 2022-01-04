@@ -7,57 +7,55 @@
 
 namespace composer {
 
-    std::default_random_engine genetic_algorithm::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
+    template<typename problem, typename solution>
+    std::default_random_engine genetic_algorithm<problem, solution>::generator_ =
+        std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-    genetic_algorithm::genetic_algorithm(double crossover_strength,
-                                         double mutation_strength,
-                                         int population_size,
-                                         size_t max_iterations,
-                                         melody_problem problem)
-
+    template <typename problem, typename solution>
+    genetic_algorithm<problem, solution>::genetic_algorithm(double crossover_strength,
+                                                  double mutation_strength,
+                                                  int population_size,
+                                                  size_t max_iterations,
+                                                  const problem &p)
         : crossover_strength_(crossover_strength),
           mutation_strength_(mutation_strength),
           population_size_(population_size),
           max_iterations_(max_iterations),
-          problem_(std::move(problem))
+          problem_(p)
     {
-        if (this->problem_.get_type() == melody_problem::problem_type::random)
-            init_random_population();
-        else init_population();
+        init_population();
 
         this->parent_1 = 0;
         this->parent_2 = 0;
 
-        this-> best_individual = {melody(problem_), 0};
+        this->best_individual = {melody(this->problem_), 0};
         this->best_individuals = {};
     }
 
-    void genetic_algorithm::init_population() {
+    template<typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::init_population() {
 
         for (size_t i = 0; i < this->population_size_; ++i) {
+
+            if(this->problem_.get_type() == problem::problem_type::random) {
+                this->problem_.set_melody(problem::random_problem(this->problem_.get_melody().size()));
+            }
+
             melody individual(this->problem_);
             this->population.emplace_back(individual);
         }
     }
 
-    void genetic_algorithm::init_random_population() {
-
-        for (size_t i = 0; i < this->population_size_; ++i) {
-            melody_problem problem(this->problem_.get_target(), melody_problem::problem_type::random,
-                                   this->problem_.get_melody().size());
-            melody individual(problem);
-            this->population.emplace_back(individual);
-        }
-    }
-
-    void genetic_algorithm::select_parents() {
+    template<typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::select_parents() {
 
         std::uniform_int_distribution d(0, (this->population_size_-1));
         this->parent_1 = d(generator_);
         this->parent_2 = d(generator_);
     }
 
-    void genetic_algorithm::select_mutation(melody &individual,
+    template<typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::select_mutation(solution &individual,
                                             double mutation_strength) {
 
         std::uniform_real_distribution real_d(0.0, 1.0);
@@ -83,16 +81,19 @@ namespace composer {
         }
     }
 
-    bool genetic_algorithm::compare(const melody &a, const melody &b) {
+    template<typename problem, typename solution>
+    bool genetic_algorithm<problem, solution>::compare(const solution &a, const solution &b) {
         return a.get_distance() < b.get_distance();
     }
 
-    void genetic_algorithm::calculate_objective_function(melody &individual) const {
+    template<typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::calculate_objective_function(solution &individual) const {
         individual.set_distance(melody::euclidean_distance(this->problem_.get_target(),
                                                            individual.get_valence_arousal()));
     }
 
-    void genetic_algorithm::optimizer() {
+    template<typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::optimizer() {
 
         melody child;
         std::uniform_real_distribution d(0.0, 1.0);
@@ -138,7 +139,8 @@ namespace composer {
         }
     }
 
-    void genetic_algorithm::display() const {
+    template<typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::display() const {
 
         for (auto const &individual : this->population) {
             for (auto const &item : individual.get_melody()) {
@@ -150,19 +152,23 @@ namespace composer {
         std::cout << std::endl << population[0].get_distance() << std::endl;
     }
 
-    std::pair<melody, size_t> genetic_algorithm::get_best_individual() const {
+    template<typename problem, typename solution>
+    std::pair<solution, size_t> genetic_algorithm<problem, solution>::get_best_individual() const {
         return this->best_individual;
     }
 
-    std::vector<melody> genetic_algorithm::get_best_individuals() const {
+    template<typename problem, typename solution>
+    std::vector<solution> genetic_algorithm<problem, solution>::get_best_individuals() const {
         return this->best_individuals;
     }
 
-    std::vector<melody> genetic_algorithm::get_population() const {
+    template<typename problem, typename solution>
+    std::vector<solution> genetic_algorithm<problem, solution>::get_population() const {
         return this->population;
     }
 
-    std::vector<melody> genetic_algorithm::get_half_evolution() const {
+    template<typename problem, typename solution>
+    std::vector<solution> genetic_algorithm<problem, solution>::get_half_evolution() const {
         return this->half_evolution;
     }
 } // namespace composer
