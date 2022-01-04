@@ -28,7 +28,7 @@ namespace composer {
         this->parent_1 = 0;
         this->parent_2 = 0;
 
-        this->best_individual = {melody(this->problem_), 0};
+        this->best_individual = {solution(this->problem_), 0};
         this->best_individuals = {};
     }
 
@@ -41,7 +41,7 @@ namespace composer {
                 this->problem_.set_melody(problem::random_problem(this->problem_.get_melody().size()));
             }
 
-            melody individual(this->problem_);
+            solution individual(this->problem_);
             this->population.emplace_back(individual);
         }
     }
@@ -61,7 +61,7 @@ namespace composer {
         std::uniform_real_distribution real_d(0.0, 1.0);
 
         if (real_d(generator_) < mutation_strength) {
-            std::uniform_int_distribution d(1, 3);
+            std::uniform_int_distribution d(1, 4);
 
             int mutation = d(generator_);
 
@@ -76,6 +76,7 @@ namespace composer {
                 individual.exchange_pulses();
                 break;
             default:
+                individual.reverse_pulses();
                 break;
             }
         }
@@ -88,14 +89,17 @@ namespace composer {
 
     template<typename problem, typename solution>
     void genetic_algorithm<problem, solution>::calculate_objective_function(solution &individual) const {
-        individual.set_distance(melody::euclidean_distance(this->problem_.get_target(),
+
+        individual.evaluate();
+
+        individual.set_distance(solution::euclidean_distance(this->problem_.get_target(),
                                                            individual.get_valence_arousal()));
     }
 
     template<typename problem, typename solution>
     void genetic_algorithm<problem, solution>::optimizer() {
 
-        melody child;
+        solution child;
         std::uniform_real_distribution d(0.0, 1.0);
 
         for (int j = 0; j < this->max_iterations_; ++j) {
@@ -107,14 +111,13 @@ namespace composer {
                     select_parents();
 
                     // Crossover
-                    child = melody::crossover(this->population[this->parent_1],
+                    child = solution::crossover(this->population[this->parent_1],
                                               this->population[this->parent_2]);
 
                     // Mutation
                     select_mutation(child, this->mutation_strength_);
 
                     // Evaluation
-                    child.evaluate();
                     calculate_objective_function(child);
 
                     // Population

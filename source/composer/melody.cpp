@@ -5,18 +5,21 @@
 #include "melody.h"
 #include "melody_problem.h"
 #include <utility>
+#include <range/v3/all.hpp>
 
 namespace composer {
 
     std::default_random_engine melody::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
-    melody::melody(melody_problem const &problem) {
-        this->melody_ = problem.get_melody();
-        this->distance = composer::melody::euclidean_distance(problem.get_target(), this->valence_arousal);
+    melody::melody(melody_problem const &problem)
+        : melody_(problem.get_melody())
+    {
         composer::melody::evaluate(); // Initialize valence and arousal
+        this->distance = composer::melody::euclidean_distance(problem.get_target(), this->valence_arousal);
     }
 
     melody::melody() {
+        this->melody_ = {};
         this->valence_arousal = {0.,0.};
         this->distance = 0;
     }
@@ -27,7 +30,7 @@ namespace composer {
         int max_count = 1; // Avoids that mode became the first element of the individual when there is no mode.
 
         for (const auto &value : this->melody_) {
-            auto count = static_cast<int>(std::count(this->melody_.begin(),
+            auto count = static_cast<int>(ranges::count(this->melody_.begin(),
                                            this->melody_.end(), value));
             if (count > max_count) {
                 max_count = count;
@@ -38,13 +41,15 @@ namespace composer {
         return mode;
     }
 
-    double melody::evaluate_pitch_variety() {
+    double melody::evaluate_pitch_variety() const {
 
-        double unique_values;
+        std::vector<int> melody_sorted(this->melody_.size());
 
-        std::sort(this->melody_.begin(),this->melody_.end());
-        unique_values = std::unique(this->melody_.begin(),
-                                    this->melody_.end()) - this->melody_.begin();
+        ranges::partial_sort_copy(this->melody_.begin(), this->melody_.end(),
+                               melody_sorted.begin(), melody_sorted.end());
+
+        auto unique_values = static_cast<double>(ranges::unique(melody_sorted.begin(),
+                                    melody_sorted.end()) - melody_sorted.begin());
 
         return unique_values;
     }
@@ -97,7 +102,7 @@ namespace composer {
     }
 
     void melody::reverse_measure() {
-        std::reverse(this->melody_.begin(), this->melody_.end());
+        ranges::reverse(this->melody_.begin(), this->melody_.end());
     }
 
     void melody::exchange_pulses() {
@@ -120,13 +125,13 @@ namespace composer {
 
         auto max = static_cast<int>(this->melody_.size()-1);
 
-        std::uniform_int_distribution d(0, max);
-        int first_pulse = d(generator_);
+        std::uniform_int_distribution d(0, (max-1));
+        int first_pulse = 14;
 
         d = std::uniform_int_distribution((first_pulse+1), max);
         int second_pulse = d(generator_);
 
-        std::reverse(this->melody_.begin() + first_pulse, this->melody_.begin() + second_pulse);
+        std::reverse(this->melody_.begin() + first_pulse, this->melody_.begin() + (second_pulse+1));
     }
 
     melody melody::crossover(const melody &first_parent, const melody &second_parent) {

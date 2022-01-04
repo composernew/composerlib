@@ -38,7 +38,7 @@ namespace composer {
         /// \brief The most used values in an individual.
         double evaluate_pitch_distribution();
 
-        double evaluate_pitch_variety();
+        [[nodiscard]] double evaluate_pitch_variety() const;
 
         static double normalize(double value, double max, double min, double max_value, double min_value);
 
