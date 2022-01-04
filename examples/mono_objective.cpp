@@ -97,13 +97,13 @@ void save_parameters(std::string const &filename, double crossover_strength,
 
 template<typename problem, typename solution>
 void solver() {
-    int population_size = 1000;
-    double mutation_strength = 0.1898;
-    double crossover_strength = 0.9265;
-    int max_iterations = 1126;
+    int population_size = 1043;
+    double mutation_strength = 0.5;
+    double crossover_strength = 1;
+    int max_iterations = 649;
     std::pair<double, double> target = {0.5,0.5};
 
-    const problem p(target, problem::problem_type::c_major_double);
+    const problem p(target, problem::problem_type::random);
 
     // Variables to save results
     std::vector<double> execution_times;
@@ -111,16 +111,19 @@ void solver() {
     clock_t initial_time;
     clock_t final_time;
 
-    for (size_t i = 0; i < 1; ++i) {
+    for (size_t i = 0; i < 100; ++i) {
 
         composer::genetic_algorithm<problem, solution> ga(crossover_strength, mutation_strength, population_size, max_iterations, p);
 
-        //save_population("max_max/execution-" + std::to_string(i+1) +
-        //"-initial-population.txt", ga.get_population());
+        save_population("max_max/initial-evolution/melodies/execution-" + std::to_string(i+1) +
+        "-initial-population.txt", ga.get_population());
 
-        save_objective_function("max_max/initial-objective-function-values.txt",
+        save_objective_function("max_max/initial-evolution/objective-function-values/execution-" +
+                                    std::to_string(i+1) + "-initial-objective-function-values.txt",
                                 ga.get_population());
-        save_emotions("max_max/initial-emotions.txt", ga.get_population());
+
+        save_emotions("max_max/initial-evolution/emotions/execution-" + std::to_string(i+1) +
+                      "-initial-emotions.txt", ga.get_population());
 
         initial_time = clock();
 
