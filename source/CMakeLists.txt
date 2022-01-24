@@ -52,31 +52,6 @@ endif()
 
 target_include_directories(midifile PUBLIC "${midifile_SOURCE_DIR}/include")
 
-# Pareto library
-FetchContent_Declare(
-        pareto
-        GIT_REPOSITORY https://github.com/alandefreitas/pareto.git
-        GIT_TAG v1.2.0
-)
-
-FetchContent_GetProperties(pareto)
-if (NOT pareto_POPULATED)
-    FetchContent_Populate(pareto)
-    set(pareto_BUILD_EXAMPLES OFF)
-    set(pareto_BUILD_TESTS OFF)
-    set(pareto_BUILD_BENCHMARKS OFF)
-    set(pareto_BUILD_LONG_TESTS OFF)
-    add_subdirectory(${pareto_SOURCE_DIR} ${pareto_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif ()
-
-FetchContent_Declare(
-        matplotplusplus
-        GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus.git
-        GIT_TAG v1.1.0
-)
-
-FetchContent_MakeAvailable(matplotplusplus)
-
 #######################################################
 ### Library                                         ###
 #######################################################
@@ -102,6 +77,6 @@ add_library(composerlib
 target_include_directories(composerlib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-target_link_libraries(composerlib PUBLIC Threads::Threads range-v3 libq libqio cycfi::infra midifile pareto matplot)
+target_link_libraries(composerlib PUBLIC Threads::Threads range-v3 libq libqio cycfi::infra midifile)
 target_pedantic_options(composerlib)
 target_exception_options(composerlib)

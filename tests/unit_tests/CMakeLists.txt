@@ -25,10 +25,6 @@ include(${Catch2_SOURCE_DIR}/contrib/Catch.cmake)
 ### Tests                                           ###
 #######################################################
 
-add_executable(ut_melody ut_melody.cpp)
-target_link_libraries(ut_melody PUBLIC composerlib Catch2)
-catch_discover_tests(ut_melody)
-
 add_executable(ut_midi_stream ut_midi_stream.cpp)
 target_link_libraries(ut_midi_stream PUBLIC composerlib Catch2)
 
