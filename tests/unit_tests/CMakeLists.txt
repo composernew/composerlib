@@ -29,9 +29,14 @@ add_executable(ut_midi_stream ut_midi_stream.cpp)
 target_link_libraries(ut_midi_stream PUBLIC composerlib Catch2)
 
 if (MSVC)
-    configure_file("resources/twinkle_harmonic.mid" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/resources/twinkle_harmonic.mid" COPYONLY)
-    configure_file("resources/twinkle.midi" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/resources/twinkle.midi" COPYONLY)
-else()
-    configure_file("resources/twinkle_harmonic.mid" "${CMAKE_CURRENT_BINARY_DIR}/resources/twinkle_harmonic.mid" COPYONLY)
-    configure_file("resources/twinkle.midi" "${CMAKE_CURRENT_BINARY_DIR}/resources/twinkle.midi" COPYONLY)
+    set_target_properties(ut_midi_stream PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+elseif()
+    set_target_properties(ut_midi_stream PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endif()
+
+get_target_property(RESOURCES_DIR ut_midi_stream RUNTIME_OUTPUT_DIRECTORY)
+
+configure_file("resources/twinkle_harmonic.mid" "${RESOURCES_DIR}/resources/twinkle_harmonic.mid" COPYONLY)
+configure_file("resources/twinkle.midi" "${RESOURCES_DIR}/resources/twinkle.midi" COPYONLY)
