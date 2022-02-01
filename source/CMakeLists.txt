@@ -24,8 +24,8 @@ FetchContent_Declare(
         GIT_TAG 3e246461b40ded09b34a51192a3c0e7184290655
 )
 
-option(Q_BUILD_EXAMPLES OFF)
-option(Q_BUILD_TEST OFF)
+set(Q_BUILD_EXAMPLES OFF)
+set(Q_BUILD_TEST OFF)
 
 FetchContent_GetProperties(Q)
 if(NOT q_POPULATED)
@@ -68,7 +68,12 @@ add_library(composerlib
         composer/midi_stream.h
         composer/midi_processor.cpp
         composer/midi_processor.h
+        composer/melody_problem.cpp
+        composer/melody_problem.h
+        composer/genetic_algorithm.hpp
+        composer/genetic_algorithm.h
 )
+
 target_include_directories(composerlib
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
