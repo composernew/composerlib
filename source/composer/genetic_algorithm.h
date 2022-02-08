@@ -30,7 +30,6 @@ namespace composer {
         void display() const;
 
         [[nodiscard]] std::pair<solution,size_t> get_best_individual() const;
-        [[nodiscard]] std::vector<solution> get_half_evolution() const;
         [[nodiscard]] std::vector<solution> get_best_individuals() const;
         [[nodiscard]] std::vector<solution> get_population() const;
 
@@ -45,7 +44,6 @@ namespace composer {
         std::vector<solution> population;
 
         std::vector<solution> best_individuals;
-        std::vector<solution> half_evolution;
         std::pair<solution,size_t> best_individual;
         static std::default_random_engine generator_;
     };

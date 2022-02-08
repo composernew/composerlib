@@ -135,10 +135,6 @@ namespace composer {
             }
 
             best_individuals.emplace_back(population[0]);
-
-            if (j == (this->max_iterations_/2)) {
-                this->half_evolution = this->population;
-            }
         }
     }
 
@@ -168,10 +164,5 @@ namespace composer {
     template<typename problem, typename solution>
     std::vector<solution> genetic_algorithm<problem, solution>::get_population() const {
         return this->population;
-    }
-
-    template<typename problem, typename solution>
-    std::vector<solution> genetic_algorithm<problem, solution>::get_half_evolution() const {
-        return this->half_evolution;
     }
 } // namespace composer
