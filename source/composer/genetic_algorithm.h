@@ -25,6 +25,8 @@ namespace composer {
 
         void calculate_objective_function(solution &individual) const;
 
+        void elitist_substitution();
+
         void optimizer();
 
         void display() const;

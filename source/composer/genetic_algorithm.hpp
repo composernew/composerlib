@@ -96,6 +96,14 @@ namespace composer {
                                                            individual.get_valence_arousal()));
     }
 
+    template <typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::elitist_substitution() {
+
+        std::sort(this->population.begin(), this->population.end(), compare);
+        this->population.erase(this->population.begin()+ this->population_size_,
+                               this->population.end());
+    }
+
     template<typename problem, typename solution>
     void genetic_algorithm<problem, solution>::optimizer() {
 
@@ -125,10 +133,7 @@ namespace composer {
                 }
             }
 
-            // Parents substitution
-            std::sort(this->population.begin(), this->population.end(), compare);
-            this->population.erase(this->population.begin()+ this->population_size_,
-                             this->population.end());
+            elitist_substitution();
 
             if (compare(this->population[0], this->best_individual.first)) {
                 this->best_individual = {population[0], j};
