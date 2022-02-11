@@ -104,6 +104,64 @@ namespace composer {
                                this->population.end());
     }
 
+    template <typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::nsga_ii_substitution() {
+
+        const std::pmr::polymorphic_allocator<std::pair<const pareto::point<double, 2, solution>, solution>> allocator;
+        pareto::archive<double, 2, solution> ranking(this->population.size(), {pareto::min, pareto::min}, allocator);
+        std::vector<solution> new_population;
+        size_t current_population_size = 0;
+
+        // Add individuals to ranking
+        for (const auto &individual : this->population) {
+            ranking.insert(std::make_pair(
+                pareto::archive<double, 2, solution>::key_type(
+                {individual.get_valence_arousal().first,
+                 individual.get_valence_arousal().second}),
+                individual)
+            );
+        }
+
+        auto it = ranking.begin_front();
+
+        while (it->size() <= (this->population_size_ - current_population_size)) {
+
+            current_population_size += it->size();
+
+            ++it;
+
+            if (it == ranking.end_front()) {
+                break;
+            }
+        }
+
+        if (it != ranking.end_front()) {
+
+            size_t remaining_population_size = this->population_size_ -
+                                               current_population_size;
+
+            using pareto = pareto::front<double, 2, solution>;
+            using crowding_distance_vector = std::vector<std::pair<typename pareto::const_iterator, double>>;
+
+            crowding_distance_vector distances;
+
+            for (auto iterator = it->begin(); iterator != it->end(); ++iterator) {
+                distances.emplace_back(iterator, ranking.crowding_distance(iterator->first));
+            }
+
+            std::partial_sort(distances.begin(),
+                              distances.begin()+(remaining_population_size),
+                              distances.end(),
+                              [](const auto &a, const auto &b) {
+                                  return b.second < a.second;
+                              });
+
+            for (size_t i = remaining_population_size; i < distances.size(); ++i) {
+                ranking.erase(distances[i].first->first);
+            }
+        }
+    }
+
     template<typename problem, typename solution>
     void genetic_algorithm<problem, solution>::optimizer() {
 
@@ -133,27 +191,14 @@ namespace composer {
                 }
             }
 
-            elitist_substitution();
+            nsga_ii_substitution();
 
-            if (compare(this->population[0], this->best_individual.first)) {
+            /*if (compare(this->population[0], this->best_individual.first)) {
                 this->best_individual = {population[0], j};
             }
 
-            best_individuals.emplace_back(population[0]);
+            best_individuals.emplace_back(population[0]);*/
         }
-    }
-
-    template<typename problem, typename solution>
-    void genetic_algorithm<problem, solution>::display() const {
-
-        for (auto const &individual : this->population) {
-            for (auto const &item : individual.get_melody()) {
-                std::cout << item << ' ';
-            }
-            std::cout << std::endl;
-        }
-
-        std::cout << std::endl << population[0].get_distance() << std::endl;
     }
 
     template<typename problem, typename solution>
@@ -169,5 +214,12 @@ namespace composer {
     template<typename problem, typename solution>
     std::vector<solution> genetic_algorithm<problem, solution>::get_population() const {
         return this->population;
+    }
+
+    template <typename problem, typename solution>
+    void genetic_algorithm<problem, solution>::set_population(
+        const std::vector<solution> &new_population) {
+
+        this->population = new_population;
     }
 } // namespace composer

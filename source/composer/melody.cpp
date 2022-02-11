@@ -162,11 +162,24 @@ namespace composer {
         return this->valence_arousal;
     }
 
+    void melody::set_valence_arousal(double valence, double arousal) {
+        this->valence_arousal.first = valence;
+        this->valence_arousal.second = arousal;
+    }
+
     void melody::set_melody(int note) {
         this->melody_.emplace_back(note);
     }
 
     void melody::set_distance(double new_distance) {
         this->distance = new_distance;
+    }
+
+    void melody::set_crowding_distance(double new_distance) {
+        this->crowding_distance = new_distance;
+    }
+
+    double melody::get_crowding_distance() const {
+        return this->crowding_distance;
     }
 }

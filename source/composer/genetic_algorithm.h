@@ -6,6 +6,7 @@
 #define COMPOSER_GENETIC_ALGORITHM_H
 
 #include "melody.h"
+#include <pareto/archive.h>
 
 namespace composer {
     template<typename problem, typename solution>
@@ -27,13 +28,28 @@ namespace composer {
 
         void elitist_substitution();
 
+        void nsga_ii_substitution();
+
         void optimizer();
 
-        void display() const;
+        friend std::ostream &operator<<(std::ostream &os,
+                                        const genetic_algorithm &algorithm) {
+            for (auto const &individual : algorithm.get_population()) {
+                for (auto const &item : individual.get_melody()) {
+                    os << item << ' ';
+                }
+                os << '\n';
+            }
+
+            os << '\n' << algorithm.get_population()[0].get_distance() << std::endl;
+
+            return os;
+        }
 
         [[nodiscard]] std::pair<solution,size_t> get_best_individual() const;
         [[nodiscard]] std::vector<solution> get_best_individuals() const;
         [[nodiscard]] std::vector<solution> get_population() const;
+        void set_population(const std::vector<solution> &new_population);
 
       private:
         int parent_1{};
