@@ -51,14 +51,18 @@ if(NOT midifile_POPULATED)
 endif()
 
 target_include_directories(midifile PUBLIC "${midifile_SOURCE_DIR}/include")
-
 FetchContent_Declare(
         pareto
         GIT_REPOSITORY https://github.com/alandefreitas/pareto.git
-        GIT_TAG v1.2.0
+        GIT_TAG c133aa6c3be682d12e6fcbfa26a80da28ebb8b70
 )
 
-FetchContent_MakeAvailable(pareto)
+FetchContent_GetProperties(pareto)
+if (NOT pareto_POPULATED)
+    FetchContent_Populate(pareto)
+    add_subdirectory(${pareto_SOURCE_DIR} ${pareto_BINARY_DIR} EXCLUDE_FROM_ALL)
+    set(pareto_BUILD_PARETO_WITH_PMR_BY_DEFAULT OFF)
+endif ()
 
 #######################################################
 ### Library                                         ###
