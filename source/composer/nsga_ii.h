@@ -18,19 +18,22 @@ namespace composer {
 
         void init_population();
 
-      private:
+        void select_parents();
 
+        void calculate_objective_function(solution &individual) const;
+
+      private:
         double crossover_strength_;
         double mutation_strength_;
         int population_size_;
         size_t max_iterations_;
         problem problem_;
+        typename pareto::archive<double, 2, solution>::iterator parent_1;
+        typename pareto::archive<double, 2, solution>::iterator parent_2{};
 
-        const std::pmr::polymorphic_allocator<std::pair<const pareto::point<double, 2, solution>, solution>> allocator_;
         pareto::archive<double, 2, solution> ranking_;
+        static std::default_random_engine generator_;
     };
 }// namespace composer
-
-
 
 #endif // COMPOSER_NSGA_II_H
