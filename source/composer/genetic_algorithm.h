@@ -26,9 +26,7 @@ namespace composer {
 
         void calculate_objective_function(solution &individual) const;
 
-        void elitist_substitution();
-
-        void nsga_ii_substitution();
+        void parents_substitution();
 
         void optimizer();
 

@@ -26,8 +26,8 @@ namespace composer {
           problem_(p)
     {
         this->ranking_ = pareto::archive<double, 2, solution>((2 * this->population_size_), {pareto::min, pareto::min});
-        this->parent_1 = this->ranking_.begin();
-        this->parent_2 = this->ranking_.begin();
+        this->parent_1 = {};
+        this->parent_2 = {};
 
         init_population();
     }
@@ -37,7 +37,7 @@ namespace composer {
 
         for (size_t i = 0; i < this->population_size_; ++i) {
 
-            if(this->problem_.get_type() == problem::problem_type::random) {
+            if (this->problem_.get_type() == problem::problem_type::random) {
                 this->problem_.set_melody(problem::random_problem(this->problem_.get_melody().size()));
             }
 
@@ -70,6 +70,42 @@ namespace composer {
         solution &individual) const {
 
         individual.evaluate();
+    }
+
+    template <typename problem, typename solution>
+    void nsga_ii<problem, solution>::parents_substitution() {
+
+        auto iter = this->ranking_.rbegin_front();
+
+        while ((this->ranking_.size() - iter->size()) >= this->population_size_) {
+            size_t iter_size = iter->size();
+            for (size_t i = 0; i < iter_size; ++i) {
+                this->ranking_.erase(iter->begin()->first);
+            }
+        }
+
+        if (this->ranking_.size() != this->population_size_) {
+            using pareto = pareto::front<double, 2, solution>;
+            std::vector<typename pareto::const_iterator> distances;
+
+            size_t selected_individuals = this->population_size_ - (this->ranking_.size() - iter->size());
+
+            for (auto it = iter->begin(); it != iter->end(); ++it) {
+                distances.emplace_back(it);
+            }
+
+            std::partial_sort(distances.begin(),
+                              distances.begin()+(selected_individuals),
+                              distances.end(),
+                              [this](const auto &a, const auto &b) {
+                                  return this->ranking_.crowding_distance(b->first) <
+                                         this->ranking_.crowding_distance(a->first);
+                              });
+
+            for (size_t i = selected_individuals; i < distances.size(); ++i) {
+                this->ranking_.erase(distances[i]->first);
+            }
+        }
     }
 
 }// namespace composer

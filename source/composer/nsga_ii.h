@@ -22,14 +22,19 @@ namespace composer {
 
         void calculate_objective_function(solution &individual) const;
 
+        void parents_substitution();
+
       private:
+
+        using pareto_iterator = typename pareto::archive<double, 2, solution>::iterator;
+
+        pareto_iterator parent_1;
+        pareto_iterator parent_2;
         double crossover_strength_;
         double mutation_strength_;
         int population_size_;
         size_t max_iterations_;
         problem problem_;
-        typename pareto::archive<double, 2, solution>::iterator parent_1;
-        typename pareto::archive<double, 2, solution>::iterator parent_2{};
 
         pareto::archive<double, 2, solution> ranking_;
         static std::default_random_engine generator_;
