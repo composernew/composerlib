@@ -16,6 +16,8 @@ namespace composer {
         nsga_ii(double crossover_strength, double mutation_strength,
                 int population_size, size_t max_iterations, const problem &p);
 
+        void insert(const solution &individual);
+
         void init_population();
 
         void select_parents();
@@ -23,6 +25,10 @@ namespace composer {
         void calculate_objective_function(solution &individual) const;
 
         void parents_substitution();
+
+        static void select_mutation(solution &individual, double mutation_strength);
+
+        void optimizer();
 
         friend std::ostream &operator<<(std::ostream &os,
                                         const nsga_ii &algorithm) {

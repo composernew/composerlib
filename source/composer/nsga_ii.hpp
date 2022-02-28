@@ -33,6 +33,17 @@ namespace composer {
     }
 
     template <typename problem, typename solution>
+    void nsga_ii<problem, solution>::insert(const solution &individual) {
+
+        this->ranking_.insert(std::make_pair(
+            typename pareto::archive<double, 2, solution>::key_type(
+                {individual.get_valence_arousal().first,
+                 individual.get_valence_arousal().second}),
+            individual)
+        );
+    }
+
+    template <typename problem, typename solution>
     void nsga_ii<problem, solution>::init_population() {
 
         for (size_t i = 0; i < this->population_size_; ++i) {
@@ -43,12 +54,7 @@ namespace composer {
 
             solution individual(this->problem_);
 
-            this->ranking_.insert(std::make_pair(
-                typename pareto::archive<double, 2, solution>::key_type(
-                    {individual.get_valence_arousal().first,
-                     individual.get_valence_arousal().second}),
-                individual)
-            );
+            insert(individual);
         }
     }
 
@@ -108,4 +114,65 @@ namespace composer {
         }
     }
 
+    template <typename problem, typename solution>
+    void nsga_ii<problem, solution>::select_mutation(solution &individual,
+                                                     double mutation_strength) {
+
+        std::uniform_real_distribution real_d(0.0, 1.0);
+
+        if (real_d(generator_) < mutation_strength) {
+            std::uniform_int_distribution d(1, 4);
+
+            int mutation = d(generator_);
+
+            switch (mutation) {
+            case 1:
+                individual.simple_mutation();
+                break;
+            case 2:
+                individual.reverse_measure();
+                break;
+            case 3:
+                individual.exchange_pulses();
+                break;
+            default:
+                individual.reverse_pulses();
+                break;
+            }
+        }
+    }
+
+    template <typename problem, typename solution>
+    void nsga_ii<problem, solution>::optimizer() {
+
+        solution child;
+        std::uniform_real_distribution d(0.0, 1.0);
+
+        for (int j = 0; j < this->max_iterations_; ++j) {
+            for (int i = 0; i < this->population_size_; ++i) {
+
+                if (d(generator_) < this->crossover_strength_) {
+
+                    // Parents selection
+                    select_parents();
+
+                    // Crossover
+                    child = solution::crossover(this->parent_1->second,
+                                                this->parent_2->second);
+
+                    // Mutation
+                    select_mutation(child, this->mutation_strength_);
+
+                    // Evaluation
+                    calculate_objective_function(child);
+
+                    // Population
+                    insert(child);
+                }
+            }
+
+            // Parents substitution
+            parents_substitution();
+        }
+    }
 }// namespace composer
