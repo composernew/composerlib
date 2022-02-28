@@ -24,6 +24,18 @@ namespace composer {
 
         void parents_substitution();
 
+        friend std::ostream &operator<<(std::ostream &os,
+                                        const nsga_ii &algorithm) {
+
+            for (auto it = algorithm.ranking_.begin_front(); it != algorithm.ranking_.end_front(); ++it) {
+                for (const auto &[k, v] : *it) {
+                    os << k << " -> " << v << std::endl;
+                }
+            }
+
+            return os;
+        }
+
       private:
 
         using pareto_iterator = typename pareto::archive<double, 2, solution>::iterator;

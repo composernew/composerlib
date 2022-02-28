@@ -108,16 +108,20 @@ namespace composer {
 
         void set_distance(double new_distance);
 
-        void set_crowding_distance(double new_distance);
+        friend std::ostream &operator<<(std::ostream &os,
+                                        const melody &individual) {
 
-        [[nodiscard]] double get_crowding_distance() const;
+            for (auto const &note : individual.get_melody())
+                os << note << ' ';
+
+            return os;
+        }
 
       private:
 
         std::vector<int> melody_;
         std::pair<double,double> valence_arousal;
         double distance;
-        double crowding_distance;
 
         static std::default_random_engine generator_;
     };

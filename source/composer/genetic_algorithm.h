@@ -33,9 +33,7 @@ namespace composer {
         friend std::ostream &operator<<(std::ostream &os,
                                         const genetic_algorithm &algorithm) {
             for (auto const &individual : algorithm.get_population()) {
-                for (auto const &item : individual.get_melody()) {
-                    os << item << ' ';
-                }
+                os << individual;
                 os << '\n';
             }
 

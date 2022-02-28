@@ -174,12 +174,4 @@ namespace composer {
     void melody::set_distance(double new_distance) {
         this->distance = new_distance;
     }
-
-    void melody::set_crowding_distance(double new_distance) {
-        this->crowding_distance = new_distance;
-    }
-
-    double melody::get_crowding_distance() const {
-        return this->crowding_distance;
-    }
 }
