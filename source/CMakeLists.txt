@@ -82,10 +82,12 @@ add_library(composerlib
         composer/midi_processor.h
         composer/melody_problem.cpp
         composer/melody_problem.h
-        composer/genetic_algorithm.hpp
+        composer/genetic_algorithm.cpp
         composer/genetic_algorithm.h
-        composer/nsga_ii.hpp
+        composer/nsga_ii.cpp
         composer/nsga_ii.h
+        composer/optimizer.hpp
+        composer/optimizer.h
 )
 
 target_include_directories(composerlib

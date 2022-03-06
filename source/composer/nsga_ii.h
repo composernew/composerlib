@@ -5,30 +5,32 @@
 #ifndef COMPOSER_NSGA_II_H
 #define COMPOSER_NSGA_II_H
 
+#include "melody_problem.h"
+#include "melody.h"
 #include <pareto/archive.h>
 
 namespace composer {
 
-    template<typename problem, typename solution>
     class nsga_ii {
 
       public:
-        nsga_ii(double crossover_strength, double mutation_strength,
-                int population_size, size_t max_iterations, const problem &p);
 
-        void insert(const solution &individual);
+        nsga_ii(int population_size, const melody_problem &p);
+
+        void insert(const melody &individual);
 
         void init_population();
 
         void select_parents();
 
-        void calculate_objective_function(solution &individual) const;
+        void calculate_objective_function(melody &individual) const;
 
         void parents_substitution();
 
-        static void select_mutation(solution &individual, double mutation_strength);
+        size_t get_population_size();
 
-        void optimizer();
+        melody get_parent_1();
+        melody get_parent_2();
 
         friend std::ostream &operator<<(std::ostream &os,
                                         const nsga_ii &algorithm) {
@@ -44,17 +46,14 @@ namespace composer {
 
       private:
 
-        using pareto_iterator = typename pareto::archive<double, 2, solution>::iterator;
+        using pareto_iterator = typename pareto::archive<double, 2, melody>::iterator;
 
         pareto_iterator parent_1;
         pareto_iterator parent_2;
-        double crossover_strength_;
-        double mutation_strength_;
         int population_size_;
-        size_t max_iterations_;
-        problem problem_;
+        melody_problem problem_;
 
-        pareto::archive<double, 2, solution> ranking_;
+        pareto::archive<double, 2, melody> ranking_;
         static std::default_random_engine generator_;
     };
 }// namespace composer
