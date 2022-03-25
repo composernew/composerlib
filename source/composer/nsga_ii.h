@@ -32,6 +32,8 @@ namespace composer {
         melody get_parent_1();
         melody get_parent_2();
 
+        pareto::archive<double, 4, melody> get_population();
+
         friend std::ostream &operator<<(std::ostream &os,
                                         const nsga_ii &algorithm) {
 
@@ -46,14 +48,14 @@ namespace composer {
 
       private:
 
-        using pareto_iterator = typename pareto::archive<double, 2, melody>::iterator;
+        using archive_key_type = typename pareto::archive<double, 4, melody>::key_type;
 
-        pareto_iterator parent_1;
-        pareto_iterator parent_2;
+        std::pair<archive_key_type, melody> parent_1;
+        std::pair<archive_key_type, melody> parent_2;
         int population_size_;
         melody_problem problem_;
 
-        pareto::archive<double, 2, melody> ranking_;
+        pareto::archive<double, 4, melody> ranking_;
         static std::default_random_engine generator_;
     };
 }// namespace composer
