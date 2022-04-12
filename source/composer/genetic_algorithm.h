@@ -48,6 +48,7 @@ namespace composer {
         [[nodiscard]] std::pair<melody,size_t> get_best_individual() const;
         [[nodiscard]] std::vector<melody> get_best_individuals() const;
         [[nodiscard]] std::vector<melody> get_population() const;
+        melody_problem get_problem();
         void set_population(const std::vector<melody> &new_population);
 
       private:

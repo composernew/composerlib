@@ -95,4 +95,8 @@ namespace composer {
     melody genetic_algorithm::get_parent_2() {
         return this->population[this->parent_2];
     }
+
+    melody_problem genetic_algorithm::get_problem() {
+        return this->problem_;
+    }
 } // namespace composer
