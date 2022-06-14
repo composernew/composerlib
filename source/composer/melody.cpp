@@ -14,6 +14,9 @@ namespace composer {
     melody::melody(melody_problem const &problem)
         : melody_(problem.get_melody())
     {
+        std::uniform_int_distribution d(40, 208);
+        this->rhythm = d(generator_);
+
         composer::melody::evaluate(); // Initialize valence and arousal
         this->distance = composer::melody::euclidean_distance(problem.get_target(), this->valence_arousal);
     }
@@ -28,15 +31,26 @@ namespace composer {
 
         int mode = 0;
         int max_count = 1; // Avoids that mode became the first element of the individual when there is no mode.
+        std::vector<int> counts;
 
         for (const auto &value : this->melody_) {
+
             auto count = static_cast<int>(ranges::count(this->melody_.begin(),
                                            this->melody_.end(), value));
+            counts.emplace_back(count);
+
             if (count > max_count) {
                 max_count = count;
                 mode = value;
             }
         }
+
+        std::sort(counts.begin(), counts.end(), std::greater<int>());
+        auto count_mode = static_cast<int>(ranges::count(counts.begin(),
+                                                    counts.end(),
+                                                    counts[0]));
+
+        if (count_mode > counts[0] || mode == 20) mode = 0;
 
         return mode;
     }
@@ -50,6 +64,9 @@ namespace composer {
 
         auto unique_values = static_cast<double>(ranges::unique(melody_sorted.begin(),
                                     melody_sorted.end()) - melody_sorted.begin());
+
+        // Empty melody
+        if ((unique_values == 1) && melody_sorted[0] == 20) unique_values = 0;
 
         return unique_values;
     }
@@ -65,15 +82,27 @@ namespace composer {
     void melody::evaluate() {
 
         auto max_value = static_cast<double>(this->melody_.size());
+        double normalized_pitch_distribution;
+        double normalized_pitch_variety;
+        double normalized_rhythm;
 
-        double normalized_pitch_variety = melody::normalize(
-            melody::evaluate_pitch_variety(), 1, -1, max_value, 1.);
-        double normalized_pitch_distribution = melody::normalize(
-            melody::evaluate_pitch_distribution(), 1., -1., 108., 20);
+        double pitch_variety = melody::evaluate_pitch_variety();
+
+        pitch_variety == 0 ? normalized_pitch_variety = 0 :
+                           normalized_pitch_variety = melody::normalize(
+                   pitch_variety, 1, -1, max_value, 1.);
+
+        double pitch_distribution = melody::evaluate_pitch_distribution();
+
+        pitch_distribution < 21 ? normalized_pitch_distribution = 0 :
+                                normalized_pitch_distribution = melody::normalize(
+            pitch_distribution, 1., -1., 108., 21.);
+
+        normalized_rhythm = melody::normalize(this->rhythm, 1., -1.,200., 15.);
 
         double valence = normalized_pitch_variety;
         double arousal =
-            (normalized_pitch_variety + normalized_pitch_distribution) / 2.;
+            (normalized_pitch_distribution + normalized_rhythm) / 2.;
 
         melody::set_valence_arousal({valence, arousal});
     }
@@ -92,12 +121,12 @@ namespace composer {
         int position = d(generator_);
 
         if(up_down(generator_)) {
-            if (this->melody_[position] < 108)
-                this->melody_[position] = this->melody_[position] + 1;
+            if (this->melody_[position] < 106)
+                this->melody_[position] = this->melody_[position] + 2;
         }
         else {
-            if (this->melody_[position] > 20)
-                this->melody_[position] = this->melody_[position] - 1;
+            if (this->melody_[position] > 18)
+                this->melody_[position] = this->melody_[position] - 2;
         }
     }
 
@@ -147,6 +176,13 @@ namespace composer {
             }
         }
 
+        if (d(generator_)) {
+            child.set_rhythm(first_parent.get_rhythm());
+        }
+        else {
+            child.set_rhythm(first_parent.get_rhythm());
+        }
+
         return child;
     }
 
@@ -173,5 +209,13 @@ namespace composer {
 
     void melody::set_distance(double new_distance) {
         this->distance = new_distance;
+    }
+
+    void melody::set_rhythm(double new_rhythm) {
+        this->rhythm = new_rhythm;
+    }
+
+    double melody::get_rhythm() const {
+        return this->rhythm;
     }
 }

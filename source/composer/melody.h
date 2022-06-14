@@ -100,11 +100,15 @@ namespace composer {
 
         [[nodiscard]] std::pair<double,double> get_valence_arousal() const;
 
+        double get_rhythm() const;
+
         void set_valence_arousal(double valence, double arousal);
 
         void set_valence_arousal(std::pair<double,double> new_valence_arousal);
 
         void set_melody(int note);
+
+        void set_rhythm(double new_rhythm);
 
         void set_distance(double new_distance);
 
@@ -121,6 +125,7 @@ namespace composer {
 
         std::vector<int> melody_;
         std::pair<double,double> valence_arousal;
+        double rhythm;
         double distance;
 
         static std::default_random_engine generator_;

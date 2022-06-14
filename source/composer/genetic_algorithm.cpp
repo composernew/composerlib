@@ -31,8 +31,11 @@ namespace composer {
 
         for (size_t i = 0; i < this->population_size_; ++i) {
 
-            if(this->problem_.get_type() == melody_problem::problem_type::random) {
-                this->problem_.set_melody(melody_problem::random_problem(this->problem_.get_melody().size()));
+            if (i < (this->population_size_/2)) {
+                this->problem_.set_melody(melody_problem::twinkle());
+            }
+            else {
+                this->problem_.set_melody(melody_problem::one_note(this->problem_.get_melody().size()));
             }
 
             melody individual(this->problem_);

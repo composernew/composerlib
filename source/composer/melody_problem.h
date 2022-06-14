@@ -15,7 +15,7 @@ namespace composer {
     class melody_problem {
       public:
 
-        enum class problem_type {c_major_double, twinkle, random};
+        enum class problem_type {c_major_double, twinkle, random, one_note};
 
         melody_problem(std::pair<double,double> target, problem_type type, size_t size = 16)
             : target_(std::move(target)),
@@ -36,7 +36,7 @@ namespace composer {
                     break;
 
                 default:
-                    this->melody_ = random_problem(size);
+                    this->melody_ = one_note(size);
                     break;
             }
         };
@@ -47,6 +47,7 @@ namespace composer {
         static std::vector<int> c_major_double();
         static std::vector<int> twinkle();
         static std::vector<int> random_problem(size_t size);
+        static std::vector<int> one_note(size_t size);
 
         static double evaluate_pitch_distribution(melody_problem const &individual);
         static double evaluate_pitch_variety(melody_problem const &individual);
