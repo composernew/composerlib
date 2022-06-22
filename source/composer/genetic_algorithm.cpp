@@ -3,6 +3,7 @@
 //
 
 #include "genetic_algorithm.h"
+#include <utility>
 
 namespace composer {
 
@@ -10,17 +11,14 @@ namespace composer {
         std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
     genetic_algorithm::genetic_algorithm(int population_size,
-                                         const melody_problem &p)
+                                         melody_problem p)
         : population_size_(population_size),
-          problem_(p)
+          problem_(std::move(p))
     {
         init_population();
 
         this->parent_1 = 0;
         this->parent_2 = 0;
-
-        this->best_individual = {melody(this->problem_), 0};
-        this->best_individuals = {};
     }
 
     void genetic_algorithm::insert(const melody &individual) {
@@ -69,14 +67,6 @@ namespace composer {
                                this->population.end());
     }
 
-    std::pair<melody, size_t> genetic_algorithm::get_best_individual() const {
-        return this->best_individual;
-    }
-
-    std::vector<melody> genetic_algorithm::get_best_individuals() const {
-        return this->best_individuals;
-    }
-
     std::vector<melody> genetic_algorithm::get_population() const {
         return this->population;
     }
@@ -87,7 +77,7 @@ namespace composer {
         this->population = new_population;
     }
 
-    size_t genetic_algorithm::get_population_size() {
+    size_t genetic_algorithm::get_population_size() const {
         return this->population_size_;
     }
 

@@ -5,8 +5,7 @@
 #ifndef COMPOSER_OPTIMIZER_H
 #define COMPOSER_OPTIMIZER_H
 
-#include "melody_problem.h"
-#include "genetic_algorithm.h"
+#include "melody.h"
 
 namespace composer {
 

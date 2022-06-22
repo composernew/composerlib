@@ -14,7 +14,7 @@ namespace composer {
     class genetic_algorithm {
       public:
 
-        genetic_algorithm(int population_size, const melody_problem &p);
+        genetic_algorithm(int population_size, melody_problem p);
 
         void insert(const melody &individual);
 
@@ -28,10 +28,15 @@ namespace composer {
 
         void parents_substitution();
 
-        size_t get_population_size();
+        [[nodiscard]] size_t get_population_size() const;
 
         melody get_parent_1();
         melody get_parent_2();
+
+        [[nodiscard]] std::vector<melody> get_population() const;
+        void set_population(const std::vector<melody> &new_population);
+
+        melody_problem get_problem();
 
         friend std::ostream &operator<<(std::ostream &os,
                                         const genetic_algorithm &algorithm) {
@@ -45,12 +50,6 @@ namespace composer {
             return os;
         }
 
-        [[nodiscard]] std::pair<melody,size_t> get_best_individual() const;
-        [[nodiscard]] std::vector<melody> get_best_individuals() const;
-        [[nodiscard]] std::vector<melody> get_population() const;
-        melody_problem get_problem();
-        void set_population(const std::vector<melody> &new_population);
-
       private:
         int parent_1{};
         int parent_2{};
@@ -58,8 +57,6 @@ namespace composer {
         melody_problem problem_;
         std::vector<melody> population;
 
-        std::vector<melody> best_individuals;
-        std::pair<melody,size_t> best_individual;
         static std::default_random_engine generator_;
     };
 } // namespace composer

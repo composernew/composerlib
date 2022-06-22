@@ -15,7 +15,7 @@ namespace composer {
 
       public:
 
-        nsga_ii(int population_size, const melody_problem &p);
+        nsga_ii(int population_size, melody_problem p);
 
         void insert(const melody &individual);
 
@@ -23,14 +23,14 @@ namespace composer {
 
         void select_parents();
 
-        void calculate_objective_function(melody &individual) const;
+        static void calculate_objective_function(melody &individual);
 
         void parents_substitution();
 
-        size_t get_population_size();
+        [[nodiscard]] size_t get_population_size() const;
 
-        melody get_parent_1();
-        melody get_parent_2();
+        [[nodiscard]] melody get_parent_1() const;
+        [[nodiscard]] melody get_parent_2() const;
 
         pareto::archive<double, 4, melody> get_population();
 
@@ -54,9 +54,7 @@ namespace composer {
         std::pair<archive_key_type, melody> parent_2;
         int population_size_;
         melody_problem problem_;
-
         pareto::archive<double, 4, melody> ranking_;
-        static std::default_random_engine generator_;
     };
 }// namespace composer
 

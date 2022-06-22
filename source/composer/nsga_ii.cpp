@@ -3,17 +3,13 @@
 //
 
 #include "nsga_ii.h"
+#include <utility>
 
 namespace composer {
 
-    using front_it = typename pareto::front<double, 4, melody>::iterator;
-
-    std::default_random_engine nsga_ii::generator_ =
-        std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
-
-    nsga_ii::nsga_ii(int population_size, const melody_problem &p)
+    nsga_ii::nsga_ii(int population_size, melody_problem p)
         : population_size_(population_size),
-          problem_(p)
+          problem_(std::move(p))
     {
         this->ranking_ = pareto::archive<double, 4, melody>(
             (2 * this->population_size_),
@@ -63,7 +59,7 @@ namespace composer {
         this->parent_2 = parents[1];
     }
 
-    void nsga_ii::calculate_objective_function(melody &individual) const {
+    void nsga_ii::calculate_objective_function(melody &individual) {
         individual.evaluate();
     }
 
@@ -91,14 +87,17 @@ namespace composer {
             }
 
             std::partial_sort(distances.begin(),
-                              distances.begin()+(selected_individuals),
+                              distances.begin() +
+                                  static_cast<int>(selected_individuals),
                               distances.end(),
                               [this](const auto &a, const auto &b) {
                                   return this->ranking_.crowding_distance(b.first) <
                                          this->ranking_.crowding_distance(a.first);
                               });
 
-            distances.erase(distances.begin()+selected_individuals, distances.end());
+            distances.erase(distances.begin() +
+                                static_cast<int>(selected_individuals),
+                            distances.end());
         }
 
         this->ranking_.clear();
@@ -106,15 +105,15 @@ namespace composer {
         this->ranking_.insert(distances.begin(), distances.end());
     }
 
-    size_t nsga_ii::get_population_size() {
+    size_t nsga_ii::get_population_size() const {
         return this->population_size_;
     }
 
-    melody nsga_ii::get_parent_1() {
+    melody nsga_ii::get_parent_1() const {
         return this->parent_1.second;
     }
 
-    melody nsga_ii::get_parent_2() {
+    melody nsga_ii::get_parent_2() const {
         return this->parent_2.second;
     }
 
