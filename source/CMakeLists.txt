@@ -88,6 +88,8 @@ add_library(composerlib
         composer/nsga_ii.h
         composer/optimizer.hpp
         composer/optimizer.h
+        composer/midi_io.cpp
+        composer/midi_io.h
 )
 
 target_include_directories(composerlib
