@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <MidiFile.h>
 
 namespace composer {
     class melody_problem {
@@ -17,9 +18,17 @@ namespace composer {
 
         enum class problem_type {c_major_double, twinkle, random, one_note};
 
-        melody_problem(std::pair<double,double> target, problem_type type, size_t size = 16)
+        explicit melody_problem(const smf::MidiFile &midi_file, std::pair<double,double> target = {0., 0.})
+            : target_(std::move(target)) {
+            this->type_ = problem_type::random;
+            this->rhythm_ = midi_file.getTicksPerQuarterNote();
+            this->melody_ = import_melody(midi_file[0]);
+        };
+
+        melody_problem(problem_type type, int rhythm, std::pair<double,double> target = {0., 0.}, size_t size = 16)
             : target_(std::move(target)),
-              type_(type) {
+              type_(type),
+              rhythm_(rhythm) {
 
             switch (type) {
 
@@ -35,8 +44,11 @@ namespace composer {
                     this->melody_ = random_problem(size);
                     break;
 
-                default:
+                case problem_type::one_note:
                     this->melody_ = one_note(size);
+                    break;
+
+                default:
                     break;
             }
         };
@@ -44,21 +56,23 @@ namespace composer {
         [[nodiscard]] std::vector<int> get_melody() const;
         void set_melody(std::vector<int> const &new_melody);
 
+        [[nodiscard]] int get_rhythm() const;
+        void set_rhythm(const int &new_rhythm);
+
         static std::vector<int> c_major_double();
         static std::vector<int> twinkle();
         static std::vector<int> random_problem(size_t size);
         static std::vector<int> one_note(size_t size);
-
-        static double evaluate_pitch_distribution(melody_problem const &individual);
-        static double evaluate_pitch_variety(melody_problem const &individual);
-        static double normalize(double value, double max, double min, double max_value, double min_value);
-        static std::pair<double,double> evaluate(melody_problem const &individual);
+        static std::vector<int> import_melody(smf::MidiEventList event_list);
 
         [[nodiscard]] std::pair<double,double> get_target() const;
+        void set_target(std::pair<double,double> &new_target);
+
         [[nodiscard]] problem_type get_type() const;
 
       private:
         std::vector<int> melody_;
+        int rhythm_;
         std::pair<double,double> target_;
         problem_type type_;
 

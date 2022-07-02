@@ -3,6 +3,7 @@
 //
 
 #include "melody_problem.h"
+#include <sstream>
 #include <utility>
 
 namespace composer {
@@ -43,6 +44,36 @@ namespace composer {
         return melody;
     }
 
+    std::vector<int> melody_problem::import_melody(smf::MidiEventList event_list) {
+
+        std::vector<int> melody;
+        std::stringstream stream_note;
+        int note;
+        int pause;
+
+        if (event_list.size() != 0) {
+            for (size_t event = 1; event < event_list.size(); ++event) {
+
+                if (event_list[event].isNoteOn()) {
+
+                    if (event > 2) {
+                        pause = static_cast<int>(event_list[event].tick) - static_cast<int>(event_list[event-1].tick);
+                        if (pause > 0) melody.emplace_back(20);
+                    }
+
+                    stream_note << std::hex << static_cast<int>(event_list[event][1]);
+                    stream_note >> note;
+                    melody.emplace_back(note);
+
+                    stream_note.str(std::string());
+                    stream_note.clear();
+                }
+            }
+        }
+
+        return melody;
+    }
+
     std::vector<int> composer::melody_problem::get_melody() const {
         return this->melody_;
     }
@@ -59,5 +90,16 @@ namespace composer {
         return this->type_;
     }
 
+    int melody_problem::get_rhythm() const {
+        return this->rhythm_;
+    }
+
+    void melody_problem::set_rhythm(const int &new_rhythm) {
+        this->rhythm_ = new_rhythm;
+    }
+
+    void melody_problem::set_target(std::pair<double,double> &new_target) {
+        this->target_ = new_target;
+    }
 } // namespace composer
 

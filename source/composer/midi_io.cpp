@@ -16,9 +16,9 @@ namespace composer {
         int instrument = 1; // Acoustic Grand Piano
         midi_file.addTimbre(track, 0, channel, instrument);
 
-        int ticks_per_quarter_note = melody.get_rhythm();
+        int ticks_per_quarter_note = static_cast<int>(melody.get_rhythm());
         int start_tick = 0;
-        for (auto &note : melody.get_melody()) {
+        for (const auto &note : melody.get_melody()) {
             int end_tick =
                 start_tick + static_cast<int>(duration / 4.0 * ticks_per_quarter_note);
             if (note == 20) {
@@ -32,4 +32,19 @@ namespace composer {
         }
         midi_file.write(filename);
     }
-}
+
+    melody_problem import_midi_file(const std::string &filename) {
+
+        smf::MidiFile midi_file;
+
+        midi_file.read(filename);
+
+        if (midi_file.getTrackCount() > 1) {
+            midi_file.joinTracks();
+        }
+
+        melody_problem problem(midi_file);
+
+        return problem;
+    }
+} // namespace composer

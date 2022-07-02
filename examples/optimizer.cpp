@@ -19,7 +19,7 @@ void solver() {
     size_t num_executions = 100;
 
     std::pair<double, double> target = {-1., 0.};
-    const melody_problem p(target, melody_problem::problem_type::twinkle);
+    const melody_problem p(melody_problem::problem_type::twinkle, 100, target);
 
     for (size_t i = 0; i < num_executions; ++i) {
         optimizer<algorithm> ga(crossover_strength, mutation_strength, population_size, max_iterations, p);

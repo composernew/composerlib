@@ -11,6 +11,8 @@
 namespace composer {
 
     void export_to_midi(const std::string &filename, const melody &melody);
-}
+
+    melody_problem import_midi_file(const std::string &filename);
+} // namespace composer
 
 #endif // COMPOSER_MIDI_IO_H
