@@ -94,19 +94,19 @@ namespace composer {
         /// individual passed as parameter.
         static melody crossover(const melody &first_parent, const melody &second_parent);
 
-        [[nodiscard]] std::vector<int> get_melody() const;
+        [[nodiscard]] std::vector<std::pair<int,int>> get_melody() const;
 
         [[nodiscard]] double get_distance() const;
 
         [[nodiscard]] std::pair<double,double> get_valence_arousal() const;
 
-        double get_rhythm() const;
+        [[nodiscard]] double get_rhythm() const;
 
-        void set_valence_arousal(double valence, double arousal);
+        [[maybe_unused]] void set_valence_arousal(double valence, double arousal);
 
         void set_valence_arousal(std::pair<double,double> new_valence_arousal);
 
-        void set_melody(int note);
+        void set_melody(std::pair<int, double> note_value);
 
         void set_rhythm(double new_rhythm);
 
@@ -116,14 +116,14 @@ namespace composer {
                                         const melody &individual) {
 
             for (auto const &note : individual.get_melody())
-                os << note << ' ';
+                os << '[' << note.first << ',' << note.second << "], ";
 
             return os;
         }
 
       private:
 
-        std::vector<int> melody_;
+        std::vector<std::pair<int,int>> melody_;
         std::pair<double,double> valence_arousal;
         double rhythm;
         double distance;
