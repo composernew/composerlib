@@ -7,7 +7,6 @@
 namespace composer {
 
     [[maybe_unused]] void export_to_midi(const std::string &filename, const melody &melody) {
-        int velocity = 80;      // min 40 | max 100
 
         smf::MidiFile midi_file;
         int track   = 0;
@@ -18,14 +17,14 @@ namespace composer {
         midi_file.setTPQ(static_cast<int>(melody.get_rhythm()));
         int start_tick = 0;
         for (const auto &note : melody.get_melody()) {
-            int end_tick = start_tick + note.second;
+            int end_tick = start_tick + std::get<1>(note);
 
-            if (note.first == 20) {
-                start_tick += note.second;
+            if (std::get<0>(note) == 20) {
+                start_tick += std::get<1>(note);
             }
             else {
-                midi_file.addNoteOn (track, start_tick, channel, note.first, velocity);
-                midi_file.addNoteOff(track, end_tick,   channel, note.first);
+                midi_file.addNoteOn (track, start_tick, channel, std::get<0>(note), std::get<2>(note));
+                midi_file.addNoteOff(track, end_tick,   channel, std::get<0>(note));
                 start_tick = end_tick;
             }
         }

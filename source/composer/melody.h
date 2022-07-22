@@ -40,6 +40,8 @@ namespace composer {
 
         [[nodiscard]] double evaluate_pitch_variety() const;
 
+        double evaluate_average_volume();
+
         static double normalize(double value, double max, double min, double max_value, double min_value);
 
         void evaluate();
@@ -94,7 +96,7 @@ namespace composer {
         /// individual passed as parameter.
         static melody crossover(const melody &first_parent, const melody &second_parent);
 
-        [[nodiscard]] std::vector<std::pair<int,int>> get_melody() const;
+        [[nodiscard]] std::vector<std::tuple<int,int,int>> get_melody() const;
 
         [[nodiscard]] double get_distance() const;
 
@@ -106,7 +108,7 @@ namespace composer {
 
         void set_valence_arousal(std::pair<double,double> new_valence_arousal);
 
-        void set_melody(std::pair<int, double> note_value);
+        void set_melody(const std::tuple<int,int,int> &note_value);
 
         void set_rhythm(double new_rhythm);
 
@@ -116,14 +118,16 @@ namespace composer {
                                         const melody &individual) {
 
             for (auto const &note : individual.get_melody())
-                os << '[' << note.first << ',' << note.second << "], ";
+                os << '[' << std::get<0>(note) << ','
+                   << std::get<1>(note) << ','
+                   << std::get<2>(note) << "], ";
 
             return os;
         }
 
       private:
 
-        std::vector<std::pair<int,int>> melody_;
+        std::vector<std::tuple<int,int,int>> melody_;
         std::pair<double,double> valence_arousal;
         double rhythm;
         double distance;

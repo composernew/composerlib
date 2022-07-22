@@ -53,17 +53,17 @@ namespace composer {
             }
         };
 
-        [[nodiscard]] std::vector<std::pair<int,int>> get_melody() const;
-        void set_melody(std::vector<std::pair<int,int>> const &new_melody);
+        [[nodiscard]] std::vector<std::tuple<int,int,int>> get_melody() const;
+        void set_melody(std::vector<std::tuple<int,int,int>> const &new_melody);
 
         [[maybe_unused]] [[nodiscard]] int get_rhythm() const;
         [[maybe_unused]] void set_rhythm(const int &new_rhythm);
 
-        static std::vector<std::pair<int,int>> c_major_double();
-        static std::vector<std::pair<int,int>> twinkle();
-        static std::vector<std::pair<int,int>> random_problem(size_t size);
-        static std::vector<std::pair<int,int>> one_note(size_t size);
-        static std::vector<std::pair<int,int>> import_melody(smf::MidiEventList event_list);
+        static std::vector<std::tuple<int,int,int>> c_major_double();
+        static std::vector<std::tuple<int,int,int>> twinkle();
+        static std::vector<std::tuple<int,int,int>> random_problem(size_t size);
+        static std::vector<std::tuple<int,int,int>> one_note(size_t size);
+        static std::vector<std::tuple<int,int,int>> import_melody(smf::MidiEventList event_list);
 
         [[nodiscard]] std::pair<double,double> get_target() const;
         [[maybe_unused]] void set_target(std::pair<double,double> &new_target);
@@ -71,7 +71,7 @@ namespace composer {
         [[nodiscard]] problem_type get_type() const;
 
       private:
-        std::vector<std::pair<int,int>> melody_;
+        std::vector<std::tuple<int,int,int>> melody_;
         int rhythm_;
         std::pair<double,double> target_;
         problem_type type_;

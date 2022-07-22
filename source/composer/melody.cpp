@@ -42,7 +42,7 @@ namespace composer {
 
             if (count > max_count) {
                 max_count = count;
-                mode = value.first;
+                mode = std::get<0>(value);
             }
         }
 
@@ -58,7 +58,7 @@ namespace composer {
 
     double melody::evaluate_pitch_variety() const {
 
-        std::vector<std::pair<int,int>> melody_sorted(this->melody_.size());
+        std::vector<std::tuple<int,int,int>> melody_sorted(this->melody_.size());
 
         ranges::partial_sort_copy(this->melody_.begin(), this->melody_.end(),
                                melody_sorted.begin(), melody_sorted.end());
@@ -67,9 +67,21 @@ namespace composer {
                                     melody_sorted.end()) - melody_sorted.begin());
 
         // Empty melody
-        if ((unique_values == 1) && melody_sorted[0].first == 20) unique_values = 0;
+        if ((unique_values == 1) && std::get<0>(melody_sorted[0]) == 20) unique_values = 0;
 
         return unique_values;
+    }
+
+    double melody::evaluate_average_volume() {
+
+        double count = 0.;
+
+        for (const auto &value : this->melody_) {
+
+           count += static_cast<double>(std::get<2>(value));
+        }
+
+        return count/static_cast<double>(this->melody_.size());
     }
 
     double melody::normalize(double value, double max, double min, double max_value, double min_value) {
@@ -86,6 +98,7 @@ namespace composer {
         double normalized_pitch_distribution;
         double normalized_pitch_variety;
         double normalized_rhythm;
+        double normalized_average_volume;
 
         double pitch_variety = melody::evaluate_pitch_variety();
 
@@ -101,9 +114,15 @@ namespace composer {
 
         normalized_rhythm = melody::normalize(this->rhythm, 1., -1.,200., 15.);
 
+        double average_volume = evaluate_average_volume();
+
+        average_volume == 0 ? normalized_average_volume = 0 :
+                            normalized_average_volume = melody::normalize(
+                                average_volume, 1., -1., 127., 0.);
+
         double valence = normalized_pitch_variety;
         double arousal =
-            (normalized_pitch_distribution + normalized_rhythm) / 2.;
+            (normalized_pitch_distribution + normalized_rhythm + normalized_average_volume) / 3.;
 
         melody::set_valence_arousal({valence, arousal});
     }
@@ -122,12 +141,18 @@ namespace composer {
         int position = d(generator_);
 
         if(up_down(generator_)) {
-            if (this->melody_[position].first < 106)
-                this->melody_[position].first = this->melody_[position].first + 2;
+            if (std::get<0>(this->melody_[position]) < 106)
+                std::get<0>(this->melody_[position]) = std::get<0>(this->melody_[position]) + 2;
+
+            if(std::get<2>(this->melody_[position]) < 127)
+                ++std::get<2>(this->melody_[position]);
         }
         else {
-            if (this->melody_[position].first > 18)
-                this->melody_[position].first = this->melody_[position].first - 2;
+            if (std::get<0>(this->melody_[position]) > 18)
+                std::get<0>(this->melody_[position]) = std::get<0>(this->melody_[position]) - 2;
+
+            if(std::get<2>(this->melody_[position]) > 0)
+                --std::get<2>(this->melody_[position]);
         }
     }
 
@@ -187,7 +212,7 @@ namespace composer {
         return child;
     }
 
-    std::vector<std::pair<int,int>> melody::get_melody() const {
+    std::vector<std::tuple<int,int,int>> melody::get_melody() const {
         return this->melody_;
     }
 
@@ -204,7 +229,7 @@ namespace composer {
         this->valence_arousal.second = arousal;
     }
 
-    void melody::set_melody(std::pair<int, double> note_value) {
+    void melody::set_melody(const std::tuple<int,int,int> &note_value) {
         this->melody_.emplace_back(note_value);
     }
 
