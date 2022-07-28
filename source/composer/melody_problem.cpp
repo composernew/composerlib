@@ -126,13 +126,13 @@ namespace composer {
 
                 if (event_list[event].isNoteOn()) {
 
-                    if (event == 1) duration = static_cast<int>(event_list[event+1].tick);
+                    if (melody.empty()) duration = static_cast<int>(event_list[event+1].tick);
                     else duration = static_cast<int>(event_list[event].tick) -
                                    static_cast<int>(event_list[event-2].tick);
 
-                    if (event > 2) {
+                    if (!melody.empty()) {
                         pause = static_cast<int>(event_list[event].tick) - static_cast<int>(event_list[event-1].tick);
-                        if (pause > 0) melody.emplace_back(std::make_tuple(20, pause, 0));
+                        if (pause > 5) melody.emplace_back(std::make_tuple(20, pause, 0));
                     }
 
                     velocity = static_cast<int>(event_list[event].getVelocity());
