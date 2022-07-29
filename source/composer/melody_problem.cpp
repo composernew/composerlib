@@ -82,14 +82,19 @@ namespace composer {
     }
 
     std::vector<std::tuple<int,int,int>> melody_problem::one_note(size_t size) {
-        std::vector<std::tuple<int,int,int>> melody;
-        std::uniform_int_distribution d(20, 108);
-        std::uniform_int_distribution r(10, 100);
-        std::uniform_int_distribution v(0, 127);
 
-        double duration = r(generator_);
+        std::vector<std::tuple<int,int,int>> melody;
+
+        std::uniform_int_distribution d(static_cast<int>(feature_type::lowest_duration),
+                                        static_cast<int>(feature_type::highest_duration));
+        std::uniform_int_distribution v(static_cast<int>(feature_type::lowest_volume),
+                                        static_cast<int>(feature_type::highest_volume));
+        std::uniform_int_distribution n(static_cast<int>(feature_type::pause),
+                                        static_cast<int>(feature_type::highest_pitch));
+
+        double duration = d(generator_);
         double volume   = v(generator_);
-        int note        = d(generator_);
+        int note        = n(generator_);
 
         for (size_t i = 0; i < size; ++i) {
             melody.emplace_back(std::make_tuple(note, duration, volume));
@@ -101,12 +106,16 @@ namespace composer {
     std::vector<std::tuple<int,int,int>> melody_problem::random_problem(size_t size) {
 
         std::vector<std::tuple<int,int,int>> melody;
-        std::uniform_int_distribution d(20, 108);
-        std::uniform_int_distribution r(10, 100);
-        std::uniform_int_distribution v(0, 127);
+
+        std::uniform_int_distribution d(static_cast<int>(feature_type::lowest_duration),
+                                        static_cast<int>(feature_type::highest_duration));
+        std::uniform_int_distribution v(static_cast<int>(feature_type::lowest_volume),
+                                        static_cast<int>(feature_type::highest_volume));
+        std::uniform_int_distribution n(static_cast<int>(feature_type::pause),
+                                        static_cast<int>(feature_type::highest_pitch));
 
         for (size_t i = 0; i < size; ++i) {
-            melody.emplace_back(std::make_tuple(d(generator_), r(generator_), v(generator_)));
+            melody.emplace_back(std::make_tuple(n(generator_), d(generator_), v(generator_)));
         }
 
         return melody;
@@ -117,12 +126,12 @@ namespace composer {
         std::vector<std::tuple<int,int,int>> melody;
         std::stringstream stream_note;
         int note = 0;
-        int pause = 0;
+        int pause_duration = 0;
         int duration = 0;
         int velocity = 0;
 
         if (event_list.size() != 0) {
-            for (int event = 1; event < event_list.size(); ++event) {
+            for (int event = 0; event < event_list.size(); ++event) {
 
                 if (event_list[event].isNoteOn()) {
 
@@ -131,15 +140,17 @@ namespace composer {
                                    static_cast<int>(event_list[event-2].tick);
 
                     if (!melody.empty()) {
-                        pause = static_cast<int>(event_list[event].tick) - static_cast<int>(event_list[event-1].tick);
-                        if (pause > 5) melody.emplace_back(std::make_tuple(20, pause, 0));
+                        pause_duration = static_cast<int>(event_list[event].tick) - static_cast<int>(event_list[event-1].tick);
+                        if (pause_duration > 5) {
+                            melody.emplace_back(std::make_tuple(static_cast<int>(feature_type::pause), pause_duration, 0));
+                        }
                     }
 
                     velocity = static_cast<int>(event_list[event].getVelocity());
 
                     stream_note << std::hex << static_cast<int>(event_list[event][1]);
                     stream_note >> note;
-                    melody.emplace_back(std::make_tuple(note, (duration-pause), velocity));
+                    melody.emplace_back(std::make_tuple(note, (duration- pause_duration), velocity));
 
                     stream_note.str(std::string());
                     stream_note.clear();

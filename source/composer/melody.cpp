@@ -12,11 +12,9 @@ namespace composer {
     std::default_random_engine melody::generator_ = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 
     melody::melody(melody_problem const &problem)
-        : melody_(problem.get_melody())
+        : melody_(problem.get_melody()),
+          rhythm(problem.get_rhythm())
     {
-        std::uniform_int_distribution d(40, 208);
-        this->rhythm = d(generator_);
-
         composer::melody::evaluate(); // Initialize valence and arousal
         this->distance = composer::melody::euclidean_distance(problem.get_target(), this->valence_arousal);
     }
@@ -51,7 +49,8 @@ namespace composer {
                                                     counts.end(),
                                                     counts[0]));
 
-        if (count_mode > counts[0] || mode == 20) mode = 0;
+        if (count_mode > counts[0] ||
+            mode == static_cast<int>(melody_problem::feature_type::pause)) mode = 0;
 
         return mode;
     }
@@ -67,7 +66,8 @@ namespace composer {
                                     melody_sorted.end()) - melody_sorted.begin());
 
         // Empty melody
-        if ((unique_values == 1) && std::get<0>(melody_sorted[0]) == 20) unique_values = 0;
+        if ((unique_values == 1) && std::get<0>(melody_sorted[0]) ==
+            static_cast<int>(melody_problem::feature_type::pause)) unique_values = 0;
 
         return unique_values;
     }
@@ -108,17 +108,31 @@ namespace composer {
 
         double pitch_distribution = melody::evaluate_pitch_distribution();
 
-        pitch_distribution < 21 ? normalized_pitch_distribution = 0 :
-                                normalized_pitch_distribution = melody::normalize(
-            pitch_distribution, 1., -1., 108., 21.);
+        pitch_distribution <
+                static_cast<double>(melody_problem::feature_type::pause) + 1.
+            ? normalized_pitch_distribution = 0
+            : normalized_pitch_distribution = melody::normalize(
+                  pitch_distribution, 1., -1.,
+                  static_cast<double>(
+                      melody_problem::feature_type::highest_pitch),
+                  static_cast<double>(melody_problem::feature_type::pause) +
+                      1.);
 
-        normalized_rhythm = melody::normalize(this->rhythm, 1., -1.,200., 15.);
+        normalized_rhythm = melody::normalize(
+            this->rhythm, 1., -1.,
+            static_cast<double>(melody_problem::feature_type::fastest_tempo),
+            static_cast<double>(melody_problem::feature_type::lowest_tempo));
 
         double average_volume = evaluate_average_volume();
 
-        average_volume == 0 ? normalized_average_volume = 0 :
-                            normalized_average_volume = melody::normalize(
-                                average_volume, 1., -1., 127., 0.);
+        average_volume == 0
+            ? normalized_average_volume = 0
+            : normalized_average_volume = melody::normalize(
+                  average_volume, 1., -1.,
+                  static_cast<double>(
+                      melody_problem::feature_type::highest_volume),
+                  static_cast<double>(
+                      melody_problem::feature_type::lowest_volume));
 
         double valence = normalized_pitch_variety;
         double arousal =
@@ -141,17 +155,17 @@ namespace composer {
         int position = d(generator_);
 
         if(up_down(generator_)) {
-            if (std::get<0>(this->melody_[position]) < 106)
+            if (std::get<0>(this->melody_[position]) <= static_cast<int>(melody_problem::feature_type::highest_pitch)-2)
                 std::get<0>(this->melody_[position]) = std::get<0>(this->melody_[position]) + 2;
 
-            if(std::get<2>(this->melody_[position]) < 127)
+            if(std::get<2>(this->melody_[position]) < static_cast<int>(melody_problem::feature_type::highest_volume))
                 ++std::get<2>(this->melody_[position]);
         }
         else {
-            if (std::get<0>(this->melody_[position]) > 18)
+            if (std::get<0>(this->melody_[position]) >= static_cast<int>(melody_problem::feature_type::pause)+2)
                 std::get<0>(this->melody_[position]) = std::get<0>(this->melody_[position]) - 2;
 
-            if(std::get<2>(this->melody_[position]) > 0)
+            if(std::get<2>(this->melody_[position]) > static_cast<int>(melody_problem::feature_type::lowest_volume))
                 --std::get<2>(this->melody_[position]);
         }
     }
@@ -179,13 +193,12 @@ namespace composer {
     void melody::reverse_pulses() {
 
         auto max = static_cast<int>(this->melody_.size()-1);
+        std::uniform_int_distribution d(0, (max - 1));
 
-        std::uniform_int_distribution d(0, (max-1));
-        int first_pulse = 14;
-
+        int first_pulse = d(generator_);
         d = std::uniform_int_distribution((first_pulse+1), max);
-        int second_pulse = d(generator_);
 
+        int second_pulse = d(generator_);
         std::reverse(this->melody_.begin() + first_pulse, this->melody_.begin() + (second_pulse+1));
     }
 

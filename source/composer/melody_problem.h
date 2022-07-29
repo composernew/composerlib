@@ -17,6 +17,10 @@ namespace composer {
       public:
 
         enum class problem_type {c_major_double, twinkle, random, one_note};
+        enum class feature_type {pause = 20, highest_pitch = 108,
+                                  lowest_volume = 0, highest_volume = 127,
+                                  lowest_duration = 0, highest_duration = 100,
+                                  lowest_tempo = 40, fastest_tempo = 208};
 
         explicit melody_problem(const smf::MidiFile &midi_file, std::pair<double,double> target = {0., 0.})
             : target_(std::move(target)) {
