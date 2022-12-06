@@ -121,7 +121,7 @@ namespace composer {
         normalized_rhythm = melody::normalize(
             this->rhythm, 1., -1.,
             static_cast<double>(melody_problem::feature_type::fastest_tempo),
-            static_cast<double>(melody_problem::feature_type::lowest_tempo));
+            static_cast<double>(melody_problem::feature_type::slowest_tempo));
 
         double average_volume = evaluate_average_volume();
 

@@ -5,34 +5,49 @@
 #ifndef COMPOSER_MELODY_PROBLEM_H
 #define COMPOSER_MELODY_PROBLEM_H
 
+#include <MidiFile.h>
+#include <algorithm>
+#include <chrono>
+#include <random>
 #include <utility>
 #include <vector>
-#include <algorithm>
-#include <random>
-#include <chrono>
-#include <MidiFile.h>
 
 namespace composer {
     class melody_problem {
       public:
+        enum class problem_type { c_major_double, twinkle, random, one_note };
+        enum class feature_type {
+            pause = 20,
+            highest_pitch = 108,
+            lowest_volume = 0,
+            highest_volume = 127,
+            lowest_duration = 0,
+            highest_duration = 100,
+            slowest_tempo = 40,
+            fastest_tempo = 208
+        };
 
-        enum class problem_type {c_major_double, twinkle, random, one_note};
-        enum class feature_type {pause = 20, highest_pitch = 108,
-                                  lowest_volume = 0, highest_volume = 127,
-                                  lowest_duration = 0, highest_duration = 100,
-                                  lowest_tempo = 40, fastest_tempo = 208};
-
-        explicit melody_problem(const smf::MidiFile &midi_file, std::pair<double,double> target = {0., 0.})
+        explicit melody_problem(const smf::MidiFile &midi_file,
+                                std::pair<double, double> target = {0., 0.})
             : target_(std::move(target)) {
             this->type_ = problem_type::random;
             this->rhythm_ = midi_file.getTicksPerQuarterNote();
             this->melody_ = import_melody(midi_file[0]);
+
+            if(this->rhythm_ > static_cast<int>(feature_type::fastest_tempo))
+                this->rhythm_ = static_cast<int>(feature_type::fastest_tempo);
+            if(this->rhythm_ < static_cast<int>(feature_type::slowest_tempo))
+                this->rhythm_ = static_cast<int>(feature_type::slowest_tempo);
         };
 
-        melody_problem(problem_type type, int rhythm, std::pair<double,double> target = {0., 0.}, size_t size = 16)
-            : target_(std::move(target)),
-              type_(type),
-              rhythm_(rhythm) {
+        melody_problem(problem_type type, int rhythm = 120,
+                       std::pair<double, double> target = {0., 0.},
+                       size_t size = 16)
+            : target_(std::move(target)), type_(type), rhythm_(rhythm) {
+
+            std::uniform_int_distribution d(
+                static_cast<int>(feature_type::slowest_tempo),
+                static_cast<int>(feature_type::fastest_tempo));
 
             switch (type) {
 
@@ -46,6 +61,7 @@ namespace composer {
 
                 case problem_type::random:
                     this->melody_ = random_problem(size);
+                    this->rhythm_ = d(generator_);
                     break;
 
                 case problem_type::one_note:
