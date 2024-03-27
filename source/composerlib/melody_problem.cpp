@@ -121,46 +121,6 @@ namespace composer {
         return melody;
     }
 
-    std::vector<std::tuple<int,int,int>> melody_problem::import_melody(smf::MidiEventList event_list) {
-
-        std::vector<std::tuple<int,int,int>> melody;
-        std::stringstream stream_note;
-        int note = 0;
-        int pause_duration = 0;
-        int duration = 0;
-        int velocity = 0;
-
-        if (event_list.size() != 0) {
-            for (int event = 0; event < event_list.size(); ++event) {
-
-                if (event_list[event].isNoteOn()) {
-
-                    if (melody.empty()) duration = static_cast<int>(event_list[event+1].tick);
-                    else duration = static_cast<int>(event_list[event].tick) -
-                                   static_cast<int>(event_list[event-2].tick);
-
-                    if (!melody.empty()) {
-                        pause_duration = static_cast<int>(event_list[event].tick) - static_cast<int>(event_list[event-1].tick);
-                        if (pause_duration > 5) {
-                            melody.emplace_back(std::make_tuple(static_cast<int>(feature_type::pause), pause_duration, 0));
-                        }
-                    }
-
-                    velocity = static_cast<int>(event_list[event].getVelocity());
-
-                    stream_note << std::hex << static_cast<int>(event_list[event][1]);
-                    stream_note >> note;
-                    melody.emplace_back(std::make_tuple(note, (duration- pause_duration), velocity));
-
-                    stream_note.str(std::string());
-                    stream_note.clear();
-                }
-            }
-        }
-
-        return melody;
-    }
-
     std::vector<std::tuple<int,int,int>> composer::melody_problem::get_melody() const {
         return this->melody_;
     }

@@ -31,7 +31,7 @@ jobs:
           sudo chmod +x mdsplit
           ls
       - name: Generate Docs
-        run: ./mdsplit -r alandefreitas/composer
+        run: ./mdsplit -r composernew/composer
       - name: Commit Docs
         run: |
           git fetch

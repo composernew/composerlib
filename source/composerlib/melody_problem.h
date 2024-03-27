@@ -5,7 +5,6 @@
 #ifndef COMPOSER_MELODY_PROBLEM_H
 #define COMPOSER_MELODY_PROBLEM_H
 
-#include <MidiFile.h>
 #include <algorithm>
 #include <chrono>
 #include <random>
@@ -25,19 +24,6 @@ namespace composer {
             highest_duration = 100,
             slowest_tempo = 40,
             fastest_tempo = 208
-        };
-
-        explicit melody_problem(const smf::MidiFile &midi_file,
-                                std::pair<double, double> target = {0., 0.})
-            : target_(std::move(target)) {
-            this->type_ = problem_type::random;
-            this->rhythm_ = midi_file.getTicksPerQuarterNote();
-            this->melody_ = import_melody(midi_file[0]);
-
-            if(this->rhythm_ > static_cast<int>(feature_type::fastest_tempo))
-                this->rhythm_ = static_cast<int>(feature_type::fastest_tempo);
-            if(this->rhythm_ < static_cast<int>(feature_type::slowest_tempo))
-                this->rhythm_ = static_cast<int>(feature_type::slowest_tempo);
         };
 
         melody_problem(problem_type type, int rhythm = 120,
@@ -83,7 +69,6 @@ namespace composer {
         static std::vector<std::tuple<int,int,int>> twinkle();
         static std::vector<std::tuple<int,int,int>> random_problem(size_t size);
         static std::vector<std::tuple<int,int,int>> one_note(size_t size);
-        static std::vector<std::tuple<int,int,int>> import_melody(smf::MidiEventList event_list);
 
         [[nodiscard]] std::pair<double,double> get_target() const;
         [[maybe_unused]] void set_target(std::pair<double,double> &new_target);

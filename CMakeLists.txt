@@ -1,9 +1,9 @@
 #######################################################
-### Composer                                        ###
+### Composerlib                                     ###
 #######################################################
 # Project information
 cmake_minimum_required(VERSION 3.17)
-project(composer)
+project(composerlib)
 set(CMAKE_CXX_STANDARD 20)
 
 include(cmake/functions.cmake)
@@ -53,22 +53,8 @@ endif ()
 add_subdirectory(source)
 
 #######################################################
-### Tests                                           ###
-#######################################################
-if (BUILD_TESTS)
-    include(CTest)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
-
-#######################################################
 ### Examples                                        ###
 #######################################################
 if (BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
-
-#######################################################
-### Standalone                                      ###
-#######################################################
-add_subdirectory(standalone)

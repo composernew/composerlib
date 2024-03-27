@@ -2,9 +2,9 @@
 // Created by Carla on 20/06/2022.
 //
 
-#include "composer/optimizer.hpp"
-#include "composer/genetic_algorithm.h"
-#include "composer/nsga_ii.h"
+#include "composerlib/optimizer.hpp"
+#include "composerlib/genetic_algorithm.h"
+#include "composerlib/nsga_ii.h"
 
 using namespace composer;
 
