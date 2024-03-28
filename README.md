@@ -34,6 +34,23 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<details>
+<summary>Table of Contents</summary>
+
+- [Quick start](#quick-start)
+- [Algorithms](#algorithms)
+- [Criteria](#criteria)
+- [Integration](#integration)
+  - [Packages](#packages)
+  - [Build from source](#build-from-source)
+  - [CMake targets](#cmake-targets)
+- [Limitations](#limitations)
+- [Contributing](#contributing)
+- [Roadmap](#roadmap)
+- [Thanks](#thanks)
+- [References](#references)
+
+</details>
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Quick start
