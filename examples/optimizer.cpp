@@ -16,7 +16,7 @@ void solver() {
     double mutation_strength = 0.3;
     int population_size = 1000;
     size_t max_iterations = 30;
-    size_t num_executions = 100;
+    size_t num_executions = 10;
 
     std::pair<double, double> target = {-1., 0.};
     const melody_problem p(melody_problem::problem_type::random, 100, target);
