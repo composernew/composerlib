@@ -28,9 +28,7 @@ namespace composer {
 
         if (real_d(generator_) < mutation_strength) {
 
-            std::uniform_int_distribution up_down(0, 1);
-
-            if(up_down(generator_)) {
+            if(std::uniform_int_distribution up_down(0, 1); up_down(generator_)) {
                 if (individual.get_rhythm() < 208) individual.set_rhythm(individual.get_rhythm()+1);
             }
             else {

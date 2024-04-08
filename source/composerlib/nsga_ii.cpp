@@ -15,9 +15,6 @@ namespace composer {
             (2 * this->population_size_),
             {pareto::min, pareto::max, pareto::min, pareto::max});
 
-        this->parent_1 = {};
-        this->parent_2 = {};
-
         init_population();
     }
 
@@ -38,7 +35,7 @@ namespace composer {
         for (size_t i = 0; i < this->population_size_; ++i) {
 
             if (this->problem_.get_type() == melody_problem::problem_type::random) {
-                this->problem_.set_melody(melody_problem::random_problem(
+                this->problem_.set_melody(this->problem_.random_problem(
                     this->problem_.get_melody().size()));
             }
 
@@ -115,9 +112,5 @@ namespace composer {
 
     melody nsga_ii::get_parent_2() const {
         return this->parent_2.second;
-    }
-
-    pareto::archive<double, 4, melody> nsga_ii::get_population() {
-        return this->ranking_;
     }
 } // namespace composer

@@ -12,13 +12,12 @@ namespace composer {
 
     genetic_algorithm::genetic_algorithm(int population_size,
                                          melody_problem p)
-        : population_size_(population_size),
+        : parent_1(0),
+          parent_2(0),
+          population_size_(population_size),
           problem_(std::move(p))
     {
         init_population();
-
-        this->parent_1 = 0;
-        this->parent_2 = 0;
     }
 
     void genetic_algorithm::insert(const melody &individual) {
@@ -33,11 +32,10 @@ namespace composer {
                 this->problem_.set_melody(melody_problem::twinkle());
             }
             else {
-                this->problem_.set_melody(melody_problem::one_note(this->problem_.get_melody().size()));
+                this->problem_.set_melody(this->problem_.one_note(this->problem_.get_melody().size()));
             }
 
-            melody individual(this->problem_);
-            this->population.emplace_back(individual);
+            this->population.emplace_back(this->problem_);
         }
     }
 
@@ -71,12 +69,6 @@ namespace composer {
         return this->population;
     }
 
-    void genetic_algorithm::set_population(
-        const std::vector<melody> &new_population) {
-
-        this->population = new_population;
-    }
-
     size_t genetic_algorithm::get_population_size() const {
         return this->population_size_;
     }
@@ -87,9 +79,5 @@ namespace composer {
 
     melody genetic_algorithm::get_parent_2() {
         return this->population[this->parent_2];
-    }
-
-    melody_problem genetic_algorithm::get_problem() {
-        return this->problem_;
     }
 } // namespace composer

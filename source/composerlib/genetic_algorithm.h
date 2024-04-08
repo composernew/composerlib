@@ -34,9 +34,6 @@ namespace composer {
         melody get_parent_2();
 
         [[nodiscard]] std::vector<melody> get_population() const;
-        void set_population(const std::vector<melody> &new_population);
-
-        melody_problem get_problem();
 
         friend std::ostream &operator<<(std::ostream &os,
                                         const genetic_algorithm &algorithm) {

@@ -13,7 +13,13 @@ namespace composer {
 
     melody::melody(melody_problem const &problem)
         : melody_(problem.get_melody()),
-          rhythm(problem.get_rhythm())
+          rhythm(problem.get_rhythm()),
+          lowest_pitch(problem.get_lowest_pitch()),
+          highest_pitch(problem.get_highest_pitch()),
+          fastest_tempo(problem.get_fastest_tempo()),
+          slowest_tempo(problem.get_slowest_tempo()),
+          loudest_volume(problem.get_loudest_volume()),
+          quietest_volume(problem.get_quietest_volume())
     {
         composer::melody::evaluate(); // Initialize valence and arousal
         this->distance = composer::melody::euclidean_distance(problem.get_target(), this->valence_arousal);
@@ -24,6 +30,12 @@ namespace composer {
         this->valence_arousal = {0.,0.};
         this->distance = 0;
         this->rhythm = 0;
+        this->lowest_pitch = 0;
+        this->highest_pitch = 0;
+        this->fastest_tempo = 0;
+        this->slowest_tempo = 0;
+        this->loudest_volume = 0;
+        this->quietest_volume = 0;
     }
 
     double melody::evaluate_pitch_distribution() {
@@ -50,7 +62,7 @@ namespace composer {
                                                     counts[0]));
 
         if (count_mode > counts[0] ||
-            mode == static_cast<int>(melody_problem::feature_type::pause)) mode = 0;
+            mode == static_cast<int>(melody_problem::get_pause())) mode = 0;
 
         return mode;
     }
@@ -67,7 +79,7 @@ namespace composer {
 
         // Empty melody
         if ((unique_values == 1) && std::get<0>(melody_sorted[0]) ==
-            static_cast<int>(melody_problem::feature_type::pause)) unique_values = 0;
+                                    melody_problem::get_pause()) unique_values = 0;
 
         return unique_values;
     }
@@ -109,19 +121,18 @@ namespace composer {
         double pitch_distribution = melody::evaluate_pitch_distribution();
 
         pitch_distribution <
-                static_cast<double>(melody_problem::feature_type::pause) + 1.
+                static_cast<double>(get_lowest_pitch()) + 1.
             ? normalized_pitch_distribution = 0
             : normalized_pitch_distribution = melody::normalize(
                   pitch_distribution, 1., -1.,
-                  static_cast<double>(
-                      melody_problem::feature_type::highest_pitch),
-                  static_cast<double>(melody_problem::feature_type::pause) +
+                  static_cast<double>(get_highest_pitch()),
+                  static_cast<double>(get_highest_pitch()) +
                       1.);
 
         normalized_rhythm = melody::normalize(
             this->rhythm, 1., -1.,
-            static_cast<double>(melody_problem::feature_type::fastest_tempo),
-            static_cast<double>(melody_problem::feature_type::slowest_tempo));
+            static_cast<double>(get_fastest_tempo()),
+            static_cast<double>(get_slowest_tempo()));
 
         double average_volume = evaluate_average_volume();
 
@@ -130,9 +141,9 @@ namespace composer {
             : normalized_average_volume = melody::normalize(
                   average_volume, 1., -1.,
                   static_cast<double>(
-                      melody_problem::feature_type::highest_volume),
+                          get_loudest_volume()),
                   static_cast<double>(
-                      melody_problem::feature_type::lowest_volume));
+                          get_quietest_volume()));
 
         double valence = normalized_pitch_variety;
         double arousal =
@@ -155,17 +166,17 @@ namespace composer {
         int position = d(generator_);
 
         if(up_down(generator_)) {
-            if (std::get<0>(this->melody_[position]) <= static_cast<int>(melody_problem::feature_type::highest_pitch)-2)
+            if (std::get<0>(this->melody_[position]) <= get_highest_pitch()-2)
                 std::get<0>(this->melody_[position]) = std::get<0>(this->melody_[position]) + 2;
 
-            if(std::get<2>(this->melody_[position]) < static_cast<int>(melody_problem::feature_type::highest_volume))
+            if(std::get<2>(this->melody_[position]) < get_loudest_volume())
                 ++std::get<2>(this->melody_[position]);
         }
         else {
-            if (std::get<0>(this->melody_[position]) >= static_cast<int>(melody_problem::feature_type::pause)+2)
+            if (std::get<0>(this->melody_[position]) >= get_lowest_pitch()+2)
                 std::get<0>(this->melody_[position]) = std::get<0>(this->melody_[position]) - 2;
 
-            if(std::get<2>(this->melody_[position]) > static_cast<int>(melody_problem::feature_type::lowest_volume))
+            if(std::get<2>(this->melody_[position]) > get_quietest_volume())
                 --std::get<2>(this->melody_[position]);
         }
     }
@@ -256,5 +267,29 @@ namespace composer {
 
     double melody::get_rhythm() const {
         return this->rhythm;
+    }
+
+    int melody::get_lowest_pitch() const {
+        return lowest_pitch;
+    }
+
+    int melody::get_highest_pitch() const {
+        return highest_pitch;
+    }
+
+    int melody::get_fastest_tempo() const {
+        return fastest_tempo;
+    }
+
+    int melody::get_slowest_tempo() const {
+        return slowest_tempo;
+    }
+
+    int melody::get_loudest_volume() const {
+        return loudest_volume;
+    }
+
+    int melody::get_quietest_volume() const {
+        return quietest_volume;
     }
 }

@@ -114,6 +114,18 @@ namespace composer {
 
         void set_distance(double new_distance);
 
+        int get_lowest_pitch() const;
+
+        int get_highest_pitch() const;
+
+        int get_fastest_tempo() const;
+
+        int get_slowest_tempo() const;
+
+        int get_loudest_volume() const;
+
+        int get_quietest_volume() const;
+
         friend std::ostream &operator<<(std::ostream &os,
                                         const melody &individual) {
 
@@ -131,6 +143,12 @@ namespace composer {
         std::pair<double,double> valence_arousal;
         double rhythm;
         double distance;
+        int lowest_pitch;
+        int highest_pitch;
+        int fastest_tempo;
+        int slowest_tempo;
+        int loudest_volume;
+        int quietest_volume;
 
         static std::default_random_engine generator_;
     };
