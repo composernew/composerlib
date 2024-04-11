@@ -32,7 +32,7 @@ namespace composer {
         [[nodiscard]] melody get_parent_1() const;
         [[nodiscard]] melody get_parent_2() const;
 
-        pareto::archive<double, 4, melody> get_population();
+        [[maybe_unused]] [[maybe_unused]] pareto::archive<double, 4, melody> get_population();
 
         friend std::ostream &operator<<(std::ostream &os,
                                         const nsga_ii &algorithm) {
@@ -50,8 +50,8 @@ namespace composer {
 
         using archive_key_type = typename pareto::archive<double, 4, melody>::key_type;
 
-        std::pair<archive_key_type, melody> parent_1;
-        std::pair<archive_key_type, melody> parent_2;
+        std::pair<archive_key_type, melody> parent_1 = {};
+        std::pair<archive_key_type, melody> parent_2 = {};
         int population_size_;
         melody_problem problem_;
         pareto::archive<double, 4, melody> ranking_;

@@ -13,8 +13,7 @@ namespace composer {
 
     class genetic_algorithm {
       public:
-
-        genetic_algorithm(int population_size, melody_problem p);
+        [[maybe_unused]] genetic_algorithm(int population_size, melody_problem p);
 
         void insert(const melody &individual);
 
@@ -34,9 +33,7 @@ namespace composer {
         melody get_parent_2();
 
         [[nodiscard]] std::vector<melody> get_population() const;
-        void set_population(const std::vector<melody> &new_population);
-
-        melody_problem get_problem();
+        [[maybe_unused]] void set_population(const std::vector<melody> &new_population);
 
         friend std::ostream &operator<<(std::ostream &os,
                                         const genetic_algorithm &algorithm) {

@@ -10,7 +10,7 @@ target_include_directories(range-v3 INTERFACE "${range-v3_SOURCE_DIR}/include")
 FetchContent_Declare(
         pareto
         GIT_REPOSITORY https://github.com/alandefreitas/pareto.git
-        GIT_TAG c133aa6c3be682d12e6fcbfa26a80da28ebb8b70
+        GIT_TAG 47f491eeaead1b5a95e27ee3d6bc4c591b0e4462
 )
 
 FetchContent_GetProperties(pareto)

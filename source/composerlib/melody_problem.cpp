@@ -81,41 +81,41 @@ namespace composer {
                 {20, 50, 80}};
     }
 
-    std::vector<std::tuple<int,int,int>> melody_problem::one_note(size_t size) {
+    std::vector<std::tuple<int,int,int>> melody_problem::one_note(size_t size) const {
 
         std::vector<std::tuple<int,int,int>> melody;
 
-        std::uniform_int_distribution d(static_cast<int>(feature_type::lowest_duration),
-                                        static_cast<int>(feature_type::highest_duration));
-        std::uniform_int_distribution v(static_cast<int>(feature_type::lowest_volume),
-                                        static_cast<int>(feature_type::highest_volume));
-        std::uniform_int_distribution n(static_cast<int>(feature_type::pause),
-                                        static_cast<int>(feature_type::highest_pitch));
+        std::uniform_int_distribution d(get_shortest_duration(),
+                                        get_longest_duration());
+        std::uniform_int_distribution v(get_quietest_volume(),
+                                        get_loudest_volume());
+        std::uniform_int_distribution n(get_lowest_pitch(),
+                                        get_highest_pitch());
 
         double duration = d(generator_);
         double volume   = v(generator_);
         int note        = n(generator_);
 
         for (size_t i = 0; i < size; ++i) {
-            melody.emplace_back(std::make_tuple(note, duration, volume));
+            melody.emplace_back(note, duration, volume);
         }
 
         return melody;
     }
 
-    std::vector<std::tuple<int,int,int>> melody_problem::random_problem(size_t size) {
+    std::vector<std::tuple<int,int,int>> melody_problem::random_problem(size_t size) const {
 
         std::vector<std::tuple<int,int,int>> melody;
 
-        std::uniform_int_distribution d(static_cast<int>(feature_type::lowest_duration),
-                                        static_cast<int>(feature_type::highest_duration));
-        std::uniform_int_distribution v(static_cast<int>(feature_type::lowest_volume),
-                                        static_cast<int>(feature_type::highest_volume));
-        std::uniform_int_distribution n(static_cast<int>(feature_type::pause),
-                                        static_cast<int>(feature_type::highest_pitch));
+        std::uniform_int_distribution d(get_shortest_duration(),
+                                        get_longest_duration());
+        std::uniform_int_distribution v(get_quietest_volume(),
+                                        get_loudest_volume());
+        std::uniform_int_distribution n(get_lowest_pitch(),
+                                        get_highest_pitch());
 
         for (size_t i = 0; i < size; ++i) {
-            melody.emplace_back(std::make_tuple(n(generator_), d(generator_), v(generator_)));
+            melody.emplace_back(n(generator_), d(generator_), v(generator_));
         }
 
         return melody;
@@ -147,6 +147,42 @@ namespace composer {
 
     [[maybe_unused]] void melody_problem::set_target(std::pair<double,double> &new_target) {
         this->target_ = new_target;
+    }
+
+    int melody_problem::get_lowest_pitch() const {
+        return this->lowest_pitch_;
+    }
+
+    int melody_problem::get_highest_pitch() const {
+        return this->highest_pitch_;
+    }
+
+    int melody_problem::get_quietest_volume() const {
+        return this->quietest_volume_;
+    }
+
+    int melody_problem::get_loudest_volume() const {
+        return this->loudest_volume_;
+    }
+
+    int melody_problem::get_shortest_duration() const {
+        return this->shortest_duration_;
+    }
+
+    int melody_problem::get_longest_duration() const {
+        return this->longest_duration_;
+    }
+
+    int melody_problem::get_slowest_tempo() const {
+        return this->slowest_tempo_;
+    }
+
+    int melody_problem::get_fastest_tempo() const {
+        return this->fastest_tempo_;
+    }
+
+    int melody_problem::get_pause() {
+        return pause;
     }
 } // namespace composer
 

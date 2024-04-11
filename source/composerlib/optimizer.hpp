@@ -61,7 +61,6 @@ namespace composer {
     template <typename algorithm>
     void optimizer<algorithm>::optimize() {
 
-        melody child;
         std::uniform_real_distribution d(0.0, 1.0);
 
         for (int j = 0; j < this->max_iterations_; ++j) {
@@ -73,6 +72,7 @@ namespace composer {
                     this->solver_.select_parents();
 
                     // Crossover
+                    melody child(this->solver_.get_parent_1().get_problem());
                     child = melody::crossover(this->solver_.get_parent_1(),
                                               this->solver_.get_parent_2());
 

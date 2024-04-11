@@ -8,17 +8,14 @@
 namespace composer {
 
     std::default_random_engine genetic_algorithm::generator_ =
-        std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
+        std::default_random_engine(
+            std::chrono::system_clock::now().time_since_epoch().count());
 
-    genetic_algorithm::genetic_algorithm(int population_size,
-                                         melody_problem p)
-        : population_size_(population_size),
-          problem_(std::move(p))
-    {
+    [[maybe_unused]] genetic_algorithm::genetic_algorithm(int population_size,
+                                                          melody_problem p)
+        : parent_1(0), parent_2(0), population_size_(population_size),
+          problem_(std::move(p)) {
         init_population();
-
-        this->parent_1 = 0;
-        this->parent_2 = 0;
     }
 
     void genetic_algorithm::insert(const melody &individual) {
@@ -29,21 +26,20 @@ namespace composer {
 
         for (size_t i = 0; i < this->population_size_; ++i) {
 
-            if (i < (this->population_size_/2)) {
+            if (i < (this->population_size_ / 2)) {
                 this->problem_.set_melody(melody_problem::twinkle());
-            }
-            else {
-                this->problem_.set_melody(melody_problem::one_note(this->problem_.get_melody().size()));
+            } else {
+                this->problem_.set_melody(this->problem_.one_note(
+                    this->problem_.get_melody().size()));
             }
 
-            melody individual(this->problem_);
-            this->population.emplace_back(individual);
+            this->population.emplace_back(this->problem_);
         }
     }
 
     void genetic_algorithm::select_parents() {
 
-        std::uniform_int_distribution d(0, (this->population_size_-1));
+        std::uniform_int_distribution d(0, (this->population_size_ - 1));
         this->parent_1 = d(generator_);
         this->parent_2 = d(generator_);
     }
@@ -52,18 +48,20 @@ namespace composer {
         return a.get_distance() < b.get_distance();
     }
 
-    void genetic_algorithm::calculate_objective_function(melody &individual) const {
+    void
+    genetic_algorithm::calculate_objective_function(melody &individual) const {
 
         individual.evaluate();
 
-        individual.set_distance(melody::euclidean_distance(this->problem_.get_target(),
-                                                           individual.get_valence_arousal()));
+        individual.set_distance(melody::euclidean_distance(
+            this->problem_.get_target(), individual.get_valence_arousal()));
     }
 
     void genetic_algorithm::parents_substitution() {
 
         std::sort(this->population.begin(), this->population.end(), compare);
-        this->population.erase(this->population.begin()+ this->population_size_,
+        this->population.erase(this->population.begin() +
+                                   this->population_size_,
                                this->population.end());
     }
 
@@ -71,7 +69,7 @@ namespace composer {
         return this->population;
     }
 
-    void genetic_algorithm::set_population(
+    [[maybe_unused]] void genetic_algorithm::set_population(
         const std::vector<melody> &new_population) {
 
         this->population = new_population;
@@ -87,9 +85,5 @@ namespace composer {
 
     melody genetic_algorithm::get_parent_2() {
         return this->population[this->parent_2];
-    }
-
-    melody_problem genetic_algorithm::get_problem() {
-        return this->problem_;
     }
 } // namespace composer

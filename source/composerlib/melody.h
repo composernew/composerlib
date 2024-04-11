@@ -31,8 +31,7 @@ namespace composer {
         ///
         /// \param problem_size The number of individuals of the problem.
         /// \param individual_size The individual size. Each individual is a vector of integers.
-        explicit melody(melody_problem const &problem);
-
+        explicit melody(melody_problem problem);
         melody();
 
         /// \brief The most used values in an individual.
@@ -114,6 +113,8 @@ namespace composer {
 
         void set_distance(double new_distance);
 
+        melody_problem get_problem();
+
         friend std::ostream &operator<<(std::ostream &os,
                                         const melody &individual) {
 
@@ -132,6 +133,7 @@ namespace composer {
         double rhythm;
         double distance;
 
+        melody_problem problem_;
         static std::default_random_engine generator_;
     };
 } // namespace composer
