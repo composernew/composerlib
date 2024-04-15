@@ -109,6 +109,8 @@ namespace composer {
 
         void set_melody(const std::tuple<int,int,int> &note_value);
 
+        void set_melody(std::vector<std::tuple<int,int,int>> const &new_melody);
+
         void set_rhythm(double new_rhythm);
 
         void set_distance(double new_distance);

@@ -13,7 +13,8 @@ namespace composer {
 
     class genetic_algorithm {
       public:
-        [[maybe_unused]] genetic_algorithm(int population_size, melody_problem p);
+        [[maybe_unused]] genetic_algorithm(int population_size, melody_problem p,
+                                           double diversity_strength);
 
         void insert(const melody &individual);
 
@@ -51,6 +52,7 @@ namespace composer {
         int parent_1{};
         int parent_2{};
         int population_size_;
+        double diversity_strength_;
         melody_problem problem_;
         std::vector<melody> population;
 
