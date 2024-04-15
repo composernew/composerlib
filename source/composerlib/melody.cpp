@@ -239,6 +239,10 @@ namespace composer {
         this->melody_.emplace_back(note_value);
     }
 
+    void melody::set_melody(std::vector<std::tuple<int,int,int>> const &new_melody) {
+        this->melody_ = new_melody;
+    }
+
     void melody::set_distance(double new_distance) {
         this->distance = new_distance;
     }

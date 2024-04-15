@@ -14,6 +14,7 @@ void solver() {
     // Parameters
     double crossover_strength = 0.8;
     double mutation_strength = 0.3;
+    double diversity_strength = 0.2;
     int population_size = 1000;
     size_t max_iterations = 30;
     size_t num_executions = 10;
@@ -22,7 +23,9 @@ void solver() {
     const melody_problem p(melody_problem::problem_type::random, 100, target);
 
     for (size_t i = 0; i < num_executions; ++i) {
-        optimizer<algorithm> ga(crossover_strength, mutation_strength, population_size, max_iterations, p);
+        optimizer<algorithm> ga(crossover_strength, mutation_strength,
+                                population_size, max_iterations, p,
+                                diversity_strength);
         ga.optimize();
         ga.display();
     }

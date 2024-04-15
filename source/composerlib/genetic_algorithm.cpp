@@ -12,9 +12,10 @@ namespace composer {
             std::chrono::system_clock::now().time_since_epoch().count());
 
     [[maybe_unused]] genetic_algorithm::genetic_algorithm(int population_size,
-                                                          melody_problem p)
+                                                          melody_problem p,
+                                                          double diversity_strength)
         : parent_1(0), parent_2(0), population_size_(population_size),
-          problem_(std::move(p)) {
+          problem_(std::move(p)), diversity_strength_(diversity_strength) {
         init_population();
     }
 
@@ -26,14 +27,16 @@ namespace composer {
 
         for (size_t i = 0; i < this->population_size_; ++i) {
 
-            if (i < (this->population_size_ / 2)) {
-                this->problem_.set_melody(melody_problem::twinkle());
-            } else {
-                this->problem_.set_melody(this->problem_.one_note(
+            std::uniform_real_distribution d(0.0, 1.0);
+
+            melody individual(this->problem_);
+
+            if (d(generator_) < this->diversity_strength_) {
+                individual.set_melody(this->problem_.random_problem(
                     this->problem_.get_melody().size()));
             }
 
-            this->population.emplace_back(this->problem_);
+            insert(individual);
         }
     }
 

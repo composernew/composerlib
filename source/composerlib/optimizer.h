@@ -16,7 +16,7 @@ namespace composer {
 
         optimizer(double crossover_strength, double mutation_strength,
                   int population_size, size_t max_iterations,
-                  const melody_problem &p);
+                  const melody_problem &p, double diversity_strength);
 
         static void select_mutation(melody &individual, double mutation_strength);
 

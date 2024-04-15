@@ -14,11 +14,12 @@ namespace composer {
     optimizer<algorithm>::optimizer(double crossover_strength,
                                     double mutation_strength,
                                     int population_size, size_t max_iterations,
-                                    const melody_problem &p)
+                                    const melody_problem &p,
+                                    double diversity_strength)
         : crossover_strength_(crossover_strength),
           mutation_strength_(mutation_strength),
           max_iterations_(max_iterations),
-          solver_(population_size, p)
+          solver_(population_size, p, diversity_strength)
     {};
 
     template <typename algorithm>

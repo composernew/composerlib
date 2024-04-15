@@ -15,7 +15,7 @@ namespace composer {
 
       public:
 
-        nsga_ii(int population_size, melody_problem p);
+        nsga_ii(int population_size, melody_problem p, double diversity_strength);
 
         void insert(const melody &individual);
 
@@ -53,8 +53,11 @@ namespace composer {
         std::pair<archive_key_type, melody> parent_1 = {};
         std::pair<archive_key_type, melody> parent_2 = {};
         int population_size_;
+        double diversity_strength_{};
         melody_problem problem_;
         pareto::archive<double, 4, melody> ranking_;
+
+        static std::default_random_engine generator_;
     };
 }// namespace composer
 

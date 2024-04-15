@@ -7,9 +7,13 @@
 
 namespace composer {
 
-    nsga_ii::nsga_ii(int population_size, melody_problem p)
+    std::default_random_engine nsga_ii::generator_ =
+        std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
+
+    nsga_ii::nsga_ii(int population_size, melody_problem p, double diversity_strength)
         : population_size_(population_size),
-          problem_(std::move(p))
+          problem_(std::move(p)),
+          diversity_strength_(diversity_strength)
     {
         this->ranking_ = pareto::archive<double, 4, melody>(
             (2 * this->population_size_),
@@ -34,12 +38,16 @@ namespace composer {
 
         for (size_t i = 0; i < this->population_size_; ++i) {
 
-            if (this->problem_.get_type() == melody_problem::problem_type::random) {
-                this->problem_.set_melody(this->problem_.random_problem(
-                    this->problem_.get_melody().size()));
-            }
+            std::uniform_real_distribution d(0.0, 1.0);
 
             melody individual(this->problem_);
+
+            if (d(generator_) < this->diversity_strength_) {
+                individual.set_melody(
+                    this->problem_.random_problem(
+                        this->problem_.get_melody().size())
+                );
+            }
 
             insert(individual);
         }
