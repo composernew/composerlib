@@ -198,6 +198,8 @@ namespace composer {
     melody melody::crossover(const melody &first_parent, const melody &second_parent) {
         std::uniform_int_distribution d(0,1);
         melody child(first_parent.problem_);
+        std::vector<std::tuple<int,int,int>> const new_melody;
+        child.set_melody(new_melody);
 
         for (size_t i = 0; i < first_parent.get_melody().size(); ++i) {
             if (d(generator_)) {

@@ -23,8 +23,8 @@ namespace composer {
                        int highest_pitch = 108,
                        int quietest_volume = 0,
                        int loudest_volume = 127,
-                       int longest_duration = 0,
-                       int shortest_duration = 100,
+                       int shortest_duration = 0,
+                       int longest_duration = 100,
                        int slowest_tempo = 40,
                        int fastest_tempo = 208)
             : target_(std::move(target)), type_(type), rhythm_(rhythm),

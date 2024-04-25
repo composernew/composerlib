@@ -24,6 +24,8 @@ namespace composer {
 
         void display();
 
+        algorithm get_solver();
+
       private:
 
         size_t max_iterations_;
